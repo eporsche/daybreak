@@ -2,6 +2,7 @@
     "name": "daybreak/daybreak",
     "type": "project",
     "description": "Simple timesheets for small businesses.",
+    "license": "MIT",
     "keywords": [
         "timesheet",
         "time"
