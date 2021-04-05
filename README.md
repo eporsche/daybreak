@@ -21,7 +21,6 @@ This program is inspired by papershift. If you are looking for something more ro
 
 ## Installation Instructions
 
-- copy .env.example to .env
 - make sure [docker](https://docs.docker.com/get-docker/) and [composer](https://getcomposer.org/download/) are installed on your system
 - create a new daybreak project with `composer create daybreak/daybreak && cd daybreak`
 - (optional) add `APP_PORT=YOUR CUSTOM WEBSERVER PORT` to the .env file to change the default webserver port
