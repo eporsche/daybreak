@@ -22,7 +22,7 @@ This program is inspired by papershift. If you are looking for something more ro
 ## Installation Instructions
 
 - copy .env.example to .env
-- make sure [docker](https://docs.docker.com/get-docker/) and [composer](https://getcomposer.org/download/) is installed on your system
+- make sure [docker](https://docs.docker.com/get-docker/) and [composer](https://getcomposer.org/download/) are installed on your system
 - run `composer install` in the root folder daybreak
 - run `./vendor/bin sail up -d`
 - install dependencies
