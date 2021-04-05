@@ -17,7 +17,7 @@
 ## About Daybreak
 
 Daybreak is a very simplistic timesheet and vacation planning program for small businesses. It was created because I needed something I could host myself and integrate better into our local IT enviornment. Other open sourced programs like [smalltime](https://www.small.li/) or [kimai](https://www.kimai.org/) didn't work out for me, since they did not comply to C-55/18 EuGH or where not easily extendable.
-This program is inspired by [papershift](https://papershift.com). If you are looking for something more robust and/or more enterprise ready, I suggest you test and use their service at [papershift.com](https://papershift.com).
+This program is inspired by papershift. If you are looking for something more robust and/or more enterprise ready, I suggest you test and use their service at [papershift.com](https://papershift.com).
 
 ## Installation Instructions
 
