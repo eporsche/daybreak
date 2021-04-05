@@ -1,10 +1,18 @@
 {
     "name": "daybreak/daybreak",
     "type": "project",
-    "description": "Simple timesheets for small businesses.",
+    "description": "Simple timesheets and vacation management for small businesses.",
     "license": "MIT",
     "keywords": [
         "timesheet",
+        "vacation",
+        "holidays",
+        "absence",
+        "time tracker",
+        "punch clock",
+        "working time",
+        "laravel",
+        "livewire",
         "time"
     ],
     "require": {
