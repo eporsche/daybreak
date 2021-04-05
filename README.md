@@ -1,6 +1,19 @@
+<p align="center"><img width="150px" src="/resources/logo.svg" alt="Logo Daybreak"></p>
+<p align="center">
+    <a href="https://packagist.org/packages/daybreak/daybreak">
+        <img src="https://img.shields.io/packagist/dt/daybreak/daybreak" alt="Total Downloads">
+    </a>
+    <a href="https://packagist.org/packages/daybreak/daybreak">
+        <img src="https://img.shields.io/packagist/v/daybreak/daybreak" alt="Latest Stable Version">
+    </a>
+    <a href="https://packagist.org/packages/daybreak/daybreak">
+        <img src="https://img.shields.io/packagist/l/daybreak/daybreak" alt="License">
+    </a>
+</p>
+
 ## About Daybreak
 
-Daybreak is a very simplistic timesheet and vacation planning program for small busnisses. It was created since I needed something I could host myself and integrate better into our local IT enviornment. Other open sourced programs like [smalltime](https://www.small.li/) or [kimai](https://www.kimai.org/) didn't work out for me, since they did not comply to C-55/18 EuGH or where not easily extendable.
+Daybreak is a very simplistic timesheet and vacation planning program for small businesses. It was created because I needed something I could host myself and integrate better into our local IT enviornment. Other open sourced programs like [smalltime](https://www.small.li/) or [kimai](https://www.kimai.org/) didn't work out for me, since they did not comply to C-55/18 EuGH or where not easily extendable.
 This program is inspired and derived by [papershift](https://papershift.com). If you are looking for something more robust and/or more enterprise ready, I suggest you use their service. It has much more features like planning shifts.
 
 ## Installation Instructions
@@ -19,11 +32,13 @@ This program is inspired and derived by [papershift](https://papershift.com). If
 
 ## Open Todos
 
-- [] Add automatic pause times after "x" working hours
-- [] Include holiday importer for other countries
-- [] Make timezone of location configurable and make use of it
-- [] Add more absence times calculators
-- [] Add extended datatables and disable employee switcher
+- [ ] Documentation
+- [ ] Add automatic pause times after "x" working hours
+- [ ] Include holiday importer for other countries
+- [ ] Make timezone of location configurable and make use of it
+- [ ] Add more absence times calculators
+- [ ] Add extended datatables and disable employee switcher
+- [ ] More Tests
 
 ## Security Vulnerabilities
 
