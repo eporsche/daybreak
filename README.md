@@ -23,13 +23,13 @@ This program is inspired by papershift. If you are looking for something more ro
 
 - copy .env.example to .env
 - make sure [docker](https://docs.docker.com/get-docker/) and [composer](https://getcomposer.org/download/) are installed on your system
-- run `composer install` in the root folder daybreak
-- run `./vendor/bin sail up -d`
-- install dependencies
-  - for php dependencies  `./vendor/bin sail composer install`
-  - for js dependencies
-     - `./vendor/bin sail npm install`
-     - `./vendor/bin sail npm run prod`
+- create new daybreak project with `composer create daybreak/daybreak && cd daybreak`
+- (optional) add `APP_PORT=YOUR CUSTOM WEBSERVER PORT` to the .env file to change the default webserver port
+- run docker services with laravel sail `./vendor/bin sail up -d`
+- install js dependencies
+     - `./vendor/bin/sail npm install`
+     - `./vendor/bin(sail npm run prod`
+- generate app key `./vendor/bin/sail artisan key:generate`
 - run database migrations `./vendor/bin sail artisan migrate`
 - goto [http://localhost](http://localhost) in your browser and register a new account
 
