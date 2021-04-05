@@ -1,4 +1,4 @@
-<p align="center"><img width="150px" src="/resources/logo.svg" alt="Logo Daybreak"></p>
+<p align="center"><img width="150px" src="/resources/logo_purple.svg" alt="Logo Daybreak"></p>
 <p align="center">
     <a href="https://packagist.org/packages/daybreak/daybreak">
         <img src="https://img.shields.io/packagist/dt/daybreak/daybreak" alt="Total Downloads">
