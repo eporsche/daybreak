@@ -32,6 +32,7 @@ This program is inspired by papershift. If you are looking for something more ro
 - generate app key `./vendor/bin/sail artisan key:generate`
 - run database migrations `./vendor/bin/sail artisan migrate`
 - goto [http://localhost](http://localhost) in your browser and register a new account
+- in the default installation the sending of mails is simulated with mailhog, you can view them via your browser here [http://localhost:8025/](http://localhost:8025/)
 
 ## Open Todos
 
