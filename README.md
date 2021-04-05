@@ -25,12 +25,12 @@ This program is inspired by papershift. If you are looking for something more ro
 - make sure [docker](https://docs.docker.com/get-docker/) and [composer](https://getcomposer.org/download/) are installed on your system
 - create a new daybreak project with `composer create daybreak/daybreak && cd daybreak`
 - (optional) add `APP_PORT=YOUR CUSTOM WEBSERVER PORT` to the .env file to change the default webserver port
-- run docker services with laravel sail `./vendor/bin sail up -d`
+- run docker services with laravel sail `./vendor/bin/sail up -d`
 - install js dependencies
      - `./vendor/bin/sail npm install`
-     - `./vendor/bin(sail npm run prod`
+     - `./vendor/bin/sail npm run prod`
 - generate app key `./vendor/bin/sail artisan key:generate`
-- run database migrations `./vendor/bin sail artisan migrate`
+- run database migrations `./vendor/bin/sail artisan migrate`
 - goto [http://localhost](http://localhost) in your browser and register a new account
 
 ## Open Todos
