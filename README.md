@@ -52,3 +52,5 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 Copyright (c) Erik Porsche
 
 Daybreak is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
