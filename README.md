@@ -54,6 +54,12 @@ apt-get update
 apt-get install php7.4 php7.4-common php7.4-bcmath openssl php7.4-json php7.4-mbstring php7.4-xml
 ```
 
+### Clone repository
+
+```bash
+git clone https://github.com/eporsche/daybreak.git && cd daybreak
+```
+
 ### Setup repository
 
 ```bash
