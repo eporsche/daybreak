@@ -19,20 +19,6 @@
 Daybreak is a very simplistic timesheet and vacation planning program for small businesses. It was created because I needed something I could host myself and integrate better into our local IT enviornment. Other open sourced programs like [smalltime](https://www.small.li/) or [kimai](https://www.kimai.org/) didn't work out for me, since they did not comply to C-55/18 EuGH or where not easily extendable.
 This program is inspired by papershift. If you are looking for something more robust and/or more enterprise ready, I suggest you test and use their service at [papershift.com](https://papershift.com).
 
-## Installation Instructions
-
-- make sure [docker](https://docs.docker.com/get-docker/) and [composer](https://getcomposer.org/download/) are installed on your system
-- create a new daybreak project with `composer create daybreak/daybreak && cd daybreak`
-- (optional) add `APP_PORT=YOUR CUSTOM WEBSERVER PORT` to the .env file to change the default webserver port
-- run docker services with laravel sail `./vendor/bin/sail up -d`
-- install js dependencies
-     - `./vendor/bin/sail npm install`
-     - `./vendor/bin/sail npm run prod`
-- generate app key `./vendor/bin/sail artisan key:generate`
-- run database migrations `./vendor/bin/sail artisan migrate`
-- goto [http://localhost](http://localhost) in your browser and register a new account
-- in the default installation the sending of mails is simulated with mailhog, you can view them via your browser here [http://localhost:8025/](http://localhost:8025/)
-
 ## Open Todos
 
 - [ ] Documentation
@@ -43,7 +29,7 @@ This program is inspired by papershift. If you are looking for something more ro
 - [ ] Add extended datatables and disable employee switcher
 - [ ] More Tests
 
-## Setup the development environment
+## Installation instruction to setup a development environment
 
 ### Requirements
 
@@ -52,7 +38,10 @@ This program is inspired by papershift. If you are looking for something more ro
 ```bash
 apt-get update
 apt-get install php7.4 php7.4-common php7.4-bcmath openssl php7.4-json php7.4-mbstring php7.4-xml
+
 ```
+
+Install [docker](https://docs.docker.com/get-docker/) and [composer](https://getcomposer.org/download/) on you system.
 
 ### Clone repository
 
@@ -85,6 +74,10 @@ cp .env.example .env
 ```
 
 By default, the application is available at: http://localhost
+
+### Mails
+
+In the default installation the sending of mails is simulated with mailhog, you can view them via your browser at http://localhost:8025
 
 ## Security Vulnerabilities
 
