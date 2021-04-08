@@ -43,6 +43,43 @@ This program is inspired by papershift. If you are looking for something more ro
 - [ ] Add extended datatables and disable employee switcher
 - [ ] More Tests
 
+## Setup the development environment
+
+### Requirements
+
+**Ubuntu/Debian**
+
+```bash
+apt-get update
+apt-get install php7.4 php7.4-common php7.4-bcmath openssl php7.4-json php7.4-mbstring php7.4-xml
+```
+
+### Setup repository
+
+```bash
+# Restore PHP packages
+composer install
+
+# Create .env file
+# By default port :80 will be used. To change the port, put `APP_PORT=<port>` into the .env config file
+cp .env.example .env
+```
+
+### Start application
+
+```bash
+# Start the application
+./vendor/bin/sail up -d
+
+# Generate app key
+./vendor/bin/sail artisan key:generate
+
+# Migrate database
+./vendor/bin/sail artisan migrate
+```
+
+By default, the application is available at: http://localhost
+
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Erik Porsche via [e.porsche@gmail.com](mailto:e.porsche@gmail.com). All security vulnerabilities will be promptly addressed.
