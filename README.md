@@ -79,10 +79,6 @@ By default, the application is available at: http://localhost
 
 In the default installation the sending of mails is simulated with mailhog, you can view them via your browser at http://localhost:8025
 
-### A short preview of the application
-
-https://user-images.githubusercontent.com/3265129/114857190-45907280-9de8-11eb-9334-649036da95c8.mp4
-
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Erik Porsche via [e.porsche@gmail.com](mailto:e.porsche@gmail.com). All security vulnerabilities will be promptly addressed.
@@ -94,6 +90,4 @@ Copyright (c) Erik Porsche
 Daybreak is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
-
-https://user-images.githubusercontent.com/3265129/114856709-b5522d80-9de7-11eb-90b4-55a756c65b0b.mp4
 
