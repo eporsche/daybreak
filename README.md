@@ -79,6 +79,10 @@ By default, the application is available at: http://localhost
 
 In the default installation the sending of mails is simulated with mailhog, you can view them via your browser at http://localhost:8025
 
+### A small video preview of the application
+
+[![preview](https://user-images.githubusercontent.com/3265129/114865186-31517300-9df2-11eb-99f3-0a0d4ef16108.png)](https://user-images.githubusercontent.com/3265129/114863596-34e3fa80-9df0-11eb-9ef1-2e424680a67b.mp4)
+
 ## Security Vulnerabilities
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Erik Porsche via [e.porsche@gmail.com](mailto:e.porsche@gmail.com). All security vulnerabilities will be promptly addressed.
