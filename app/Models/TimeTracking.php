@@ -6,14 +6,14 @@ use App\Models\User;
 use App\Traits\HasPeriod;
 use Brick\Math\BigDecimal;
 use App\Casts\BigDecimalCast;
+use App\Traits\FiltersEmployees;
 use App\Facades\PeriodCalculator;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TimeTracking extends Model
 {
-    use HasFactory, HasPeriod;
+    use HasFactory, HasPeriod, FiltersEmployees;
 
     protected $casts = [
         'starts_at' => 'datetime',
@@ -76,25 +76,4 @@ class TimeTracking extends Model
         return BigDecimal::of($this->duration)
             ->minus($this->pause);
     }
-
-    public function scopeAuthorizedToSee($query)
-    {
-        abort_if(!Auth::hasUser(), 'User should be authenticated.');
-
-        if (!Auth::user()->hasLocationPermission(Auth::user()->currentLocation,  'viewAnyTimeTracking')) {
-            return $query->where('user_id', Auth::id());
-        }
-
-        return $query;
-    }
-
-    public function scopeFilterEmployees($query, array $filtered)
-    {
-        if (empty($filtered)) {
-            return $query;
-        }
-
-        return $query->whereIn('user_id', $filtered);
-    }
-
 }

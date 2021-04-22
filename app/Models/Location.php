@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Absence;
 use App\Models\AbsenceType;
 use App\Models\TimeTracking;
 use App\Models\PublicHoliday;
@@ -58,6 +59,11 @@ class Location extends Model
     public function timeTrackings()
     {
         return $this->hasMany(TimeTracking::class);
+    }
+
+    public function absences()
+    {
+        return $this->hasMany(Absence::class);
     }
 
     public function absentTypes()

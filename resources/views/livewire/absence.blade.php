@@ -103,11 +103,7 @@
         </div>
     </div>
     <div class="flex flex-row mb-4">
-        <div class="flex justify-start flex-1">
-            @can('switchEmployee',  [App\Model\Absence::class, $location])
-                <x-simple-select wire:model="employeeIdToBeSwitched" wire:change="switchEmployee" id="employeeSwitcher" :options="$employeeSwitcher" />
-            @endcan
-        </div>
+
         <div class="flex justify-end flex-1">
             @can('addAbsence', [App\Model\Absence::class, $location])
                 <x-jet-button class="py-3 px-4 " wire:click="openAbsenceModal" wire:loading.attr="disabled">
@@ -123,6 +119,9 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead>
                         <tr>
+                            <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('Name') }}
+                            </th>
                             <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Type') }}
                             </th>
@@ -146,9 +145,25 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($this->employee->absencesForLocation($this->location) as $absence)
+                        @can('filterAbsences',  [App\Models\Absence::class, $employee->currentLocation])
+                            <tr class="bg-white">
+                                <td>
+                                    <x-multiple-select
+                                        wire:model="employeeFilter"
+                                        trackBy="id"
+                                        :options="$employeeOptions"
+                                    />
+                                </td>
+                                <td colspan="7">
+                                </td>
+                            </tr>
+                        @endcan
+                        @forelse($absences as $absence)
                         <tr>
                             <td class="px-6 py-4 whitespace-no-wrap">
+                                {{ $absence->employee->name }}
+                            </td>
+                            <td>
                                 {{ $absence->absenceType->title }}
                             </td>
                             <td>
@@ -182,7 +197,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7"  class="text-center p-2">
+                            <td colspan="8"  class="text-center p-2">
                                 {{ __('No absences yet.') }}
                             </td>
                         </tr>

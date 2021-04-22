@@ -47,8 +47,6 @@ class TimeTracking extends Component
 
     protected $listeners = ['changedTime' => 'updatePause'];
 
-    public $employeeIdToBeSwitched = null;
-
     public $hours;
 
     public $minutes;
@@ -153,14 +151,14 @@ class TimeTracking extends Component
             'timing' => $this->employee->currentLocation
                 ->timeTrackings()
                 ->latest()
-                ->authorizedToSee()
                 ->when(
-                    $this->employeeFilter &&
-                    $this->employee->hasLocationPermission($this->employee->currentLocation, 'filterTimeTracking'),
-                    fn($query) => $query->filterEmployees(collect($this->employeeFilter)->pluck('id')->toArray())
+                    $this->employee->hasLocationPermission($this->employee->currentLocation, 'filterAbsences'),
+                    fn($query) => $query->filterEmployees(
+                        collect($this->employeeFilter)->pluck('id')->toArray()
+                    ),
+                    fn($query) => $query->filterEmployees([$this->employee->id])
                 )
-                ->paginate(10),
-            'employee_id' => $this->employee->id
+                ->paginate(10)
         ]);
     }
 

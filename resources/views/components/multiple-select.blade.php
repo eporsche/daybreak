@@ -1,4 +1,4 @@
-<div style="width: {{$attributes->get('width') ?: "400px"}};">
+<div >
     <div x-data="dropdown()">
         <div class="relative" wire:ignore>
             <div class="flex flex-col items-center relative m-1">
@@ -22,10 +22,6 @@
                                     </div>
                                 </div>
                             </template>
-                            <div class="flex-1">
-                                <input placeholder="{{$attributes->get('placeholder') ?: 'Select Option'}}"
-                                       class="bg-transparent p-1 px-2 appearance-none  outline-none h-full w-full text-gray-800">
-                            </div>
                         </div>
                         <div class="text-gray-300 w-8 py-1 pl-2 pr-1  flex items-center border-gray-200">
                             <button type="button"

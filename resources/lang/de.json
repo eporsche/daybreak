@@ -370,6 +370,5 @@
     "Absence Status Changed.": "Der Status einer Abwesenheit wurde geändert.",
     "Absence Removed": "Eine Abwesenheit wurde entfernt",
     ":employee created a new absence and it's waiting for approval!" : ":employee hat eine neue Abwesenheit erstellt. Bitte überprüfen und freigeben.",
-    "List is empty": "Die Liste ist leer",
-    "Select employees": "Wähle Mitarbeiter"
+    "List is empty": "Die Liste ist leer"
 }

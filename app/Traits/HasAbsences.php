@@ -28,11 +28,6 @@ trait HasAbsences
         return $this->hasMany(AbsenceIndex::class);
     }
 
-    public function absencesForLocation(Location $location)
-    {
-        return $this->absences()->where('location_id', $location->id)->get();
-    }
-
     public function absenceTypesForLocation(Location $location)
     {
         return $this->absenceTypes->filter(function (AbsenceType $absenceType) use ($location) {

@@ -43,10 +43,9 @@ class JetstreamServiceProvider extends ServiceProvider
             'approveAbsence',
             'viewAnyTimeTracking',
             'filterTimeTracking',
+            'filterAbsences',
             'assignProjects',
             'editLocations',
-            //tobe removed
-            'switchAbsenceEmployee',
             'switchReportEmployee'
         ])->description(__('Location administrators can perform updates on a location.'));
 

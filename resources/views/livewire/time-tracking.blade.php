@@ -69,7 +69,6 @@
                                 <x-multiple-select
                                     wire:model="employeeFilter"
                                     trackBy="id"
-                                    placeholder="{{ __('Select employees') }}"
                                     :options="$employeeOptions"
                                 />
                             </td>
