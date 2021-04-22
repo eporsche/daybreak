@@ -55,8 +55,6 @@ class TimeTracking extends Component
 
     public $workingSession;
 
-    public $location;
-
     public $timeTrackingForm = [
         'description' => null,
         'date' => null,
@@ -76,8 +74,6 @@ class TimeTracking extends Component
     public function mount(User $employee, DateFormatter $dateFormatter)
     {
         $this->employee = $employee;
-
-        $this->location = $employee->currentLocation;
 
         $this->employeeOptions = $employee
             ->currentLocation
@@ -154,7 +150,7 @@ class TimeTracking extends Component
     public function render()
     {
         return view('livewire.time-tracking', [
-            'timing' => $this->location
+            'timing' => $this->employee->currentLocation
                 ->timeTrackings()
                 ->latest()
                 ->authorizedToSee()
