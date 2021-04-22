@@ -56,7 +56,7 @@
 
         @livewireScripts
         @livewireCalendarScripts
-
+        @stack('scripts')
         <script src="{{ mix('js/app.js') }}" defer></script>
         <script src="{{ mix('/sw.js') }}"></script>
     </body>

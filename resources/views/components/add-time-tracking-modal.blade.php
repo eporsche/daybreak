@@ -2,6 +2,7 @@
     'hours',
     'minutes',
     'employee',
+    'pauseTimeForm',
     'timeTrackingIdBeingUpdated' => null,
     'title' => __('Time Tracking'),
     'button' => __('Confirm')
@@ -61,7 +62,7 @@
                 </x-jet-button>
                 <x-jet-input-error for="pause" class="mt-2" />
             </div>
-            @forelse($this->pauseTimeForm as $index => $pause)
+            @forelse($pauseTimeForm as $index => $pause)
                 <div class="flex flex-row">
                     @livewire(
                         'time-tracking.pause-times',
