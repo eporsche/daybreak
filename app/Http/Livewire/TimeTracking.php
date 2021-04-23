@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 use Livewire\WithPagination;
 use App\Formatter\DateFormatter;
 use App\Contracts\AddsTimeTrackings;
+use Illuminate\Support\Facades\Auth;
 use App\Contracts\RemovesTimeTracking;
 use App\Contracts\UpdatesTimeTracking;
 use Daybreak\Project\Contracts\AddsTimeTrackingWithProjectInfo;
@@ -46,10 +47,6 @@ class TimeTracking extends Component
 
     protected $listeners = ['changedTime' => 'updatePause'];
 
-    public $employeeSwitcher;
-
-    public $employeeIdToBeSwitched = null;
-
     public $hours;
 
     public $minutes;
@@ -68,13 +65,21 @@ class TimeTracking extends Component
 
     public $pauseTimeForm = [];
 
+    public $employeeFilter;
+
+    public $employeeOptions;
+
     public function mount(User $employee, DateFormatter $dateFormatter)
     {
         $this->employee = $employee;
 
-        $this->employeeSwitcher = $employee
+        $this->employeeOptions = $employee
             ->currentLocation
-            ->allUsers()->pluck('name', 'id')->toArray();
+            ->allUsers()->pluck('name', 'id')
+            ->mapToMultipleSelect();
+
+        $this->employeeFilter = collect($this->employeeOptions)
+            ->filterMultipleSelect(fn($item) => $item['id'] === $this->employee->id);
 
         $this->timeTrackingForm = array_merge_when(array_merge($this->timeTrackingForm,[
             'date' => $dateFormatter->formatDateTimeForView(Carbon::today())
@@ -143,7 +148,17 @@ class TimeTracking extends Component
     public function render()
     {
         return view('livewire.time-tracking', [
-            'timing' => $this->employee->timeTrackingsForLocation()->paginate(10)
+            'timing' => $this->employee->currentLocation
+                ->timeTrackings()
+                ->latest()
+                ->when(
+                    $this->employee->hasLocationPermission($this->employee->currentLocation, 'filterAbsences'),
+                    fn($query) => $query->filterEmployees(
+                        collect($this->employeeFilter)->pluck('id')->toArray()
+                    ),
+                    fn($query) => $query->filterEmployees([$this->employee->id])
+                )
+                ->paginate(10)
         ]);
     }
 

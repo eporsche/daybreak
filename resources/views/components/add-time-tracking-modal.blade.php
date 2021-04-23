@@ -2,6 +2,7 @@
     'hours',
     'minutes',
     'employee',
+    'pauseTimeForm',
     'timeTrackingIdBeingUpdated' => null,
     'title' => __('Time Tracking'),
     'button' => __('Confirm')
@@ -52,7 +53,11 @@
 
             <div class="flex flex-col">
                 <x-jet-label for="description" value="{{ __('Description') }}" />
-                <x-textarea id="description" type="text" class="mt-1 block w-full" wire:model.defer="timeTrackingForm.description" autofocus />
+                <x-textarea id="description" type="text" class="mt-1 block w-full
+                bg-white cursor-pointer border-1 border-gray-800
+                focus:ring-1 focus:ring-blue-600
+                rounded-md shadow-sm
+                " wire:model.defer="timeTrackingForm.description" autofocus />
                 <x-jet-input-error for="description" class="mt-2" />
             </div>
             <div class="flex-col items-center mt-5">
@@ -61,7 +66,7 @@
                 </x-jet-button>
                 <x-jet-input-error for="pause" class="mt-2" />
             </div>
-            @forelse($this->pauseTimeForm as $index => $pause)
+            @forelse($pauseTimeForm as $index => $pause)
                 <div class="flex flex-row">
                     @livewire(
                         'time-tracking.pause-times',

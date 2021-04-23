@@ -41,11 +41,12 @@ class JetstreamServiceProvider extends ServiceProvider
         Jetstream::role('admin', __('Location administrator'), [
             'addAbsence',
             'approveAbsence',
-            'switchAbsenceEmployee',
-            'switchTimeTrackingEmployee',
-            'switchReportEmployee',
+            'viewAnyTimeTracking',
+            'filterTimeTracking',
+            'filterAbsences',
             'assignProjects',
-            'editLocations'
+            'editLocations',
+            'switchReportEmployee'
         ])->description(__('Location administrators can perform updates on a location.'));
 
         Jetstream::role('employee', __('Employee'), [

@@ -1,37 +1,32 @@
 <div class="flex-col space-y-2">
-    <div class="bg-gray-50 lg:w-1/2">
-        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
-            <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            <span class="block">
-                {{ __(ucfirst($workingSession->status)) }}
-            </span>
-            <span class="block text-indigo-600">
-                @if($workingSession->status->since())
-                    {{ $workingSession->status->since()->format('H:i') }}
-                @endif
-            </span>
-            </h2>
-            <div class="mt-8 lex lg:mt-0 lg:flex-shrink-0">
-                @foreach($workingSession->status->transitionableStates() as $state)
-                    <x-jet-button class="py-3 px-4" wire:click="transition('{{ $state }}')" wire:loading.attr="disabled">
-                        {{
-                            __($workingSession
-                                ->status
-                                ->resolveStateClass($state)::label())
-                        }}
-                    </x-jet-button>
-                @endforeach
+
+    <div class="flex justify-between">
+        <div class="bg-gray-50 lg:w-1/2">
+            <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+                <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                <span class="block">
+                    {{ __(ucfirst($workingSession->status)) }}
+                </span>
+                <span class="block text-indigo-600">
+                    @if($workingSession->status->since())
+                        {{ $workingSession->status->since()->format('H:i') }}
+                    @endif
+                </span>
+                </h2>
+                <div class="mt-8 lex lg:mt-0 lg:flex-shrink-0">
+                    @foreach($workingSession->status->transitionableStates() as $state)
+                        <x-jet-button class="py-3 px-4" wire:click="transition('{{ $state }}')" wire:loading.attr="disabled">
+                            {{
+                                __($workingSession
+                                    ->status
+                                    ->resolveStateClass($state)::label())
+                            }}
+                        </x-jet-button>
+                    @endforeach
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="flex flex-row">
-        <div class="flex justify-start flex-1">
-            @can('switchEmployee',  [App\Model\TimeTracking::class, $employee->currentLocation])
-                <x-simple-select wire:model="employeeIdToBeSwitched" wire:change="switchEmployee" id="employeeSwitcher" :options="$employeeSwitcher" />
-            @endcan
-        </div>
-        <div class="flex justify-end flex-1">
+        <div class="self-end">
             <x-jet-button class="py-3 px-4 " wire:click="manageTimeTracking" wire:loading.attr="disabled">
                 {{ __('Add time') }}
             </x-jet-button>
@@ -68,6 +63,19 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
+                    @can('filterTimeTracking',  [App\Model\TimeTracking::class, $employee->currentLocation])
+                        <tr class="bg-white">
+                            <td>
+                                <x-multiple-select
+                                    wire:model="employeeFilter"
+                                    trackBy="id"
+                                    :options="$employeeOptions"
+                                />
+                            </td>
+                            <td colspan="7">
+                            </td>
+                        </tr>
+                    @endcan
                     @forelse ($timing as $item)
                     <tr>
                         <td class="px-6 py-4 whitespace-no-wrap">
@@ -138,6 +146,7 @@
         :hours="$hours"
         :minutes="$minutes"
         :employee="$employee"
+        :pauseTimeForm="$pauseTimeForm"
         :timeTrackingIdBeingUpdated="$timeTrackingIdBeingUpdated"
     />
 

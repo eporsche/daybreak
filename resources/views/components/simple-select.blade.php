@@ -1,12 +1,13 @@
 @props(['options', 'placeholder' => null])
 
 <div class="relative">
-    <select class="block appearance-none w-full bg-gray-200
-        border border-gray-200 text-gray-700 py-3 px-4 pr-8
-        rounded leading-tight focus:outline-none focus:bg-white
-         focus:border-gray-500" id="grid-state"
-        {{ $attributes }}
-         >
+    <select id="grid-state"
+        class="
+        appearance-none w-full text-left bg-white cursor-pointer border-gray-800
+        form-input rounded-md shadow-sm block
+        focus:ring-1 focus:ring-blue-600
+        sm:text-sm"
+        {{ $attributes }} >
         @if($placeholder)
             <option value="">{{ $placeholder }}</option>
         @endif

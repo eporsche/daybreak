@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Absence;
 use App\Models\AbsenceType;
+use App\Models\TimeTracking;
 use App\Models\PublicHoliday;
 use Laravel\Jetstream\Jetstream;
 use Illuminate\Database\Eloquent\Model;
@@ -52,6 +54,16 @@ class Location extends Model
             ->withPivot('role')
             ->withTimestamps()
             ->as('membership');
+    }
+
+    public function timeTrackings()
+    {
+        return $this->hasMany(TimeTracking::class);
+    }
+
+    public function absences()
+    {
+        return $this->hasMany(Absence::class);
     }
 
     public function absentTypes()

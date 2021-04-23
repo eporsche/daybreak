@@ -101,6 +101,27 @@ class AppServiceProvider extends ServiceProvider
         Daybreak::addsPublicHolidayUsing(AddPublicHoliday::class);
         Daybreak::removesPublicHolidayUsing(RemovePublicHoliday::class);
 
+        Collection::macro('mapToMultipleSelect', function () {
+            /**
+             * @var Collection $this
+             */
+            return $this->map(
+                function ($value, $key) {
+                    return [
+                    'id' => $key,
+                    'title' => $value,
+                    ];
+                })->values()->toArray();
+        });
+
+        Collection::macro('filterMultipleSelect', function ($callback) {
+            /**
+             * @var Collection $this
+             */
+            return $this->filter(function ($item) use ($callback) {
+                return call_user_func($callback, $item);
+            })->values()->toArray();
+        });
     }
 
     /**

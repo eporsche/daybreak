@@ -8,12 +8,13 @@ use App\Models\AbsenceType;
 use App\Models\AbsenceIndex;
 use App\Casts\BigDecimalCast;
 use App\Formatter\DateFormatter;
+use App\Traits\FiltersEmployees;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Absence extends Model
 {
-    use HasFactory;
+    use HasFactory, FiltersEmployees;
 
     protected $casts = [
         'starts_at' => 'datetime',

@@ -12,22 +12,16 @@ class AbsencePolicy
 
     public function addAbsence(User $user, Location $location)
     {
-        return ($user->belongsToLocation($location) &&
-            $user->hasLocationPermission($location,  'addAbsence')) ||
-            $user->ownsLocation($location);
+        return ($user->hasLocationPermission($location,  'addAbsence'));
     }
 
     public function approveAbsence(User $user, Location $location)
     {
-        return ($user->belongsToLocation($location) &&
-            $user->hasLocationPermission($location,  'approveAbsence')) ||
-            $user->ownsLocation($location);
+        return ($user->hasLocationPermission($location,  'approveAbsence'));
     }
 
-    public function switchEmployee(User $user, Location $location)
+    public function filterAbsences(User $user, Location $location)
     {
-        return ($user->belongsToLocation($location) &&
-            $user->hasLocationPermission($location,  'switchAbsenceEmployee')) ||
-            $user->ownsLocation($location);
+        return ($user->hasLocationPermission($location,  'filterAbsences'));
     }
 }

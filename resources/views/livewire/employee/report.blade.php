@@ -1,10 +1,5 @@
 <div>
     <div class="flex flex-row mb-4">
-        <div class="flex justify-start ">
-            @can('switchEmployee',  [App\Model\Report::class, $location])
-                <x-simple-select wire:model="employeeIdToBeSwitched" wire:change="switchEmployee" id="employeeSwitcher" :options="$employeeSwitcher" />
-            @endcan
-        </div>
         <div class="flex justify-end flex-1 ">
             <div class="mr-2">
                 <x-date-picker wire:model.defer="dateFilter.fromDate" />
@@ -35,6 +30,10 @@
                         <tr>
                             <th
                                 class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('Name') }}
+                            </th>
+                            <th
+                                class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Day') }}
                             </th>
                             <th
@@ -60,12 +59,22 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
+                        @can('switchEmployee',  [App\Model\Report::class, $location])
+                            <tr>
+                                <td class="bg-white p-2">
+                                    <x-simple-select
+                                        wire:model="employeeIdToBeSwitched" wire:change="switchEmployee" id="employeeSwitcher" :options="$employeeSwitcher" />
+                                </td>
+                                <td colspan="6" class="bg-white">
+                                </td>
+                            </tr>
+                        @endcan
                         @if($this->report())
                             <tr>
                                 <td class="px-6 py-2 whitespace-no-wrap">
                                     {{ $this->report()->startRow->label() }}
                                 </td>
-                                <td colspan="4">
+                                <td colspan="5">
                                     &nbsp;
                                 </td>
                                 <td class="px-6 py-2 whitespace-no-wrap">
@@ -74,6 +83,11 @@
                             </tr>
                             @foreach ($this->report()->reportRows as $row)
                                 <tr class="{{ $row->labelColor() }}">
+                                    <td class="px-6 py-2 whitespace-no-wrap">
+                                        <div class="inline-flex">
+                                            {{ $row->name() }}
+                                        </div>
+                                    </td>
                                     <td class="px-6 py-2 whitespace-no-wrap">
                                         <div class="inline-flex">
                                         {{ $row->label() }}

@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Http\Livewire\Employee;
+namespace App\Http\Livewire;
 
 use Carbon\Carbon;
 use App\Models\User;
 use Livewire\Component;
-use App\Models\Location;
 use Carbon\CarbonPeriod;
 use App\Models\AbsenceType;
 use App\Contracts\AddsAbsences;
 use App\Formatter\DateFormatter;
 use App\Contracts\RemovesAbsence;
 use App\Contracts\ApprovesAbsence;
-use Illuminate\Support\Facades\Auth;
 use App\AbsenceCalendar\AbsenceCalculator;
 use App\AbsenceCalendar\EmployeeAbsenceCalendar;
 
@@ -47,11 +45,7 @@ class Absence extends Component
         'full_day' => true
     ];
 
-    public $employeeSwitcher;
-
     public $absenceTypes;
-
-    public $employeeIdToBeSwitched = null;
 
     public $vacationInfoPanel = [
         'overall_vacation_days' => 0,
@@ -73,6 +67,10 @@ class Absence extends Component
     public $paidHours;
 
     protected $calculatedDays = [];
+
+    public $employeeFilter = [];
+
+    public $employeeOptions;
 
     public function updated()
     {
@@ -119,7 +117,12 @@ class Absence extends Component
         $this->hours = range(0,23);
         $this->minutes = range(0,59);
         $this->location = $employee->currentLocation;
-        $this->employeeSwitcher = $employee->currentLocation->allUsers()->pluck('name','id')->toArray();
+        // $this->employeeSwitcher = $employee->currentLocation->allUsers()->pluck('name','id')->toArray();
+
+        $this->employeeOptions = $employee
+            ->currentLocation
+            ->allUsers()->pluck('name', 'id')
+            ->mapToMultipleSelect();
 
         $this->resetFormFields();
         $this->buildVacationInfoPanel($employee, $dateFormatter);
@@ -245,6 +248,20 @@ class Absence extends Component
 
     public function render()
     {
-        return view('livewire.employee.absence', ['calculatedDays' => $this->calculatedDays]);
+        return view('livewire.absence', [
+            'calculatedDays' => $this->calculatedDays,
+            'absences' => $this->employee->currentLocation
+                ->absences()
+                ->orderBy('status','DESC')
+                ->latest()
+                ->when(
+                    $this->employee->hasLocationPermission($this->employee->currentLocation, 'filterAbsences'),
+                    fn($query) => $query->filterEmployees(
+                        collect($this->employeeFilter)->pluck('id')->toArray()
+                    ),
+                    fn($query) => $query->filterEmployees([$this->employee->id])
+                )
+                ->paginate(10)
+        ]);
     }
 }

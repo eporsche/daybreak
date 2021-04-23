@@ -6,13 +6,14 @@ use App\Models\User;
 use App\Traits\HasPeriod;
 use Brick\Math\BigDecimal;
 use App\Casts\BigDecimalCast;
+use App\Traits\FiltersEmployees;
 use App\Facades\PeriodCalculator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TimeTracking extends Model
 {
-    use HasFactory, HasPeriod;
+    use HasFactory, HasPeriod, FiltersEmployees;
 
     protected $casts = [
         'starts_at' => 'datetime',

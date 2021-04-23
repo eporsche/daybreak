@@ -369,5 +369,7 @@
     "New absence waiting for approval": "Neue Abwesenheit bestätigen",
     "Absence Status Changed.": "Der Status einer Abwesenheit wurde geändert.",
     "Absence Removed": "Eine Abwesenheit wurde entfernt",
-    ":employee created a new absence and it's waiting for approval!" : ":employee hat eine neue Abwesenheit erstellt. Bitte überprüfen und freigeben."
+    ":employee created a new absence and it's waiting for approval!" : ":employee hat eine neue Abwesenheit erstellt. Bitte überprüfen und freigeben.",
+    "List is empty": "Die Liste ist leer",
+    "Select Filter": "Filtern"
 }

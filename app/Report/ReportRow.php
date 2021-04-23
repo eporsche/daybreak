@@ -45,6 +45,11 @@ class ReportRow
         $this->absentHoursCollection = collect();
     }
 
+    public function name() : string
+    {
+        return $this->employee->name;
+    }
+
     public function label() : string
     {
         return $this->date->translatedFormat('D d.m.Y');
