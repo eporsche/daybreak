@@ -1,9 +1,12 @@
 <div >
     <div x-data="dropdown()">
         <div class="relative" wire:ignore>
-            <div class="flex flex-col items-center relative m-1">
+            <div class="flex flex-col items-center relative m-1 p-1">
                 <div class="w-full">
-                    <div class="p-1 flex border border-gray-200 bg-white rounded">
+                    <div :class="{
+                            'm-1 p-1 flex border border-gray-800 bg-white rounded ring-1 ring-blue-500': show,
+                            'm-1 p-1 flex border border-gray-800 bg-white rounded': !show
+                        }">
                         <div class="flex flex-auto flex-wrap">
                             <template x-for="(option,index) in selected" :key="option[trackBy]">
                                 <div
@@ -20,6 +23,7 @@
                                             </svg>
                                         </div>
                                     </div>
+
                                 </div>
                             </template>
                         </div>
@@ -35,7 +39,9 @@
                                      viewBox="0 0 24 24"
                                      xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M5 15l7-7 7 7"></path>
+                                          d="M19 9l-7 7-7-7"></path>
+                                    <!-- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M5 15l7-7 7 7"></path> -->
                                 </svg>
                             </button>
                         </div>
