@@ -1,10 +1,10 @@
 @props(['options', 'placeholder' => null])
 
-<div class="relative">
+<div class="relative p-2">
     <select id="grid-state"
         class="
-        m-1 appearance-none w-full text-left bg-white cursor-pointer border-gray-800
-        form-input rounded-md shadow-sm mt-1 block
+        appearance-none w-full text-left bg-white cursor-pointer border-gray-800
+        form-input rounded-md shadow-sm block
         focus:ring-1 focus:ring-blue-600
         sm:text-sm"
         {{ $attributes }} >

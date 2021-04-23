@@ -1,7 +1,7 @@
 <div >
-    <div x-data="dropdown()">
+    <div x-data="dropdown()" class="p-2">
         <div class="relative" wire:ignore>
-            <div class="flex flex-col items-center relative m-1 p-1">
+            <div class="flex flex-col items-center relative">
                 <div class="w-full">
                     <div :class="{
                             'm-1 p-1 flex border border-gray-800 bg-white rounded ring-1 ring-blue-600': show,
