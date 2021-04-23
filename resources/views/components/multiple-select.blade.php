@@ -23,9 +23,13 @@
                                             </svg>
                                         </div>
                                     </div>
-
                                 </div>
                             </template>
+                            <div class="flex-1">
+                                <div x-show="!selected.length" class="bg-transparent p-1 px-2 appearance-none outline-none h-full w-full text-gray-800">
+                                    {{$attributes->get('placeholder') ?: __('Select Filter')}}
+                                </div>
+                            </div>
                         </div>
                         <div class="text-gray-300 w-8 py-1 pl-2 pr-1  flex items-center border-gray-200">
                             <button type="button"
