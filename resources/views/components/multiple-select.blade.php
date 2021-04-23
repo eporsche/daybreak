@@ -35,7 +35,9 @@
                             <button type="button"
                                     class="cursor-pointer w-6 h-6 text-gray-600 outline-none focus:outline-none">
                                 <svg x-show="show" x-on:click="close" fill="none" stroke="currentColor"
-                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                     style="display: none;"
+                                     >
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M19 9l-7 7-7-7"></path>
                                 </svg>
@@ -51,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="w-full mt-0" x-show.transition.origin.top="show===true" x-on:click.away="close">
+                <div class="w-full mt-0" x-show.transition.origin.top="show===true" x-on:click.away="close" style="display: none;">
                     <div class="absolute shadow top-100 bg-white z-40 w-full left-0 rounded max-h-select">
                         <div class="flex flex-col w-full overflow-y-auto max-h-64">
                             <template x-for="(option,index) in options" :key="option[trackBy]" class="overflow-auto">
@@ -72,7 +74,7 @@
                                 </div>
                             </template>
                             <div x-show="!options.length"
-                                 class="cursor-pointer w-full border-gray-100 rounded border-b border-solid ">
+                                 class="cursor-pointer w-full border-gray-100 rounded border-b border-solid" style="display: none;">
                                 <div class="flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative">
                                     <div class="w-full items-center flex justify-between">
                                         <div class="mx-2 leading-6">{{ __('List is empty') }}</div>
