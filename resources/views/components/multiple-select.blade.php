@@ -4,7 +4,7 @@
             <div class="flex flex-col items-center relative m-1 p-1">
                 <div class="w-full">
                     <div :class="{
-                            'm-1 p-1 flex border border-gray-800 bg-white rounded ring-1 ring-blue-500': show,
+                            'm-1 p-1 flex border border-gray-800 bg-white rounded ring-1 ring-blue-600': show,
                             'm-1 p-1 flex border border-gray-800 bg-white rounded': !show
                         }">
                         <div class="flex flex-auto flex-wrap">
