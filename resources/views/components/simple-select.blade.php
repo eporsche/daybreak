@@ -1,6 +1,6 @@
 @props(['options', 'placeholder' => null])
 
-<div class="relative p-2">
+<div class="relative">
     <select id="grid-state"
         class="
         appearance-none w-full text-left bg-white cursor-pointer border-gray-800

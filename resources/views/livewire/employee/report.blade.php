@@ -61,7 +61,7 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @can('switchEmployee',  [App\Model\Report::class, $location])
                             <tr>
-                                <td class="bg-white">
+                                <td class="bg-white p-2">
                                     <x-simple-select
                                         wire:model="employeeIdToBeSwitched" wire:change="switchEmployee" id="employeeSwitcher" :options="$employeeSwitcher" />
                                 </td>
