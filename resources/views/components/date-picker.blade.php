@@ -3,7 +3,7 @@
     type="text"
     class="block appearance-none w-full
         border border-gray-800 text-gray-700 py-3 px-4 pr-8
-        rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        rounded leading-tight focus:outline-none focus:bg-white focus:border-blue-600"
         x-data
         x-init="new Pikaday({
             field: $refs.input,

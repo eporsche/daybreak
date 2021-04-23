@@ -54,8 +54,9 @@
             <div class="flex flex-col">
                 <x-jet-label for="description" value="{{ __('Description') }}" />
                 <x-textarea id="description" type="text" class="mt-1 block w-full
-                bg-white cursor-pointer border-gray-800
-                focus:ring-1 focus:ring-blue-800
+                bg-white cursor-pointer border-1 border-gray-800
+                focus:ring-1 focus:ring-blue-600
+                rounded-md shadow-sm
                 " wire:model.defer="timeTrackingForm.description" autofocus />
                 <x-jet-input-error for="description" class="mt-2" />
             </div>

@@ -5,7 +5,7 @@
         class="
         m-1 appearance-none w-full text-left bg-white cursor-pointer border-gray-800
         form-input rounded-md shadow-sm mt-1 block
-        focus:ring-1 focus:ring-blue-800
+        focus:ring-1 focus:ring-blue-600
         sm:text-sm"
         {{ $attributes }} >
         @if($placeholder)
