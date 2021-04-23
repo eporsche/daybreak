@@ -26,7 +26,7 @@ This program is inspired by papershift. If you are looking for something more ro
 - [ ] Include holiday importer for other countries
 - [ ] Make timezone of location configurable and make use of it
 - [ ] Add more absence times calculators
-- [ ] Add extended datatables and disable employee switcher
+- [x] Add extended datatables and disable employee switcher
 - [ ] More Tests
 
 ## Installation instruction to setup a development environment
@@ -94,4 +94,3 @@ Copyright (c) Erik Porsche
 Daybreak is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 Icons made by [Freepik](https://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com/)
-
