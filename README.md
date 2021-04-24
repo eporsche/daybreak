@@ -79,9 +79,18 @@ By default, the application is available at: http://localhost
 
 In the default installation the sending of mails is simulated with mailhog, you can view them via your browser at http://localhost:8025
 
-### A small video preview of the application
+## A small video preview of the application
 
 [![preview](https://user-images.githubusercontent.com/3265129/114865186-31517300-9df2-11eb-99f3-0a0d4ef16108.png)](https://user-images.githubusercontent.com/3265129/114863596-34e3fa80-9df0-11eb-9ef1-2e424680a67b.mp4)
+
+## Demo Installation
+
+The application can be tested via heroku.
+
+http://demo-daybreak.herokuapp.com/
+
+User: admin@daybreak.corp
+Pw: admin1234
 
 ## Security Vulnerabilities
 
