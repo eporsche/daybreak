@@ -21,39 +21,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $user = app(CreatesNewUsers::class)->create([
-            'name' => 'Erik Porsche',
-            'email' => 'porsche@mikroskop-center.de',
-            'password' => 'admin1234',
-            'password_confirmation' => 'admin1234',
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? true : false,
-
-        ]);
-
-        //create a second user for testing
         app(CreatesNewUsers::class)->create([
-            'name' => 'Richard Demming',
-            'email' => 'demming@mikroskop-center.de',
+            'name' => 'Admin User',
+            'email' => 'admin@daybreak.corp',
             'password' => 'admin1234',
             'password_confirmation' => 'admin1234',
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? true : false,
         ]);
-
-        //invite him to our team
-        Mail::fake();
-        app(InvitesLocationMembers::class)->invite(
-            $user,
-            $user->ownedLocations()->first(),
-            'demming@mikroskop-center.de',
-            'admin'
-        );
-
-        //print link to accept team invitation
-        $url = URL::signedRoute('location-invitations.accept', [
-            'invitation' => tap($user->ownedLocations()->first())->locationInvitations()->first(),
-        ]);
-
-        echo "Accept invitation url: \n $url \n";
-
     }
 }
