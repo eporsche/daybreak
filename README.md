@@ -87,10 +87,14 @@ In the default installation the sending of mails is simulated with mailhog, you 
 
 The application can be tested via heroku.
 
-http://demo-daybreak.herokuapp.com/
+https://demo-daybreak.herokuapp.com/
 
 User: admin@daybreak.corp
-Pw: admin1234
+
+Password: admin1234
+
+Limitation:
+- No Emails will be send from the demo instance, therefore user invitations won't work
 
 ## Security Vulnerabilities
 
