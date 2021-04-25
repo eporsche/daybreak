@@ -16,4 +16,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_TOKEN}}
           heroku_app_name:  ${{secrets.HEROKU_APP_NAME}}
           heroku_email:  ${{secrets.HEROKU_EMAIL}}
-      - run: heroku run php /app/artisan migrate:fresh --seed
+      - run: heroku run php /app/artisan migrate:fresh --force --seed
