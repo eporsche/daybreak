@@ -95,6 +95,7 @@ Password: admin1234
 
 Limitation:
 - No Emails will be send from the demo instance, therefore user invitations won't work
+- Application will be reset to defaults every 24h
 
 ## Security Vulnerabilities
 
