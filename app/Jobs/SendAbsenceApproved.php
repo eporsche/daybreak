@@ -16,13 +16,10 @@ class SendAbsenceApproved implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $user;
-
     protected $absence;
 
-    public function __construct(User $user, Absence $absence)
+    public function __construct(Absence $absence)
     {
-        $this->user = $user;
         $this->absence = $absence;
     }
 
@@ -35,9 +32,9 @@ class SendAbsenceApproved implements ShouldQueue
     {
          $users = User::all()->filter
             ->hasLocationRole($this->absence->location, 'admin')
-            ->merge(collect([$this->user]));
+            ->merge(collect([$this->absence->employee]));
 
          Mail::to($users)
-            ->send(new AbsenceStatusApproved($this->user, $this->absence));
+            ->send(new AbsenceStatusApproved($this->absence->employee, $this->absence));
     }
 }
