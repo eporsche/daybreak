@@ -8,7 +8,6 @@ use App\Models\AbsenceType;
 use App\Models\TimeTracking;
 use App\Models\PublicHoliday;
 use Laravel\Jetstream\Jetstream;
-use App\Traits\HasDefaultRestingTimes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,7 +23,7 @@ class Location extends Model
         'name'
     ];
 
-    use HasFactory, HasDefaultRestingTimes;
+    use HasFactory;
 
     public function owner()
     {

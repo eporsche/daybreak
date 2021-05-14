@@ -28,12 +28,12 @@ use App\Contracts\ImportsPublicHolidays;
 use App\Contracts\AddsDefaultRestingTime;
 use App\Contracts\InvitesLocationMembers;
 use App\Contracts\RemovesLocationMembers;
-use App\Contracts\UpdatesEmployeeProfile;
 use App\Contracts\AddsVacationEntitlements;
 use App\Contracts\RemovesDefaultRestingTime;
 use App\Contracts\UpdatesLocationMembersRole;
 use App\Contracts\RemovesVacationEntitlements;
 use App\Contracts\TransfersVacationEntitlements;
+use App\Contracts\UpdatesEmployeeProfile;
 
 class Daybreak
 {

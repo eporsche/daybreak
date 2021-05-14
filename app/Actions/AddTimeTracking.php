@@ -16,8 +16,6 @@ class AddTimeTracking implements AddsTimeTrackings
 {
     public $dateFormatter;
 
-    protected $pauseTime = null;
-
     public function __construct(DateFormatter $dateFormatter)
     {
         $this->dateFormatter = $dateFormatter;

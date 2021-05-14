@@ -37,26 +37,26 @@ class ApproveAbscence implements ApprovesAbsence
 
         $absence = Absence::findOrFail($absenceId);
 
-        DB::transaction(function () use ($absence, $user, $location) {
-            $this->bookVacationDays($absence, $user);
-            $this->createAbsenceIndex($absence, $user, $location);
+        DB::transaction(function () use ($absence, $location) {
+            $this->bookVacationDays($absence);
+            $this->createAbsenceIndex($absence, $location);
             $absence->markAsConfirmed();
             if (Daybreak::hasCaldavFeature()) {
-                CreateCaldavEvent::dispatch($absence, $user)
+                CreateCaldavEvent::dispatch($absence)
                     ->afterCommit();
             }
-            SendAbsenceApproved::dispatch($user, $absence)->afterCommit();
+            SendAbsenceApproved::dispatch($absence)->afterCommit();
         });
     }
 
-    public function bookVacationDays($absence, $user)
+    public function bookVacationDays($absence)
     {
         if (!$absence->absenceType->affectsVacation()) {
             return;
         }
 
         //TODO: distribute absence days between available vacation entitlements
-        $currentVacationEntitlement = $user->currentVacationEntitlement();
+        $currentVacationEntitlement = $absence->employee->currentVacationEntitlement();
         if (!isset($currentVacationEntitlement) || !$currentVacationEntitlement->hasEnoughUnusedVacationDays($absence->vacation_days)) {
             throw ValidationException::withMessages([
                 'error' => [__('Sorry, there is no fitting vacation entitlement for this absence.')],
@@ -66,14 +66,14 @@ class ApproveAbscence implements ApprovesAbsence
         $currentVacationEntitlement->useVacationDays($absence);
     }
 
-    public function createAbsenceIndex($absence, $user, $location)
+    public function createAbsenceIndex($absence, $location)
     {
         if (!$absence->absenceType->affectsEvaluation()) {
             return;
         }
 
         $calendar = (new EmployeeAbsenceCalendar(
-            $user,
+            $absence->employee,
             $location,
             new CarbonPeriod(
                 $absence->starts_at,
@@ -103,7 +103,7 @@ class ApproveAbscence implements ApprovesAbsence
                 'date' => $day->getDate(),
                 'hours' => $day->getPaidHours(),
                 'absence_type_id' => $absence->absence_type_id,
-                'user_id' => $user->id,
+                'user_id' => $absence->employee->id,
                 'location_id' => $location->id
             ]);
         }
