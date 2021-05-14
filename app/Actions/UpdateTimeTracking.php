@@ -65,7 +65,7 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         });
     }
 
-    public function validatePauseTimes($pauseTimePeriodCalculator, $startsAt, $endsAt)
+    protected function validatePauseTimes($pauseTimePeriodCalculator, $startsAt, $endsAt)
     {
         if (!$pauseTimePeriodCalculator->hasPeriods()) {
             return;

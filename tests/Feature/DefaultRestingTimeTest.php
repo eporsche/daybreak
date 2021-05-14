@@ -5,11 +5,13 @@ namespace Tests\Feature;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Duration;
 use App\Models\Location;
 use App\Models\TimeTracking;
 use App\Actions\AddTimeTracking;
 use Illuminate\Support\Facades\DB;
 use App\Contracts\AddsDefaultRestingTime;
+use Brick\Math\BigDecimal;
 
 class DefaultRestingTimeTest extends TestCase
 {
@@ -39,13 +41,13 @@ class DefaultRestingTimeTest extends TestCase
     {
         $action = app(AddsDefaultRestingTime::class);
         $action->add($this->user, $this->user->currentLocation, [
-            'min_hours' => '21600', //6*60*60
-            'duration' => '180' //30*60
+            'min_hours' => new Duration(21600), //6*60*60
+            'duration' => new Duration(1800) //30*60
         ]);
 
         $action->add($this->user, $this->user->currentLocation, [
-            'min_hours' => 39600, //11*60*60
-            'duration' => 2700 //45*60
+            'min_hours' => new Duration(39600), //11*60*60
+            'duration' => new Duration(2700) //45*60
         ]);
 
         $this->assertDatabaseHas('default_resting_times',[
@@ -62,8 +64,8 @@ class DefaultRestingTimeTest extends TestCase
     {
         $action = app(AddsDefaultRestingTime::class);
         $action->add($this->user, $this->user->currentLocation, [
-            'min_hours' => 21600, //6*60*60
-            'duration' => 1800 //30*60
+            'min_hours' => new Duration(21600), //6*60*60
+            'duration' => new Duration(1800) //30*60
         ]);
 
         $action = app(AddTimeTracking::class);
@@ -73,6 +75,7 @@ class DefaultRestingTimeTest extends TestCase
         ],[]);
 
         $timeTracking = TimeTracking::where('starts_at','2020-11-17 09:00:00')->first();
-        $this->assertEquals(1800, $timeTracking->pause_time);
+        // dd($timeTracking->pause_time);
+        self::assertSame("1800", (string) $timeTracking->pause_time->inSeconds());
     }
 }

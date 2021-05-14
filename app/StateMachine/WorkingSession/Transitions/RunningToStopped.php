@@ -35,7 +35,6 @@ class RunningToStopped extends Transition
             ->timeTrackings()
             ->create(array_merge([
                     'location_id' => $this->workingSession->location->id,
-                    'manual_pause' => false,
                     'starts_at' => $this->workingSession->starts_at,
                     'ends_at' => $this->workingSession->ends_at
             ], $converter->timeTracking()));

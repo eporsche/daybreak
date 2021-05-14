@@ -13,11 +13,6 @@ class CreateDefaultRestingTimeTable extends Migration
      */
     public function up()
     {
-        Schema::table('time_trackings', function (Blueprint $table) {
-            $table->dropColumn('manual_pause');
-            $table->integer('pause_time')->nullable(); //in seconds
-        });
-
         Schema::create('default_resting_times', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
@@ -41,11 +36,6 @@ class CreateDefaultRestingTimeTable extends Migration
      */
     public function down()
     {
-        Schema::table('time_trackings', function (Blueprint $table) {
-            $table->integer('manual_pause');
-            $table->dropColumn('pause_time');
-        });
-
         Schema::dropIfExists('default_resting_time_users');
 
         Schema::dropIfExists('default_resting_times');
