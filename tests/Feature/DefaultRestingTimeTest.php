@@ -38,12 +38,12 @@ class DefaultRestingTimeTest extends TestCase
     public function test_creates_default_resting_time()
     {
         $action = app(AddsDefaultRestingTime::class);
-        $action->add($this->user, $this->user->currentLocation, [
+        $action->add($this->user->currentLocation, [
             'min_hours' => new Duration(21600), //6*60*60
             'duration' => new Duration(1800) //30*60
         ]);
 
-        $action->add($this->user, $this->user->currentLocation, [
+        $action->add($this->user->currentLocation, [
             'min_hours' => new Duration(39600), //11*60*60
             'duration' => new Duration(2700) //45*60
         ]);
@@ -61,7 +61,7 @@ class DefaultRestingTimeTest extends TestCase
     public function test_adds_default_resting_time_to_time_tracking()
     {
         $action = app(AddsDefaultRestingTime::class);
-        $action->add($this->user, $this->user->currentLocation, [
+        $action->add($this->user->currentLocation, [
             'min_hours' => new Duration(21600), //6*60*60
             'duration' => new Duration(1800) //30*60
         ]);
@@ -80,7 +80,7 @@ class DefaultRestingTimeTest extends TestCase
     public function test_do_not_add_default_resting_time_if_pause_time_has_been_given()
     {
         $action = app(AddsDefaultRestingTime::class);
-        $action->add($this->user, $this->user->currentLocation, [
+        $action->add($this->user->currentLocation, [
             'min_hours' => new Duration(21600), //6*60*60
             'duration' => new Duration(1800) //30*60
         ]);
