@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Traits\HasPeriod;
 use Brick\Math\BigDecimal;
 use App\Casts\BigDecimalCast;
+use App\Casts\DurationCast;
 use App\Traits\FiltersEmployees;
 use App\Facades\PeriodCalculator;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,8 @@ class TimeTracking extends Model
         'ends_at' => 'datetime',
         'hourly_rate' => BigDecimalCast::class,
         'balance' => BigDecimalCast::class,
-        'min_billing_increment' => BigDecimalCast::class
+        'min_billing_increment' => BigDecimalCast::class,
+        'pause_time' => DurationCast::class
     ];
 
     protected $fillable = [
@@ -29,7 +31,7 @@ class TimeTracking extends Model
         'location_id',
         'starts_at',
         'ends_at',
-        'manual_pause'
+        'pause_time'
     ];
 
     public function user()
@@ -60,20 +62,37 @@ class TimeTracking extends Model
         return PeriodCalculator::fromPeriod($this->period)->toHours();
     }
 
-    public function getPauseAttribute()
+    public function getPauseTimeForHumansAttribute()
     {
-        if (!$this->pauseTimes()->exists()) {
-            return BigDecimal::zero();
-        }
-
-        return PeriodCalculator::fromTimesArray(
-            $this->pauseTimes()->select('starts_at','ends_at')->get()
-        )->toHours();
+        return $this->pause_time->inHours();
     }
 
     public function getBalanceAttribute()
     {
         return BigDecimal::of($this->duration)
-            ->minus($this->pause);
+            ->minus($this->pause_time->inHours());
+    }
+
+    public function updatePauseTime()
+    {
+        $this->update([
+            'pause_time' => $this->calculatePauseTime(
+                PeriodCalculator::fromTimesArray(
+                    $this->pauseTimes()->select('starts_at','ends_at')->get()
+                )
+            )
+        ]);
+    }
+
+    protected function calculatePauseTime($pauseTimePeriodCalculator)
+    {
+        if (!$pauseTimePeriodCalculator->hasPeriods()) {
+            $workingTimeInSeconds = PeriodCalculator::fromPeriod($this->period)->toSeconds();
+            return optional(optional(
+                $this->user->defaultRestingTimes()->firstWhere('min_hours','<=',$workingTimeInSeconds)
+            )->duration)->inSeconds();
+        } else {
+            return $pauseTimePeriodCalculator->toSeconds();
+        }
     }
 }

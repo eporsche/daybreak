@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Account;
+use App\Models\Duration;
 use App\Models\Location;
 use Laravel\Jetstream\Jetstream;
 use Illuminate\Support\Facades\DB;
@@ -38,12 +39,43 @@ class CreateNewUser implements CreatesNewUsers
                 'password' => Hash::make($input['password']),
                 'date_of_employment' => Carbon::today()
             ]), function (User $user) {
+                /*
+                |--------------------------------------------------------------------------
+                | Set up a new user environment.
+                |--------------------------------------------------------------------------
+                */
+
+                //create new account for user
                 $this->createAccount($user);
-                $location = $this->createLocation($user);
-                $this->createDefaultAbsentTypes($user, $location);
+
+                //create default target hours for user
                 $this->createDefaultTargetHours($user);
+
+                //create new location for user
+                $location = $this->createLocation($user);
+
+                //create and assign default absent types
+                $this->createDefaultAbsentTypes($user, $location);
+
+                //create default resting times for user
+                $this->createDefaultRestingTime($user, $location);
             });
         });
+    }
+
+    public function createDefaultRestingTime($user, $location)
+    {
+        $defaultRestingTimes = $location->defaultRestingTimes()->createMany([
+            [
+                'min_hours' => new Duration(21600), //6*60*60
+                'duration' => new Duration(1800) //30*60
+            ], [
+                'min_hours' => new Duration(39600), //11*60*60
+                'duration' => new Duration(2700) //45*60
+            ]
+        ]);
+
+        $user->defaultRestingTimes()->sync($defaultRestingTimes);
     }
 
     /**

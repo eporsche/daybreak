@@ -40,7 +40,6 @@ class PausedToStopped extends Transition
             ->create(array_merge([
                     'location_id' => $this->workingSession->location->id,
                     'starts_at' => $this->workingSession->starts_at,
-                    'manual_pause' => false,
                     'ends_at' => $this->workingSession->ends_at
             ], $converter->timeTracking()));
         $trackedTime->pauseTimes()->createMany($converter->pauseTimes());

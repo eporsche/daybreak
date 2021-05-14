@@ -39,7 +39,6 @@ class TimeTrackingTest extends TestCase
         $action->add($this->user, [
             'starts_at' => '17.11.2020 09:00',
             'ends_at' => '17.11.2020 17:00',
-            'manual_pause' => false
             ], [[
                 'starts_at' => '17.11.2020 12:00',
                 'ends_at' => '17.11.2020 12:30',
@@ -47,7 +46,8 @@ class TimeTrackingTest extends TestCase
 
         $this->assertDatabaseHas('time_trackings', [
             'user_id' => $this->user->id,
-            'starts_at' => '2020-11-17 09:00:00'
+            'starts_at' => '2020-11-17 09:00:00',
+            'pause_time' => 1800
         ]);
     }
 
@@ -119,8 +119,7 @@ class TimeTrackingTest extends TestCase
             $action = app(AddTimeTracking::class);
             $action->add($this->user, [
                 'starts_at' => '17.11.2020 09:00',
-                'ends_at' => '17.11.2020 09:'.$minutes,
-                'manual_pause' => false
+                'ends_at' => '17.11.2020 09:'.$minutes
             ],[]);
 
             /**

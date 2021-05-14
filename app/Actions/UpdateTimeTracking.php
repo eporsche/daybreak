@@ -29,7 +29,6 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         ]),[
             'starts_at' => ['required', $this->dateFormatter->dateTimeFormatRule() ],
             'ends_at' => ['required', $this->dateFormatter->dateTimeFormatRule() , 'after_or_equal:starts_at'],
-            'manual_pause' => ['required', 'boolean'],
             'description' => ['nullable', 'string'],
             'time_tracking_id' => ['required', 'exists:time_trackings,id'],
         ])->validateWithBag('addTimeTracking');
@@ -43,13 +42,12 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         $this->ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt, $timeTrackingId);
 
         //check pause times
-        $periods = PeriodCalculator::fromTimesArray($pauseTimes)->periods;
 
-        foreach ($periods as $index => $period) {
-            $this->ensurePeriodIsNotTooSmall($period);
-            $this->ensurePeriodsAreNotOverlapping($periods, $index, $period);
-            $this->ensurePeriodWithinWorkingHours($period, $startsAt, $endsAt);
-        }
+        $this->validatePauseTimes(
+            PeriodCalculator::fromTimesArray($pauseTimes),
+            $startsAt,
+            $endsAt
+        );
 
         $trackedTime = $employee->timeTrackings()->whereKey($timeTrackingId)->first();
 
@@ -62,6 +60,21 @@ class UpdateTimeTracking implements UpdatesTimeTracking
             $trackedTime->pauseTimes->each->delete();
 
             $trackedTime->pauseTimes()->createMany($pauseTimes);
+
+            $trackedTime->updatePauseTime();
+        });
+    }
+
+    public function validatePauseTimes($pauseTimePeriodCalculator, $startsAt, $endsAt)
+    {
+        if (!$pauseTimePeriodCalculator->hasPeriods()) {
+            return;
+        }
+
+        $pauseTimePeriodCalculator->periods->each(function ($period, $index) use ($pauseTimePeriodCalculator, $startsAt, $endsAt) {
+            $this->ensurePeriodIsNotTooSmall($period);
+            $this->ensurePeriodsAreNotOverlapping($pauseTimePeriodCalculator->periods, $index, $period);
+            $this->ensurePeriodWithinWorkingHours($period, $startsAt, $endsAt);
         });
     }
 

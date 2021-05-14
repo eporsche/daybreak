@@ -4,12 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Laravel\Jetstream\Jetstream;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Mail;
-use App\Actions\InviteUserToLocation;
-use App\Actions\Fortify\CreateNewUser;
-use App\Contracts\InvitesLocationMembers;
-use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 class DatabaseSeeder extends Seeder

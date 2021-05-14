@@ -8,6 +8,7 @@ use App\Models\AbsenceType;
 use App\Models\TimeTracking;
 use App\Models\PublicHoliday;
 use Laravel\Jetstream\Jetstream;
+use App\Traits\HasDefaultRestingTimes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -23,7 +24,7 @@ class Location extends Model
         'name'
     ];
 
-    use HasFactory;
+    use HasFactory, HasDefaultRestingTimes;
 
     public function owner()
     {
@@ -69,6 +70,11 @@ class Location extends Model
     public function absentTypes()
     {
         return $this->hasMany(AbsenceType::class);
+    }
+
+    public function defaultRestingTimes()
+    {
+        return $this->hasMany(DefaultRestingTime::class);
     }
 
     public function absenceTypeById($id)

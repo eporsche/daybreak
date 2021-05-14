@@ -2,13 +2,12 @@
 
 namespace App\Calculators;
 
-use Brick\Math\BigDecimal;
-use Brick\Math\BigInteger;
-use Brick\Math\BigRational;
-use Brick\Math\RoundingMode;
 use Carbon\CarbonPeriod;
+use Brick\Math\BigDecimal;
 use Carbon\CarbonInterval;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Arr;
+use Brick\Math\RoundingMode;
 use Illuminate\Support\Collection;
 
 class PeriodCalculator
@@ -44,7 +43,7 @@ class PeriodCalculator
 
             $periods[] = $period;
         }
-        $this->periods = $periods;
+        $this->periods = collect($periods);
 
         return $this;
     }
@@ -70,5 +69,21 @@ class PeriodCalculator
             );
         }
         return $minutes;
+    }
+
+    public function toSeconds() : BigDecimal
+    {
+        $seconds = BigDecimal::zero();
+        foreach ($this->periods as $period) {
+            $seconds =  $seconds->plus(
+                BigDecimal::of($period->start->diffInSeconds($period->end))
+            );
+        }
+        return $seconds;
+    }
+
+    public function hasPeriods() : bool
+    {
+        return count($this->periods) ? true : false;
     }
 }

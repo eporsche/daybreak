@@ -60,7 +60,6 @@ class TimeTracking extends Component
         'start_minute' => 0,
         'end_hour' => 17,
         'end_minute' => 0,
-        'manual_pause' => 0,
     ];
 
     public $pauseTimeForm = [];

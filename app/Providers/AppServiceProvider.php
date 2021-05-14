@@ -13,6 +13,7 @@ use App\Actions\AddTargetHour;
 use App\Actions\DeleteAccount;
 use App\Actions\RemoveAbsence;
 use App\Actions\AddAbsenceType;
+use App\Actions\AddDefaultRestingTime;
 use App\Actions\DeleteLocation;
 use App\Actions\RemoveLocation;
 use App\Actions\AddTimeTracking;
@@ -100,6 +101,8 @@ class AppServiceProvider extends ServiceProvider
         Daybreak::importsPublicHolidaysUsing(ImportPublicHolidays::class);
         Daybreak::addsPublicHolidayUsing(AddPublicHoliday::class);
         Daybreak::removesPublicHolidayUsing(RemovePublicHoliday::class);
+        Daybreak::addsDefaultRestingTimeUsing(AddDefaultRestingTime::class);
+
 
         Collection::macro('mapToMultipleSelect', function () {
             /**
