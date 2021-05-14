@@ -9,9 +9,7 @@ use App\Models\Duration;
 use App\Models\Location;
 use App\Models\TimeTracking;
 use App\Actions\AddTimeTracking;
-use Illuminate\Support\Facades\DB;
 use App\Contracts\AddsDefaultRestingTime;
-use Brick\Math\BigDecimal;
 
 class DefaultRestingTimeTest extends TestCase
 {
@@ -75,7 +73,31 @@ class DefaultRestingTimeTest extends TestCase
         ],[]);
 
         $timeTracking = TimeTracking::where('starts_at','2020-11-17 09:00:00')->first();
-        // dd($timeTracking->pause_time);
-        self::assertSame("1800", (string) $timeTracking->pause_time->inSeconds());
+
+        $this->assertSame("1800", (string) $timeTracking->pause_time->inSeconds());
+    }
+
+    public function test_do_not_add_default_resting_time_if_pause_time_has_been_given()
+    {
+        $action = app(AddsDefaultRestingTime::class);
+        $action->add($this->user, $this->user->currentLocation, [
+            'min_hours' => new Duration(21600), //6*60*60
+            'duration' => new Duration(1800) //30*60
+        ]);
+
+        $action = app(AddTimeTracking::class);
+        $action->add($this->user, [
+            'starts_at' => '17.11.2020 09:00',
+            'ends_at' => '17.11.2020 17:00',
+        ],[
+            [
+                'starts_at' => '17.11.2020 10:00',
+                'ends_at' => '17.11.2020 10:15',
+            ]
+        ]);
+
+        $timeTracking = TimeTracking::where('starts_at','2020-11-17 09:00:00')->first();
+
+        $this->assertSame("900", (string) $timeTracking->pause_time->inSeconds());
     }
 }

@@ -13,7 +13,6 @@ use App\Actions\AddTargetHour;
 use App\Actions\DeleteAccount;
 use App\Actions\RemoveAbsence;
 use App\Actions\AddAbsenceType;
-use App\Actions\AddDefaultRestingTime;
 use App\Actions\DeleteLocation;
 use App\Actions\RemoveLocation;
 use App\Actions\AddTimeTracking;
@@ -33,10 +32,12 @@ use App\Actions\ImportPublicHolidays;
 use App\Actions\InviteLocationMember;
 use App\Actions\RemoveLocationMember;
 use Illuminate\Support\Facades\Blade;
+use App\Actions\AddDefaultRestingTime;
 use App\Actions\UpdateEmployeeProfile;
 use App\Formatter\GermanDateFormatter;
 use App\Actions\AddVacationEntitlement;
 use Illuminate\Support\ServiceProvider;
+use App\Actions\RemoveDefaultRestingTime;
 use App\Actions\UpdateLocationMemberRole;
 use App\Http\Livewire\Locations\Calendar;
 use Illuminate\Database\Eloquent\Builder;
@@ -102,7 +103,7 @@ class AppServiceProvider extends ServiceProvider
         Daybreak::addsPublicHolidayUsing(AddPublicHoliday::class);
         Daybreak::removesPublicHolidayUsing(RemovePublicHoliday::class);
         Daybreak::addsDefaultRestingTimeUsing(AddDefaultRestingTime::class);
-
+        Daybreak::removesDefaultRestingTimeUsing(RemoveDefaultRestingTime::class);
 
         Collection::macro('mapToMultipleSelect', function () {
             /**

@@ -7,6 +7,7 @@ use App\Actions\AddTimeTracking;
 use Spatie\ModelStates\Transition;
 use App\Facades\WorkingSessionToTimeTracking;
 use App\StateMachine\WorkingSession\Places\Stopped;
+use DB;
 
 class RunningToStopped extends Transition
 {
@@ -30,19 +31,24 @@ class RunningToStopped extends Transition
 
         $converter = WorkingSessionToTimeTracking::fromCollection($this->workingSession->actions);
 
-        $trackedTime = $this->workingSession
-            ->user
-            ->timeTrackings()
-            ->create(array_merge([
-                    'location_id' => $this->workingSession->location->id,
-                    'starts_at' => $this->workingSession->starts_at,
-                    'ends_at' => $this->workingSession->ends_at
-            ], $converter->timeTracking()));
-        $trackedTime->pauseTimes()->createMany($converter->pauseTimes());
+        DB::transaction(function () use ($converter) {
+            $trackedTime = $this->workingSession
+                ->user
+                ->timeTrackings()
+                ->create(array_merge([
+                        'location_id' => $this->workingSession->location->id,
+                        'starts_at' => $this->workingSession->starts_at,
+                        'ends_at' => $this->workingSession->ends_at
+                ], $converter->timeTracking()));
 
-        $this->workingSession->actions->each->delete();
+            $trackedTime->pauseTimes()->createMany($converter->pauseTimes());
 
-        $this->workingSession->save();
+            $trackedTime->updatePauseTime();
+
+            $this->workingSession->actions->each->delete();
+
+            $this->workingSession->save();
+        });
 
         return $this->workingSession->fresh();
     }

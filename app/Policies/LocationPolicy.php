@@ -13,8 +13,7 @@ class LocationPolicy
 
     public function approveAbsence(User $user, Location $location)
     {
-        return $user->ownsLocation($location)
-            || $user->hasLocationPermission($location,  'approveAbsence');
+        return $user->hasLocationPermission($location,  'approveAbsence');
     }
 
     /**
@@ -43,8 +42,7 @@ class LocationPolicy
      */
     public function view(User $user, Location $location)
     {
-        return $user->ownsLocation($location)
-            || $user->hasLocationPermission($location,  'editLocations');
+        return $user->hasLocationPermission($location,  'editLocations');
     }
 
     /**
@@ -67,5 +65,10 @@ class LocationPolicy
     public function addLocationAbsentType(User $user, Location $location)
     {
         return $user->ownsLocation($location);
+    }
+
+    public function addDefaultRestingTime(User $user, Location $location)
+    {
+        return $user->hasLocationPermission($location,  'addDefaultRestingTime');
     }
 }

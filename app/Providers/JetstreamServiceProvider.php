@@ -40,6 +40,7 @@ class JetstreamServiceProvider extends ServiceProvider
         // Jetstream::defaultApiTokenPermissions(['read']);
         Jetstream::role('admin', __('Location administrator'), [
             'addAbsence',
+            'addDefaultRestingTime',
             'approveAbsence',
             'viewAnyTimeTracking',
             'filterTimeTracking',

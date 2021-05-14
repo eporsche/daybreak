@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Brick\Math\BigDecimal;
+use Brick\Math\RoundingMode;
 
 class Duration
 {
@@ -25,14 +26,11 @@ class Duration
 
     public function inMinutes()
     {
-        if (!$this->seconds->remainder(60)->isZero()) {
-            throw new \Exception("Error converting seconds to minutes");
-        }
-        return $this->seconds->dividedBy(60);
+        return $this->seconds->dividedBy(60, 2, RoundingMode::HALF_EVEN);
     }
 
     public function inHours()
     {
-        return $this->inMinutes()->dividedBy(60,2);
+        return $this->inMinutes()->dividedBy(60, 2, RoundingMode::HALF_EVEN);
     }
 }

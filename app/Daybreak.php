@@ -30,6 +30,7 @@ use App\Contracts\InvitesLocationMembers;
 use App\Contracts\RemovesLocationMembers;
 use App\Contracts\UpdatesEmployeeProfile;
 use App\Contracts\AddsVacationEntitlements;
+use App\Contracts\RemovesDefaultRestingTime;
 use App\Contracts\UpdatesLocationMembersRole;
 use App\Contracts\RemovesVacationEntitlements;
 use App\Contracts\TransfersVacationEntitlements;
@@ -229,6 +230,11 @@ class Daybreak
     public static function addsDefaultRestingTimeUsing(string $class)
     {
         return app()->singleton(AddsDefaultRestingTime::class, $class);
+    }
+
+    public static function removesDefaultRestingTimeUsing(string $class)
+    {
+        return app()->singleton(RemovesDefaultRestingTime::class, $class);
     }
 
     /**

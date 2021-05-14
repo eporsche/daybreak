@@ -37,8 +37,7 @@ class DurationCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-
-        if ($value instanceof BigDecimal) {
+        if ($value instanceof BigDecimal || is_string($value)) {
             return $value;
         }
 
