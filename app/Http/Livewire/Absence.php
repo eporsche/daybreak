@@ -7,6 +7,7 @@ use App\Models\User;
 use Livewire\Component;
 use Carbon\CarbonPeriod;
 use App\Models\AbsenceType;
+use Livewire\WithPagination;
 use App\Contracts\AddsAbsences;
 use App\Formatter\DateFormatter;
 use App\Contracts\RemovesAbsence;
@@ -16,6 +17,8 @@ use App\AbsenceCalendar\EmployeeAbsenceCalendar;
 
 class Absence extends Component
 {
+    use WithPagination;
+
     public $absenceModal = false;
 
     public $confirmingAbsenceRemoval = false;

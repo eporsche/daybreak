@@ -205,6 +205,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="pt-2">
+            {{ $absences->links() }}
+        </div>
     </div>
     <x-jet-dialog-modal wire:model="absenceModal">
         <x-slot name="title">

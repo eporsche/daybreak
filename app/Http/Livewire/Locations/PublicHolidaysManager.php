@@ -111,7 +111,7 @@ class PublicHolidaysManager extends Component
     }
 
     /**
-     * Remove a team member from the team.
+     * Remove a public holiday from the location.
      *
      * @param  \App\Actions\RemovesPublicHoliday  $remover
      * @return void

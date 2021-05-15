@@ -10,6 +10,7 @@ use App\Facades\PeriodCalculator;
 use App\Contracts\AddsTimeTrackings;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use DB;
 
 class AddTimeTracking implements AddsTimeTrackings
 {
@@ -25,38 +26,56 @@ class AddTimeTracking implements AddsTimeTrackings
         Validator::make($data,[
             'starts_at' => ['required', $this->dateFormatter->dateTimeFormatRule() ],
             'ends_at' => ['required', $this->dateFormatter->dateTimeFormatRule() , 'after_or_equal:starts_at'],
-            'manual_pause' => ['required', 'boolean'],
             'description' => ['nullable', 'string']
         ])->validateWithBag('addTimeTracking');
 
         $startsAt = $this->dateFormatter->timeStrToCarbon($data['starts_at']);
         $endsAt = $this->dateFormatter->timeStrToCarbon($data['ends_at']);
 
-        //check date
         $this->ensureDateIsNotBeforeEmploymentDate($employee, $startsAt);
         $this->ensureDateIsNotTooFarInTheFuture($endsAt);
-
-        //check time
         $this->ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt);
 
-        //check pause times
-        $periods = PeriodCalculator::fromTimesArray($pauseTimes)->periods;
+        $this->validatePauseTimes(
+            PeriodCalculator::fromTimesArray($pauseTimes),
+            $startsAt,
+            $endsAt
+        );
 
-        foreach ($periods as $index => $period) {
-            $this->ensurePeriodIsNotTooSmall($period);
-            $this->ensurePeriodsAreNotOverlapping($periods, $index, $period);
-            $this->ensurePeriodWithinWorkingHours($period, $startsAt, $endsAt);
-        }
+        DB::transaction(function () use ($employee, $startsAt, $endsAt, $data, $pauseTimes) {
+            $trackedTime = $employee->timeTrackings()->create(array_merge([
+                'location_id' => $employee->currentLocation->id,
+                'starts_at' => $startsAt,
+                'ends_at' => $endsAt,
 
-        $trackedTime = $employee->timeTrackings()->create(array_merge([
-            'location_id' => $employee->currentLocation->id,
-            'starts_at' => $startsAt,
-            'ends_at' => $endsAt
-        ], Arr::except($data, ['starts_at','ends_at'])));
+            ], Arr::except($data, ['starts_at','ends_at'])));
 
-        $trackedTime->pauseTimes()->createMany($pauseTimes);
+            $trackedTime->pauseTimes()->createMany($pauseTimes);
+
+            $trackedTime->updatePauseTime();
+        });
+
     }
 
+    protected function validatePauseTimes($pauseTimePeriodCalculator, $startsAt, $endsAt)
+    {
+        if (!$pauseTimePeriodCalculator->hasPeriods()) {
+            return;
+        }
+
+        $pauseTimePeriodCalculator->periods->each(function ($period, $index) use ($pauseTimePeriodCalculator, $startsAt, $endsAt) {
+            $this->ensurePeriodIsNotTooSmall($period);
+            $this->ensurePeriodsAreNotOverlapping($pauseTimePeriodCalculator->periods, $index, $period);
+            $this->ensurePeriodWithinWorkingHours($period, $startsAt, $endsAt);
+        });
+    }
+
+    protected function calculatePauseTimeFromDefaultRestingTimes($employee, $workingTimeInSeconds)
+    {
+        return optional(
+            $employee->defaultRestingTimes()->firstWhere('min_hours','<=',$workingTimeInSeconds)
+        )->duration->inSeconds();
+    }
 
     protected function ensureDateIsNotTooFarInTheFuture($endsAt)
     {
@@ -115,7 +134,7 @@ class AddTimeTracking implements AddsTimeTrackings
 
     protected function ensurePeriodsAreNotOverlapping($periods, $index, $period)
     {
-        $haystack = Arr::except($periods, [$index]);
+        $haystack = Arr::except($periods->toArray(), [$index]);
         foreach ($haystack as $needle) {
             /**
              * @var CarbonPeriod $period

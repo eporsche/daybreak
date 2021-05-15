@@ -11,6 +11,8 @@
 
             @livewire('locations.absence-types-manager', ['location' => $user->currentLocation])
 
+            @livewire('locations.default-resting-times-manager', ['location' => $user->currentLocation])
+
             @livewire('locations.public-holidays-manager', ['location' => $user->currentLocation])
 
             @livewire('locations.location-member-manager', ['location' => $user->currentLocation])

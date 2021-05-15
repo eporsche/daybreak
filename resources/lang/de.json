@@ -187,7 +187,7 @@
     "Location Name": "Standortnamen",
     "Add Location Member": "Standortmitglied hinzufügen",
     "Add a new location member to your location, allowing them to collaborate with you.": "Fügen Sie Ihrem Standort ein neues Standortmitglied hinzu, damit diese mit Ihnen zusammenarbeiten können.",
-    "Please provide the email address of the person you would like to add to this location. The email address must be associated with an existing account.": "Bitte geben Sie die E-Mail-Adresse der Person an, die Sie diesem Speicherort hinzufügen möchten. Die E-Mail-Adresse muss einem vorhandenen Konto zugeordnet sein.",
+    "Please provide the email address of the person you would like to add to this location. The email address must be associated with an existing account.": "Bitte geben Sie die E-Mail-Adresse der Person an, die Sie diesem Standort hinzufügen möchten. Die E-Mail-Adresse muss einem vorhandenen Konto zugeordnet sein.",
     "Pending Location Invitations": "Ausstehende Ortseinladungen",
     "These people have been invited to your location and have been sent an invitation email. They may join the location by accepting the email invitation.": "Diese Personen wurden zu Ihrem Standort eingeladen und haben eine Einladungs-E-Mail erhalten. Sie können dem Standort beitreten, indem sie die E-Mail-Einladung annehmen.",
     "Cancel": "Stornieren",
@@ -371,5 +371,13 @@
     "Absence Removed": "Eine Abwesenheit wurde entfernt",
     ":employee created a new absence and it's waiting for approval!" : ":employee hat eine neue Abwesenheit erstellt. Bitte überprüfen und freigeben.",
     "List is empty": "Die Liste ist leer",
-    "Select Filter": "Filtern"
+    "Select Filter": "Filtern",
+    "Add Default Resting Time": "Automatische Pause-Zeiten",
+    "Add a default resting time to new time trackings.": "Vorgeschriebene Pause Zeiten für neue Zeiterfassungen.",
+    "No default durations yet.": "Es wurden bisher keine automatischen Pausen festgelegt.",
+    "Duration of the pause in minutes": "Zeit der Pause in Minuten",
+    "Pause from x hours": "Pause ab x Stunden",
+    "Add default resting time": "Automatische Pausenzeit hinzufügen",
+    "Remove Default Pause Time": "Automatische Pausenzeit löschen",
+    "Are you sure you would like to remove the default pause time from this location?": "Sind Sie sicher das Sie die automatische Pausen-Zeit von diesem Standort löschen möchten?"
 }

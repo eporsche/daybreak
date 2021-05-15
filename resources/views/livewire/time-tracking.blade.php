@@ -96,7 +96,7 @@
                             {{ $item->duration }}
                         </td>
                         <td class="px-6 py-4 whitespace-no-wrap">
-                            {{ $item->pause }}
+                            {{ $item->pause_time_for_humans }}
                         </td>
                         <td class="px-6 py-4 whitespace-no-wrap">
                             {{ $item->balance }}

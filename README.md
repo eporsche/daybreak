@@ -22,7 +22,7 @@ This program is inspired by papershift. If you are looking for something more ro
 ## Open Todos
 
 - [ ] Documentation
-- [ ] Add automatic pause times after "x" working hours
+- [x] Add automatic pause times after "x" working hours
 - [ ] Include holiday importer for other countries
 - [ ] Make timezone of location configurable and make use of it
 - [ ] Add more absence times calculators

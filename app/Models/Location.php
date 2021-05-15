@@ -71,6 +71,11 @@ class Location extends Model
         return $this->hasMany(AbsenceType::class);
     }
 
+    public function defaultRestingTimes()
+    {
+        return $this->hasMany(DefaultRestingTime::class);
+    }
+
     public function absenceTypeById($id)
     {
         return $this->absentTypes()->findOrFail($id);

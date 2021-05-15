@@ -12,6 +12,7 @@ use App\Traits\HasTimeTrackings;
 use App\Casts\BigDecimalCast;
 use App\Formatter\DateFormatter;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\HasDefaultRestingTimes;
 use Laravel\Jetstream\HasProfilePhoto;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -31,6 +32,7 @@ class User extends Authenticatable
         HasAbsences,
         HasTargetHours,
         HasTimeTrackings,
+        HasDefaultRestingTimes,
         Notifiable,
         TwoFactorAuthenticatable;
 
