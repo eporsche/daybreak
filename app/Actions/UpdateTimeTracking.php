@@ -41,15 +41,13 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         $this->ensureDateIsNotTooFarInTheFuture($endsAt);
         $this->ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt, $timeTrackingId);
 
-        //check pause times
-
         $this->validatePauseTimes(
             PeriodCalculator::fromTimesArray($pauseTimes),
             $startsAt,
             $endsAt
         );
 
-        $trackedTime = $employee->timeTrackings()->whereKey($timeTrackingId)->first();
+        $trackedTime = $employee->currentLocation->timeTrackings()->whereKey($timeTrackingId)->first();
 
         DB::transaction(function () use ($trackedTime, $startsAt, $endsAt, $data, $pauseTimes) {
             $trackedTime->update(array_merge([

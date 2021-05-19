@@ -13,5 +13,5 @@ interface RemovesAbsence
      * @param  mixed  $removesAbsenceId
      * @return void
      */
-    public function remove(User $employee, $removesAbsenceId);
+    public function remove($user, $removesAbsenceId);
 }

@@ -7,7 +7,8 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Location;
 use App\Actions\AddTimeTracking;
-use App\Http\Livewire\TimeTracking;
+use App\Http\Livewire\TimeTrackingManager;
+use Livewire\Livewire;
 
 class TimeTrackingTest extends TestCase
 {
@@ -35,14 +36,26 @@ class TimeTrackingTest extends TestCase
 
     public function test_creates_time_in_correct_format()
     {
-        $action = app(AddTimeTracking::class);
-        $action->add($this->user, [
-            'starts_at' => '17.11.2020 09:00',
-            'ends_at' => '17.11.2020 17:00',
-            ], [[
-                'starts_at' => '17.11.2020 12:00',
-                'ends_at' => '17.11.2020 12:30',
-        ]]);
+        Livewire::test(TimeTrackingManager::class, [
+            'employee' => $this->user
+        ])->set([
+            'timeTrackingForm' => [
+                'description' => 'testing',
+                'date' => '17.11.2020',
+                'start_hour' => 9,
+                'start_minute' => 0,
+                'end_hour' => 17,
+                'end_minute' => 0
+            ],
+            'pauseTimeForm' => [
+                [
+                    'start_hour' => 12,
+                    'start_minute' => 00,
+                    'end_hour' => 12,
+                    'end_minute' => 30
+                ]
+            ]
+        ])->call('confirmAddTimeTracking');
 
         $this->assertDatabaseHas('time_trackings', [
             'user_id' => $this->user->id,

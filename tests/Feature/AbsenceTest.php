@@ -39,6 +39,8 @@ class AbsenceTest extends TestCase
             'locale' => 'de',
             'time_zone' => 'Europe/Berlin'
         ]);
+
+        $this->user->switchLocation($this->location);
     }
 
     public function test_end_date_must_be_after_start_date()
@@ -57,7 +59,7 @@ class AbsenceTest extends TestCase
 
         $action = new AddAbsence();
 
-        $action->add($this->user, $this->location, [
+        $action->add($this->user, [
             'absence_type_id' => $absenceType->id,
             'starts_at' => '20.11.2020 14:00',
             'ends_at' => '20.11.2020 13:30',
@@ -79,7 +81,7 @@ class AbsenceTest extends TestCase
 
         $action = new AddAbsence();
 
-        $action->add($this->user, $this->location, [
+        $action->add($this->user, [
             'absence_type_id' => $absenceType->id,
             'starts_at' => '20.11.2020 14:00',
             'ends_at' => '20.11.2020 16:30',
@@ -107,7 +109,7 @@ class AbsenceTest extends TestCase
 
         $action = new AddAbsence();
 
-        $action->add($this->user, $this->location, [
+        $action->add($this->user, [
             'absence_type_id' => $absenceType->id,
             'starts_at' => '19.11.2020 22:00',
             'ends_at' => '20.11.2020 02:30',
@@ -135,7 +137,7 @@ class AbsenceTest extends TestCase
 
         $action = new AddAbsence();
 
-        $action->add($this->user, $this->location, [
+        $action->add($this->user, [
             'absence_type_id' => $absenceType->id,
             'starts_at' => '18.11.2020 22:00',
             'ends_at' => '20.11.2020 02:30',
@@ -163,7 +165,7 @@ class AbsenceTest extends TestCase
 
         $action = new AddAbsence();
 
-        $action->add($this->user, $this->location, [
+        $action->add($this->user, [
             'absence_type_id' => $absenceType->id,
             'starts_at' => '20.11.2020 14:00',
             'ends_at' => '20.11.2020 16:30',
@@ -190,7 +192,8 @@ class AbsenceTest extends TestCase
         $absenceType->users()->sync($this->user);
 
         $action = new AddAbsence();
-        $action->add($this->user, $this->location, [
+
+        $action->add($this->user, [
             'absence_type_id' => $absenceType->id,
             'starts_at' => '20.11.2020 14:00',
             'ends_at' => '27.11.2020 16:30',

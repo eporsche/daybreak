@@ -51,10 +51,8 @@ class AddTimeTracking implements AddsTimeTrackings
             ], Arr::except($data, ['starts_at','ends_at'])));
 
             $trackedTime->pauseTimes()->createMany($pauseTimes);
-
             $trackedTime->updatePauseTime();
         });
-
     }
 
     protected function validatePauseTimes($pauseTimePeriodCalculator, $startsAt, $endsAt)
@@ -68,13 +66,6 @@ class AddTimeTracking implements AddsTimeTrackings
             $this->ensurePeriodsAreNotOverlapping($pauseTimePeriodCalculator->periods, $index, $period);
             $this->ensurePeriodWithinWorkingHours($period, $startsAt, $endsAt);
         });
-    }
-
-    protected function calculatePauseTimeFromDefaultRestingTimes($employee, $workingTimeInSeconds)
-    {
-        return optional(
-            $employee->defaultRestingTimes()->firstWhere('min_hours','<=',$workingTimeInSeconds)
-        )->duration->inSeconds();
     }
 
     protected function ensureDateIsNotTooFarInTheFuture($endsAt)

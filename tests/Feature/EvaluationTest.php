@@ -45,6 +45,8 @@ class EvaluationTest extends TestCase
             'locale' => 'de',
             'time_zone' => 'Europe/Berlin'
         ]);
+
+        $this->user->switchLocation($this->location);
     }
 
     //Krankheit
@@ -66,7 +68,7 @@ class EvaluationTest extends TestCase
          */
         $action = app(AddsAbsences::class);
 
-        $action->add($this->user, $this->location, [
+        $action->add($this->user, [
             'absence_type_id' => $absenceType->id,
             'starts_at' => '20.11.2020 00:00',
             'ends_at' => '20.11.2020 00:00',
@@ -88,7 +90,6 @@ class EvaluationTest extends TestCase
 
         $approver->approve(
             $this->user,
-            $this->location,
             Absence::first()->id
         );
 

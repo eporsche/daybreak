@@ -105,7 +105,7 @@
     <div class="flex flex-row mb-4">
 
         <div class="flex justify-end flex-1">
-            @can('addAbsence', [App\Model\Absence::class, $location])
+            @can('addAbsence', [App\Model\Absence::class, $this->employee->currentLocation])
                 <x-jet-button class="py-3 px-4 " wire:click="openAbsenceModal" wire:loading.attr="disabled">
                     {{ __('Add Absence') }}
                 </x-jet-button>
@@ -184,7 +184,7 @@
                                 </span>
                             </td>
                             <td>
-                                @if(Gate::check('approveAbsence',  [App\Model\Absence::class, $location]) && !$absence->isConfimred())
+                                @if(Gate::check('approveAbsence',  [App\Model\Absence::class, $this->employee->currentLocation]) && !$absence->isConfimred())
                                     <x-jet-button id="{{ md5($absence) }}" wire:click="approveAbsence({{ $absence->id }})" wire:loading.attr="disabled">
                                         {{ __('Approve') }}
                                     </x-jet-button>

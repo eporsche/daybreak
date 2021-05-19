@@ -29,11 +29,11 @@ class AddAbsence implements AddsAbsences
         $this->dateFormatter = app(DateFormatter::class);
     }
 
-    public function add(User $employee, Location $location, array $data): void
+    public function add(User $employee, array $data): void
     {
         Gate::forUser($employee)->authorize('addAbsence', [
             Absence::class,
-            $location
+            $employee->currentLocation
         ]);
 
         Validator::make($data, [
@@ -64,7 +64,7 @@ class AddAbsence implements AddsAbsences
         $calculator = new AbsenceCalculator(
             new EmployeeAbsenceCalendar(
                 $employee,
-                $location,
+                $employee->currentLocation,
                 new CarbonPeriod($startsAt, $endsAt)
             ),
             AbsenceType::findOrFail($data['absence_type_id'])
@@ -72,7 +72,7 @@ class AddAbsence implements AddsAbsences
 
         $absence = $employee->absences()->create(
             [
-                'location_id' => $location->id,
+                'location_id' => $employee->currentLocation->id,
                 'vacation_days' => $calculator->sumVacationDays(),
                 'paid_hours' => $calculator->sumPaidHours(),
                 'starts_at' => $startsAt,
@@ -81,7 +81,7 @@ class AddAbsence implements AddsAbsences
         );
 
          $admins = User::all()->filter
-            ->hasLocationRole($location, 'admin');
+            ->hasLocationRole($employee->currentLocation, 'admin');
 
          Mail::to($admins)
             ->send(new NewAbsenceWaitingForApproval($absence, $employee));

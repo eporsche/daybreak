@@ -9,6 +9,6 @@ class RemoveTimeTracking implements RemovesTimeTracking
 {
     public function remove(User $user, $timeTrackingId)
     {
-        $user->timeTrackings()->whereKey($timeTrackingId)->delete();
+        $user->currentLocation->timeTrackings()->whereKey($timeTrackingId)->delete();
     }
 }

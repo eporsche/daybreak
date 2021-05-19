@@ -16,6 +16,12 @@ class LocationPolicy
         return $user->hasLocationPermission($location,  'approveAbsence');
     }
 
+    public function removeAbsence(User $user, Location $location)
+    {
+
+        return $user->hasLocationPermission($location,  'removeAbsence');
+    }
+
     /**
      * Determine whether the user can add team members.
      *

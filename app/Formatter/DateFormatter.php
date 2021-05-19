@@ -21,7 +21,7 @@ interface DateFormatter
 
     public function formatDateTimeForView($date);
 
-    public function generateTimeStr(string $date, string $hours = null, string $minutes = null);
+    public function generateTimeStr(string $date = null, string $hours = null, string $minutes = null);
 
     public function timeStrToCarbon(string $timeStr) : CarbonImmutable;
 
