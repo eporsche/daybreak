@@ -15,7 +15,7 @@ use App\Contracts\ApprovesAbsence;
 use App\AbsenceCalendar\AbsenceCalculator;
 use App\AbsenceCalendar\EmployeeAbsenceCalendar;
 
-class Absence extends Component
+class AbsenceManager extends Component
 {
     use WithPagination;
 
@@ -80,7 +80,7 @@ class Absence extends Component
         //TODO set to start of day and end of day if full day is activated...
         $calendar = new EmployeeAbsenceCalendar(
             $this->employee,
-            $this->location,
+            $this->employee->currentLocation,
             new CarbonPeriod(
                 $this->startTimeStr(),
                 $this->endTimeStr()
@@ -99,7 +99,7 @@ class Absence extends Component
         //TODO set to start of day and end of day if full day is activated...
         $calendar = new EmployeeAbsenceCalendar(
             $this->employee,
-            $this->location,
+            $this->employee->currentLocation,
             new CarbonPeriod(
                 $this->startTimeStr(),
                 $this->endTimeStr()
@@ -119,8 +119,6 @@ class Absence extends Component
         $this->absenceTypes = $employee->absenceTypesForLocation($employee->currentLocation);
         $this->hours = range(0,23);
         $this->minutes = range(0,59);
-        $this->location = $employee->currentLocation;
-        // $this->employeeSwitcher = $employee->currentLocation->allUsers()->pluck('name','id')->toArray();
 
         $this->employeeOptions = $employee
             ->currentLocation
@@ -156,7 +154,7 @@ class Absence extends Component
 
     public function switchEmployee()
     {
-        $this->employee = $this->location->allUsers()->first(function ($user) {
+        $this->employee = $this->emyployee->currentLocation->allUsers()->first(function ($user) {
               return $user->id === (int)$this->employeeIdToBeSwitched;
         });
     }
@@ -199,7 +197,7 @@ class Absence extends Component
 
         $this->addAbsenceForm['full_day'] = $this->hideTime;
 
-        $adder->add($this->employee, $this->location, $this->addAbsenceForm);
+        $adder->add($this->employee, $this->addAbsenceForm);
 
         $this->resetFormfields();
 
@@ -222,7 +220,6 @@ class Absence extends Component
         if (!empty($absenceId)) {
             $approver->approve(
                 $this->employee,
-                $this->location,
                 $absenceId
             );
         }
@@ -247,6 +244,7 @@ class Absence extends Component
         $this->confirmingAbsenceRemoval = false;
 
         $this->absenceIdBeingRemoved = null;
+
     }
 
     public function render()

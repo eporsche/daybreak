@@ -10,13 +10,12 @@ use Illuminate\Support\Arr;
 use Livewire\WithPagination;
 use App\Formatter\DateFormatter;
 use App\Contracts\AddsTimeTrackings;
-use Illuminate\Support\Facades\Auth;
 use App\Contracts\RemovesTimeTracking;
 use App\Contracts\UpdatesTimeTracking;
 use Daybreak\Project\Contracts\AddsTimeTrackingWithProjectInfo;
 use Daybreak\Project\Contracts\UpdatesTimeTrackingWithProjectInfo;
 
-class TimeTracking extends Component
+class TimeTrackingManager extends Component
 {
     use WithPagination, TrimAndNullEmptyStrings;
 
@@ -80,7 +79,7 @@ class TimeTracking extends Component
         $this->employeeFilter = collect($this->employeeOptions)
             ->filterMultipleSelect(fn($item) => $item['id'] === $this->employee->id);
 
-        $this->timeTrackingForm = array_merge_when(array_merge($this->timeTrackingForm,[
+        $this->timeTrackingForm = array_merge_when(array_merge($this->timeTrackingForm, [
             'date' => $dateFormatter->formatDateTimeForView(Carbon::today())
         ]), fn() => $this->projectFormFields(), Daybreak::hasProjectBillingFeature());
 
@@ -119,21 +118,41 @@ class TimeTracking extends Component
     {
         $this->resetErrorBag();
 
-        $generatedPauseTimeArray = $this->generatePauseTimeArray($this->timeTrackingForm['date'], $this->pauseTimeForm, $dateFormatter);
+        $generatedPauseTimeArray = $this->generatePauseTimeArray(
+            $this->timeTrackingForm['date'],
+            $this->pauseTimeForm,
+            $dateFormatter
+        );
 
         if (Daybreak::hasProjectBillingFeature()) {
             app(AddsTimeTrackingWithProjectInfo::class)->add(
                 $this->employee, array_merge([
-                    'starts_at' => $dateFormatter->generateTimeStr($this->timeTrackingForm['date'], $this->timeTrackingForm['start_hour'], $this->timeTrackingForm['start_minute']),
-                    'ends_at' => $dateFormatter->generateTimeStr($this->timeTrackingForm['date'], $this->timeTrackingForm['end_hour'], $this->timeTrackingForm['end_minute']),
+                    'starts_at' => $dateFormatter->generateTimeStr(
+                        $this->timeTrackingForm['date'],
+                        $this->timeTrackingForm['start_hour'],
+                        $this->timeTrackingForm['start_minute']
+                    ),
+                    'ends_at' => $dateFormatter->generateTimeStr(
+                        $this->timeTrackingForm['date'],
+                        $this->timeTrackingForm['end_hour'],
+                        $this->timeTrackingForm['end_minute']
+                    ),
                 ], $this->filteredTimeTrackingFormFields()),
                 $generatedPauseTimeArray
             );
         } else {
             app(AddsTimeTrackings::class)->add(
                 $this->employee, array_merge([
-                    'starts_at' => $dateFormatter->generateTimeStr($this->timeTrackingForm['date'], $this->timeTrackingForm['start_hour'], $this->timeTrackingForm['start_minute']),
-                    'ends_at' => $dateFormatter->generateTimeStr($this->timeTrackingForm['date'], $this->timeTrackingForm['end_hour'], $this->timeTrackingForm['end_minute']),
+                    'starts_at' => $dateFormatter->generateTimeStr(
+                        $this->timeTrackingForm['date'],
+                        $this->timeTrackingForm['start_hour'],
+                        $this->timeTrackingForm['start_minute']
+                    ),
+                    'ends_at' => $dateFormatter->generateTimeStr(
+                        $this->timeTrackingForm['date'],
+                        $this->timeTrackingForm['end_hour'],
+                        $this->timeTrackingForm['end_minute']
+                    ),
                 ], $this->filteredTimeTrackingFormFields()),
                 $generatedPauseTimeArray
             );
@@ -235,7 +254,7 @@ class TimeTracking extends Component
         $this->timeTrackingIdBeingUpdated = $index;
 
         $this->updateTimeTrackingForm(
-            $this->employee->timeTrackings()
+            $this->employee->currentLocation->timeTrackings()
                 ->whereKey($index)
                 ->with('pauseTimes')
                 ->first()
@@ -271,7 +290,11 @@ class TimeTracking extends Component
     {
         $this->resetErrorBag();
 
-        $generatedPauseTimeArray = $this->generatePauseTimeArray($this->timeTrackingForm['date'], $this->pauseTimeForm, $dateFormatter);
+        $generatedPauseTimeArray = $this->generatePauseTimeArray(
+            $this->timeTrackingForm['date'],
+            $this->pauseTimeForm,
+            $dateFormatter
+        );
 
         if (Daybreak::hasProjectBillingFeature()) {
             app(UpdatesTimeTrackingWithProjectInfo::class)->update(
@@ -296,9 +319,16 @@ class TimeTracking extends Component
                 $this->employee,
                 $this->timeTrackingIdBeingUpdated,
                 array_merge([
-                    'starts_at' => $dateFormatter->generateTimeStr($this->timeTrackingForm['date'], $this->timeTrackingForm['start_hour'], $this->timeTrackingForm['start_minute']),
-                    'ends_at' => $dateFormatter->generateTimeStr($this->timeTrackingForm['date'], $this->timeTrackingForm['end_hour'], $this->timeTrackingForm['end_minute']),
-
+                    'starts_at' => $dateFormatter->generateTimeStr(
+                        $this->timeTrackingForm['date'],
+                        $this->timeTrackingForm['start_hour'],
+                        $this->timeTrackingForm['start_minute']
+                    ),
+                    'ends_at' => $dateFormatter->generateTimeStr(
+                        $this->timeTrackingForm['date'],
+                        $this->timeTrackingForm['end_hour'],
+                        $this->timeTrackingForm['end_minute']
+                    ),
                 ], $this->filteredTimeTrackingFormFields()),
                 $generatedPauseTimeArray
             );

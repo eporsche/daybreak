@@ -47,7 +47,7 @@ class GermanDateFormatter implements DateFormatter
         return $date->format('d.m.Y H:i');
     }
 
-    public function generateTimeStr(string $date, string $hours = null, string $minutes = null)
+    public function generateTimeStr(string $date = null, string $hours = null, string $minutes = null)
     {
         return $date.' '.str_pad($hours,2,"0",STR_PAD_LEFT).':'.str_pad($minutes,2,"0",STR_PAD_LEFT);
     }

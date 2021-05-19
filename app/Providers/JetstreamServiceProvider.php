@@ -40,18 +40,20 @@ class JetstreamServiceProvider extends ServiceProvider
         // Jetstream::defaultApiTokenPermissions(['read']);
         Jetstream::role('admin', __('Location administrator'), [
             'addAbsence',
-            'addDefaultRestingTime',
             'approveAbsence',
+            'removeAbsence',
+            'filterAbsences',
+            'addDefaultRestingTime',
             'viewAnyTimeTracking',
             'filterTimeTracking',
-            'filterAbsences',
             'assignProjects',
             'editLocations',
-            'switchReportEmployee'
+            'switchReportEmployee',
         ])->description(__('Location administrators can perform updates on a location.'));
 
         Jetstream::role('employee', __('Employee'), [
-            'addAbsence'
+            'addAbsence',
+            'removeAbsence'
         ])->description(__('Employees have can create new working hours.'));
     }
 }

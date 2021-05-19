@@ -27,7 +27,7 @@ class ApproveAbscence implements ApprovesAbsence
      * @param  int  $absenceId
      * @return void
      */
-    public function approve(User $user, Location $location, $absenceId)
+    public function approve(User $user, $absenceId)
     {
         Validator::make([
             'absence_id' => $absenceId
@@ -37,9 +37,9 @@ class ApproveAbscence implements ApprovesAbsence
 
         $absence = Absence::findOrFail($absenceId);
 
-        DB::transaction(function () use ($absence, $location) {
+        DB::transaction(function () use ($absence, $user) {
             $this->bookVacationDays($absence);
-            $this->createAbsenceIndex($absence, $location);
+            $this->createAbsenceIndex($absence, $user->currentLocation);
             $absence->markAsConfirmed();
             if (Daybreak::hasCaldavFeature()) {
                 CreateCaldavEvent::dispatch($absence)
