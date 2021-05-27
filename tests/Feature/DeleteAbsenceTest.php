@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use Livewire\Livewire;
+use App\Models\Location;
 use App\Http\Livewire\AbsenceManager;
 
 class DeleteAbsenceTest extends TestCase
@@ -16,9 +17,16 @@ class DeleteAbsenceTest extends TestCase
      */
     public function test_can_delete_absence()
     {
-        $this->actingAs($user = User::factory()->withOwnedAccount()->withOwnedLocation()->create());
+        $this->actingAs($user = User::factory()->withOwnedAccount()->create());
 
-        $user->switchLocation($user->ownedLocations()->first());
+        $location = Location::factory()->create();
+
+        $location->users()->attach(
+            $user,
+            ['role' => 'admin']
+        );
+
+        $user->switchLocation($location);
 
         $absentType = $user->allLocations()->first()->absentTypes()->create([
             'title' => 'Illness',
@@ -33,7 +41,6 @@ class DeleteAbsenceTest extends TestCase
 
         $absentType->users()->sync($user);
 
-
         $absence = $user->absences()->create([
             'location_id' => $user->allLocations()->first()->id,
             'vacation_days' => 2,
@@ -44,8 +51,6 @@ class DeleteAbsenceTest extends TestCase
             'absence_type_id' => 1,
         ]);
 
-
-        // dd($user->currentLocation);
         Livewire::test(AbsenceManager::class, ['employee' => $user])->set([
             'absenceIdBeingRemoved' => $absence->id
         ])->call('removeAbsence');

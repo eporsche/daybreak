@@ -17,7 +17,6 @@ class CreateLocationTest extends TestCase
         $this->actingAs(
             $user = User::factory()
                 ->withOwnedAccount()
-                ->withOwnedLocation()
                 ->create()
         );
 
@@ -31,6 +30,5 @@ class CreateLocationTest extends TestCase
             ->call('confirmAddLocation');
 
         $this->assertEquals('Test Location', $user->fresh()->ownedLocations()->latest('id')->first()->name);
-        $this->assertCount(2, $user->fresh()->ownedLocations);
     }
 }

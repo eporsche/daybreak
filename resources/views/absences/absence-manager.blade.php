@@ -103,9 +103,8 @@
         </div>
     </div>
     <div class="flex flex-row mb-4">
-
         <div class="flex justify-end flex-1">
-            @can('addAbsence', [App\Model\Absence::class, $this->employee->currentLocation])
+            @can('addAbsence', [App\Model\Absence::class, $this->managingAbsenceForId, $this->user->currentLocation])
                 <x-jet-button class="py-3 px-4 " wire:click="openAbsenceModal" wire:loading.attr="disabled">
                     {{ __('Add Absence') }}
                 </x-jet-button>
@@ -145,13 +144,13 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @can('filterAbsences',  [App\Models\Absence::class, $employee->currentLocation])
+                        @can('filterAbsences',  [App\Models\Absence::class, $this->user->currentLocation])
                             <tr class="bg-white">
                                 <td>
                                     <x-multiple-select
                                         wire:model="employeeFilter"
                                         trackBy="id"
-                                        :options="$employeeOptions"
+                                        :options="$employeeMultipleSelectOptions"
                                     />
                                 </td>
                                 <td colspan="7">
@@ -184,7 +183,7 @@
                                 </span>
                             </td>
                             <td>
-                                @if(Gate::check('approveAbsence',  [App\Model\Absence::class, $this->employee->currentLocation]) && !$absence->isConfimred())
+                                @if(Gate::check('approveAbsence',  [App\Model\Absence::class, $this->user->currentLocation]) && !$absence->isConfimred())
                                     <x-jet-button id="{{ md5($absence) }}" wire:click="approveAbsence({{ $absence->id }})" wire:loading.attr="disabled">
                                         {{ __('Approve') }}
                                     </x-jet-button>
@@ -213,9 +212,15 @@
         <x-slot name="title">
             {{ __('Add absence') }}
         </x-slot>
-
         <x-slot name="content">
             <div class="grid grid-cols-1" x-data="{ open: @entangle('hideTime'), details: @entangle('hideDetails') }">
+                @can('manageAbsence', [App\Model\Absence::class, $this->user->currentLocation])
+                    <div class="mt-2">
+                        <x-jet-label for="type" value="{{ __('Choose Employee') }}" />
+                        <x-simple-select wire:model="managingAbsenceForId" id="managingAbsenceFor" :options="$employeeSimpleSelectOptions"/>
+                        <x-jet-input-error for="managing_absence_for" class="mt-2" />
+                    </div>
+                @endcan
                 <div class="mt-2">
                     <x-jet-label for="type" value="{{ __('Absence Type') }}" />
                     <x-simple-select wire:model="addAbsenceForm.absence_type_id" id="type" :options="$absenceTypes"/>

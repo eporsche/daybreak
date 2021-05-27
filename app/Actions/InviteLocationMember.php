@@ -18,8 +18,6 @@ class InviteLocationMember implements InvitesLocationMembers
 
         $this->validate($location, $email, $role);
 
-        // InvitinglocationMember::dispatch($location, $email, $role);
-
         $invitation = $location->locationInvitations()->create([
             'email' => $email,
             'role' => $role,

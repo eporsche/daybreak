@@ -185,4 +185,9 @@ trait HasLocations
                (Str::endsWith($permission, ':create') && in_array('*:create', $permissions)) ||
                (Str::endsWith($permission, ':update') && in_array('*:update', $permissions));
     }
+
+    public function isLocationAdmin($location)
+    {
+        return $this->hasLocationRole($location, 'admin');
+    }
 }

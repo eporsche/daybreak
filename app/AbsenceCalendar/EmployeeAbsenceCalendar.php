@@ -29,7 +29,6 @@ class EmployeeAbsenceCalendar implements AbsenceCalendar
             $period->getStartDate()->startOfDay(),
             $period->getEndDate()->endOfDay()
         );
-
         $this->calculateDays();
     }
 
@@ -113,7 +112,6 @@ class EmployeeAbsenceCalendar implements AbsenceCalendar
             $diffInHours = BigDecimal::of($date->startOfDay()->diffInMinutes($this->endDay))
                 ->dividedBy('60', 2, RoundingMode::HALF_EVEN);
         }
-
         return $diffInHours;
     }
 

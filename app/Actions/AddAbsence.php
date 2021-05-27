@@ -7,9 +7,9 @@ use App\Models\Absence;
 use App\Models\Location;
 use Carbon\CarbonPeriod;
 use App\Models\AbsenceType;
-use Illuminate\Support\Arr;
 use App\Contracts\AddsAbsences;
 use App\Formatter\DateFormatter;
+use Laravel\Jetstream\Jetstream;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -29,11 +29,12 @@ class AddAbsence implements AddsAbsences
         $this->dateFormatter = app(DateFormatter::class);
     }
 
-    public function add(User $employee, array $data): void
+    public function add(User $user, Location $location, int $managingAbsenceForId, array $data)
     {
-        Gate::forUser($employee)->authorize('addAbsence', [
+        Gate::forUser($user)->authorize('addAbsence', [
             Absence::class,
-            $employee->currentLocation
+            $managingAbsenceForId,
+            $location
         ]);
 
         Validator::make($data, [
@@ -50,7 +51,6 @@ class AddAbsence implements AddsAbsences
             'full_day' => ['required', 'boolean']
         ])->validateWithBag('addAbsence');
 
-
         $startsAt = $this->dateFormatter->timeStrToCarbon($data['starts_at']);
         $endsAt = $this->dateFormatter->timeStrToCarbon($data['ends_at']);
 
@@ -58,21 +58,22 @@ class AddAbsence implements AddsAbsences
         if (isset($data['full_day']) && $data['full_day']) {
             $startsAt = $startsAt->copy()->startOfDay();
             $endsAt = $endsAt->copy()->endOfDay();
-
         }
+
+        $addingAbsenceFor = Jetstream::findUserByIdOrFail($managingAbsenceForId);
 
         $calculator = new AbsenceCalculator(
             new EmployeeAbsenceCalendar(
-                $employee,
-                $employee->currentLocation,
+                $addingAbsenceFor,
+                $location,
                 new CarbonPeriod($startsAt, $endsAt)
             ),
             AbsenceType::findOrFail($data['absence_type_id'])
         );
 
-        $absence = $employee->absences()->create(
+        $absence = $addingAbsenceFor->absences()->create(
             [
-                'location_id' => $employee->currentLocation->id,
+                'location_id' => $location->id,
                 'vacation_days' => $calculator->sumVacationDays(),
                 'paid_hours' => $calculator->sumPaidHours(),
                 'starts_at' => $startsAt,
@@ -80,10 +81,8 @@ class AddAbsence implements AddsAbsences
             ] + $data
         );
 
-         $admins = User::all()->filter
-            ->hasLocationRole($employee->currentLocation, 'admin');
-
-         Mail::to($admins)
-            ->send(new NewAbsenceWaitingForApproval($absence, $employee));
+        Mail::to(
+            $location->allUsers()->filter->hasLocationRole($location, 'admin')
+        )->send(new NewAbsenceWaitingForApproval($absence, $addingAbsenceFor));
     }
 }
