@@ -14,3 +14,4 @@ tinker.php
 .idea
 /public/js/app.js
 /public/css/app.css
+/composer.lock
