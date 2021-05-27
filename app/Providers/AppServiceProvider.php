@@ -45,6 +45,7 @@ use App\Actions\RemoveVacationEntitlement;
 use Carbon\Exceptions\InvalidTypeException;
 use App\Actions\TransferVacationEntitlement;
 use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -66,6 +67,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Carbon::setlocale(config('app.locale'));
+
+        Schema::defaultStringLength(191);
 
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'daybreak');
         $this->configureComponents();
