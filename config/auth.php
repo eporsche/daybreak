@@ -18,6 +18,23 @@ return [
         'passwords' => 'users',
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Administration default
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
+    'admin' => [
+        'admin_auth_email' => env('ADMIN_AUTH_EMAIL', 'admin@daybreak.corp'),
+        'admin_auth_password' => env('ADMIN_AUTH_PASSWORD', 'admin1234'),
+        'role' => 'god',
+    ],
+
+
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Illuminate\Validation\Rules\Password;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -20,7 +21,7 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Create a newly registered user.
      *
-     * @param  array  $input
+     * @param array $input
      * @return \App\Models\User
      */
     public function create(array $input)
@@ -28,7 +29,11 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => $this->passwordRules(),
+            'password' => [
+                'required',
+                'confirmed',
+                 Password::min(8)->letters()->mixedCase()->numbers()->uncompromised(2),
+            ],
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
         ])->validate();
 
@@ -81,14 +86,14 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Create the default Location.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
      * @return void
      */
     public function createAccount(User $user)
     {
         $account = Account::forceCreate([
             'owned_by' => $user->id,
-            'name' => explode(' ', $user->name, 2)[0]."'s Account",
+            'name' => explode(' ', $user->name, 2)[0] . "'s Account",
         ]);
 
         $user->ownedAccount()->save($account);
@@ -99,14 +104,14 @@ class CreateNewUser implements CreatesNewUsers
     /**
      * Create the default Location.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
      * @return Location
      */
     public function createLocation(User $user)
     {
         $location = new Location([
             'owned_by' => $user->id,
-            'name' => explode(' ', $user->name, 2)[0]."'s Location",
+            'name' => explode(' ', $user->name, 2)[0] . "'s Location",
             'locale' => config('app.locale'),
             'time_zone' => config('app.timezone')
         ]);
@@ -153,7 +158,7 @@ class CreateNewUser implements CreatesNewUsers
     public function createDefaultTargetHours($user)
     {
         $user->targetHours()->create([
-            "start_date" =>  Carbon::today(),
+            "start_date" => Carbon::today(),
             "hours_per" => "week",
             "target_hours" => 40,
             "target_limited" => false,

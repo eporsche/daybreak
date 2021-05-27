@@ -15,12 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        app(CreatesNewUsers::class)->create([
-            'name' => 'Admin User',
-            'email' => 'admin@daybreak.corp',
-            'password' => 'admin1234',
-            'password_confirmation' => 'admin1234',
-            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? true : false,
+        $this->call([
+            UsersSeeder::class,
         ]);
     }
 }
