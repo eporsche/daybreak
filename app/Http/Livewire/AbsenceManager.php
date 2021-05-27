@@ -10,14 +10,18 @@ use App\Models\AbsenceType;
 use Livewire\WithPagination;
 use App\Contracts\AddsAbsences;
 use App\Formatter\DateFormatter;
+use Laravel\Jetstream\Jetstream;
 use App\Contracts\RemovesAbsence;
 use App\Contracts\ApprovesAbsence;
+use Illuminate\Support\Facades\Auth;
 use App\AbsenceCalendar\AbsenceCalculator;
 use App\AbsenceCalendar\EmployeeAbsenceCalendar;
+use App\Daybreak;
+use App\Traits\HasUser;
 
 class AbsenceManager extends Component
 {
-    use WithPagination;
+    use WithPagination, HasUser;
 
     public $absenceModal = false;
 
@@ -29,7 +33,15 @@ class AbsenceManager extends Component
     public $minutes;
 
     public $location;
-    public $employee;
+
+    /**
+     * The user that is currently having its absence managed.
+     *
+     * @var mixed
+     */
+    public $managingAbsenceForId;
+
+    public $locationMembers;
 
     public $startDate;
     public $startHours = 9;
@@ -73,14 +85,16 @@ class AbsenceManager extends Component
 
     public $employeeFilter = [];
 
-    public $employeeOptions;
+    public $employeeSimpleSelectOptions;
+
+    public $employeeMultipleSelectOptions;
 
     public function updated()
     {
         //TODO set to start of day and end of day if full day is activated...
         $calendar = new EmployeeAbsenceCalendar(
-            $this->employee,
-            $this->employee->currentLocation,
+            $this->user,
+            $this->user->currentLocation,
             new CarbonPeriod(
                 $this->startTimeStr(),
                 $this->endTimeStr()
@@ -98,8 +112,8 @@ class AbsenceManager extends Component
     {
         //TODO set to start of day and end of day if full day is activated...
         $calendar = new EmployeeAbsenceCalendar(
-            $this->employee,
-            $this->employee->currentLocation,
+            $this->user,
+            $this->user->currentLocation,
             new CarbonPeriod(
                 $this->startTimeStr(),
                 $this->endTimeStr()
@@ -113,20 +127,21 @@ class AbsenceManager extends Component
         $this->paidHours = $calculator->sumPaidHours();
     }
 
-    public function mount(User $employee, DateFormatter $dateFormatter)
+    public function mount(DateFormatter $dateFormatter)
     {
-        $this->employee = $employee;
-        $this->absenceTypes = $employee->absenceTypesForLocation($employee->currentLocation);
+        $this->absenceTypes = $this->user->absenceTypesForLocation($this->user->currentLocation);
         $this->hours = range(0,23);
         $this->minutes = range(0,59);
 
-        $this->employeeOptions = $employee
-            ->currentLocation
-            ->allUsers()->pluck('name', 'id')
-            ->mapToMultipleSelect();
+        $employeeSelectCollection = $this->user->currentLocation->allUsers()->pluck('name', 'id');
+
+        $this->employeeSimpleSelectOptions = $employeeSelectCollection->toArray();
+        $this->employeeMultipleSelectOptions = $employeeSelectCollection->mapToMultipleSelect();
+
+        $this->managingAbsenceForId = (string)$this->user->id;
 
         $this->resetFormFields();
-        $this->buildVacationInfoPanel($employee, $dateFormatter);
+        $this->buildVacationInfoPanel($this->user, $dateFormatter);
     }
 
     protected function buildVacationInfoPanel($employee, $dateFormatter)
@@ -150,13 +165,6 @@ class AbsenceManager extends Component
                 ]);
             }
         }
-    }
-
-    public function switchEmployee()
-    {
-        $this->employee = $this->emyployee->currentLocation->allUsers()->first(function ($user) {
-              return $user->id === (int)$this->employeeIdToBeSwitched;
-        });
     }
 
     public function openAbsenceModal()
@@ -191,17 +199,22 @@ class AbsenceManager extends Component
     {
         $this->clearValidation();
 
-        $this->addAbsenceForm['starts_at'] = $this->startTimeStr();
+        $this->addAbsenceForm = array_merge($this->addAbsenceForm, [
+            'starts_at' => $this->startTimeStr(),
+            'ends_at' => $this->endTimeStr(),
+            'full_day' => $this->hideTime
+        ]);
 
-        $this->addAbsenceForm['ends_at'] = $this->endTimeStr();
-
-        $this->addAbsenceForm['full_day'] = $this->hideTime;
-
-        $adder->add($this->employee, $this->addAbsenceForm);
+        $adder->add(
+            $this->user,
+            $this->user->currentLocation,
+            $this->managingAbsenceForId,
+            $this->addAbsenceForm
+        );
 
         $this->resetFormfields();
 
-        $this->employee = $this->employee->fresh();
+        $this->user = $this->user->fresh();
 
         $this->absenceModal = false;
     }
@@ -219,12 +232,13 @@ class AbsenceManager extends Component
     {
         if (!empty($absenceId)) {
             $approver->approve(
-                $this->employee,
+                $this->user,
+                $this->user->currentLocation,
                 $absenceId
             );
         }
 
-        $this->employee = $this->employee->fresh();
+        $this->user = $this->user->fresh();
     }
 
     public function confirmAbsenceRemoval($absenceId)
@@ -237,30 +251,30 @@ class AbsenceManager extends Component
     public function removeAbsence(RemovesAbsence $remover)
     {
         $remover->remove(
-            $this->employee,
+            $this->user,
+            $this->user->currentLocation,
             $this->absenceIdBeingRemoved
         );
 
         $this->confirmingAbsenceRemoval = false;
 
         $this->absenceIdBeingRemoved = null;
-
     }
 
     public function render()
     {
-        return view('livewire.absence', [
+        return view('absences.absence-manager', [
             'calculatedDays' => $this->calculatedDays,
-            'absences' => $this->employee->currentLocation
+            'absences' => $this->user->currentLocation
                 ->absences()
                 ->orderBy('status','DESC')
                 ->latest()
                 ->when(
-                    $this->employee->hasLocationPermission($this->employee->currentLocation, 'filterAbsences'),
+                    $this->user->hasLocationPermission($this->user->currentLocation, 'filterAbsences'),
                     fn($query) => $query->filterEmployees(
                         collect($this->employeeFilter)->pluck('id')->toArray()
                     ),
-                    fn($query) => $query->filterEmployees([$this->employee->id])
+                    fn($query) => $query->filterEmployees([$this->user->id])
                 )
                 ->paginate(10)
         ]);

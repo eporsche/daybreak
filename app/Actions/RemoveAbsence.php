@@ -2,20 +2,25 @@
 
 namespace App\Actions;
 
+use DB;
 use App\Models\User;
-use Illuminate\Support\Facades\Gate;
+use App\Models\Location;
 use App\Mail\AbsenceRemoved;
 use App\Contracts\RemovesAbsence;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
-use DB;
 
 class RemoveAbsence implements RemovesAbsence
 {
-    public function remove($user, $removesAbsenceId)
+    public function remove(User $user, Location $location, $removesAbsenceId)
     {
-        Gate::forUser($user)->authorize('removeAbsence', $user->currentLocation);
+        tap($location->absences()->whereKey($removesAbsenceId)->first(), function ($absence) use ($user, $location) {
 
-        tap($user->currentLocation->absences()->whereKey($removesAbsenceId)->first(), function ($absence) {
+            Gate::forUser($user)->authorize('removeAbsence', [
+                Absence::class,
+                $absence,
+                $location
+            ]);
 
             $absence->delete();
 

@@ -31,12 +31,12 @@ class LocationPolicy
      */
     public function addLocationMember(User $user, Location $location)
     {
-        return $user->ownsLocation($location);
+        return $user->hasLocationPermission($location, 'addLocationMember');
     }
 
     public function updateLocationMember(User $user, Location $location)
     {
-        return $user->ownsLocation($location);
+        return $user->hasLocationPermission($location, 'updateLocationMember');
     }
 
     /**
@@ -52,25 +52,25 @@ class LocationPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Account  $account
+     * @param  \App\Models\Location  $location
      * @return mixed
      */
     public function update(User $user, Location $location)
     {
-        return $user->ownsLocation($location);
+        return $user->hasLocationPermission($location, 'updateLocation');
     }
 
     public function removeLocationMember(User $user, Location $location)
     {
-        return $user->ownsLocation($location);
+        return $user->hasLocationPermission($location,  'removeLocationMember');
     }
 
     public function addLocationAbsentType(User $user, Location $location)
     {
-        return $user->ownsLocation($location);
+        return $user->hasLocationPermission($location,  'addLocationAbsentType');
     }
 
     public function addDefaultRestingTime(User $user, Location $location)

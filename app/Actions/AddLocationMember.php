@@ -117,9 +117,9 @@ class AddLocationMember implements AddsLocationMembers
     }
 
     /**
-     * Ensure that the user is not already on the team.
+     * Ensure that the user is not already on the location.
      *
-     * @param  mixed  $team
+     * @param  mixed  $location
      * @param  string  $email
      * @return \Closure
      */
@@ -129,7 +129,7 @@ class AddLocationMember implements AddsLocationMembers
             $validator->errors()->addIf(
                 $location->hasUserWithEmail($email),
                 'email',
-                __('This user already belongs to the team.')
+                __('This user already belongs to the location.')
             );
         };
     }

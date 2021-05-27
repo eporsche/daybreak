@@ -68,7 +68,7 @@ class EvaluationTest extends TestCase
          */
         $action = app(AddsAbsences::class);
 
-        $action->add($this->user, [
+        $action->add($this->user, $this->location, $this->user->id, [
             'absence_type_id' => $absenceType->id,
             'starts_at' => '20.11.2020 00:00',
             'ends_at' => '20.11.2020 00:00',
@@ -90,6 +90,7 @@ class EvaluationTest extends TestCase
 
         $approver->approve(
             $this->user,
+            $this->location,
             Absence::first()->id
         );
 
@@ -129,11 +130,6 @@ class EvaluationTest extends TestCase
             '0',
             (string) $report->reportRows->first()->generate()->diff()
         );
-    }
-
-    public function test_can_submit_illness()
-    {
-        //
     }
 
     //Überstunden

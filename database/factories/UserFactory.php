@@ -36,31 +36,6 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the user should be owner of a location.
-     *
-     * @return $this
-     */
-    public function withOwnedLocation()
-    {
-        return $this->has(
-            Location::factory()
-                ->state(
-                    function (array $attributes, User $user) {
-                        if (is_null($user->ownedAccount)) {
-                            throw new \LogicException("withOwnedAccount should be called before withOwnedLocation");
-                        }
-
-                        return [
-                            'name' => $user->name.'\'s Location',
-                            'owned_by' => $user->id,
-                            'account_id' =>  $user->ownedAccount->id
-                        ];
-                    }),
-            'ownedLocations'
-        );
-    }
-
-    /**
      * Indicate that the user should have own an account.
      *
      * @return $this

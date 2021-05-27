@@ -2,7 +2,7 @@
     "Location administrator": "Standortadministrator",
     "Location administrators can perform updates on a location.": "Standortadministratoren können Aktualisierungen an einem Standort durchführen.",
     "Employee": "Mitarbeiter",
-    "Employees have can create new working hours.": "Mitarbeiter können neue Arbeitszeiten schaffen.",
+    "Employees can create new working hours.": "Mitarbeiter können neue Arbeitszeiten schaffen.",
     "Great! You have accepted the invitation to join the :location team.": "Großartig! Sie haben die Einladung zum :location-Team angenommen.",
     "Target to zero (to be implemented)": "Ziel auf Null (zu implementieren)",
     "The target hours will be set to zero in the evaluation.": "Die Zielstunden werden in der Auswertung auf Null gesetzt.",
@@ -379,5 +379,6 @@
     "Pause from x hours": "Pause ab x Stunden",
     "Add default resting time": "Automatische Pausenzeit hinzufügen",
     "Remove Default Pause Time": "Automatische Pausenzeit löschen",
-    "Are you sure you would like to remove the default pause time from this location?": "Sind Sie sicher das Sie die automatische Pausen-Zeit von diesem Standort löschen möchten?"
+    "Are you sure you would like to remove the default pause time from this location?": "Sind Sie sicher das Sie die automatische Pausen-Zeit von diesem Standort löschen möchten?",
+    "Choose Employee": "Mitarbeiter auswählen"
 }

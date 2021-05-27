@@ -88,8 +88,8 @@ class AddTimeTracking implements AddsTimeTrackings
         }
     }
 
-    protected function ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt) {
-
+    protected function ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt)
+    {
         if ($employee->timeTrackings()->where(function ($query) use ($startsAt, $endsAt) {
             $query->whereBetween('starts_at', [$startsAt, $endsAt])
                 ->orWhereBetween('ends_at', [$startsAt, $endsAt])

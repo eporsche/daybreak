@@ -8,8 +8,6 @@ class AbsenceController extends Controller
 {
     public function __invoke(Request $request)
     {
-        return view('absences.index', [
-            'employee' => $request->user()
-        ]);
+        return view('absences.index');
     }
 }

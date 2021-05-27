@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use Livewire\Livewire;
+use App\Models\Location;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Http\Livewire\Locations\LocationMemberManager;
 
@@ -17,50 +18,52 @@ class UpdateLocationMemberRoleTest extends TestCase
         $this->actingAs(
             $user = User::factory()
                 ->withOwnedAccount()
-                ->withOwnedLocation()
                 ->create()
         );
 
-        $user->switchLocation($user->ownedLocations()->first());
+        $location = $user->ownedLocations()
+            ->save(Location::factory()->make());
 
-        $user->currentLocation->users()->attach(
-            $otherUser = User::factory()->create(), ['role' => 'admin']
+        $location->users()->attach(
+            $otherUser = User::factory()->create(),
+            ['role' => 'admin']
         );
 
-        $component = Livewire::test(LocationMemberManager::class, ['location' => $user->currentLocation])
-                        ->set('managingRoleFor', $otherUser)
-                        ->set('currentRole', 'employee')
-                        ->call('updateRole');
+        $component = Livewire::test(LocationMemberManager::class, ['location' => $location->fresh()])
+            ->set('managingRoleFor', $otherUser)
+            ->set('currentRole', 'employee')
+            ->call('updateRole');
 
         $this->assertTrue($otherUser->fresh()->hasLocationRole(
-            $user->currentLocation->fresh(),
+            $location,
             'employee'
         ));
     }
 
-    public function test_only_location_owner_can_update_location_owner_roles()
+    public function test_only_location_admin_can_update_location_owner_roles()
     {
         $user = User::factory()
             ->withOwnedAccount()
-            ->withOwnedLocation()
             ->create();
 
-        $user->switchLocation($user->ownedLocations()->first());
+        $location = $user->ownedLocations()
+            ->save(Location::factory()->make());
 
-        $user->currentLocation->users()->attach(
-            $otherUser = User::factory()->create(), ['role' => 'admin']
+        $location->users()->attach(
+            $otherUser = User::factory()->create(),
+            ['role' => 'employee']
         );
 
         $this->actingAs($otherUser);
 
-        $component = Livewire::test(LocationMemberManager::class, ['location' => $user->currentLocation])
+        $component = Livewire::test(LocationMemberManager::class, ['location' => $location->fresh()])
                         ->set('managingRoleFor', $otherUser)
-                        ->set('currentRole', 'editor')
+                        ->set('currentRole', 'admin')
                         ->call('updateRole')
                         ->assertStatus(403);
 
-        $this->assertTrue($otherUser->fresh()->hasLocationRole(
-            $user->currentLocation->fresh(), 'admin'
-        ));
+        $this->assertTrue(
+            $otherUser->fresh()->hasLocationRole($location, 'employee')
+        );
     }
 }

@@ -37,11 +37,14 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     protected function configurePermissions()
     {
-        // Jetstream::defaultApiTokenPermissions(['read']);
         Jetstream::role('admin', __('Location administrator'), [
-            'addAbsence',
+            'updateLocation',
+            'addLocationMember',
+            'updateLocationMember',
+            'removeLocationMember',
+            'addLocationAbsentType',
+            'manageAbsence',
             'approveAbsence',
-            'removeAbsence',
             'filterAbsences',
             'addDefaultRestingTime',
             'viewAnyTimeTracking',
@@ -52,8 +55,6 @@ class JetstreamServiceProvider extends ServiceProvider
         ])->description(__('Location administrators can perform updates on a location.'));
 
         Jetstream::role('employee', __('Employee'), [
-            'addAbsence',
-            'removeAbsence'
-        ])->description(__('Employees have can create new working hours.'));
+        ])->description(__('Employees can create new working hours.'));
     }
 }

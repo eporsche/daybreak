@@ -27,7 +27,7 @@ class ApproveAbscence implements ApprovesAbsence
      * @param  int  $absenceId
      * @return void
      */
-    public function approve(User $user, $absenceId)
+    public function approve(User $user, Location $location, $absenceId)
     {
         Validator::make([
             'absence_id' => $absenceId
@@ -57,6 +57,7 @@ class ApproveAbscence implements ApprovesAbsence
 
         //TODO: distribute absence days between available vacation entitlements
         $currentVacationEntitlement = $absence->employee->currentVacationEntitlement();
+
         if (!isset($currentVacationEntitlement) || !$currentVacationEntitlement->hasEnoughUnusedVacationDays($absence->vacation_days)) {
             throw ValidationException::withMessages([
                 'error' => [__('Sorry, there is no fitting vacation entitlement for this absence.')],

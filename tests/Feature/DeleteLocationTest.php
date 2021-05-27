@@ -18,7 +18,6 @@ class DeleteLocationTest extends TestCase
         $this->actingAs(
             $user = User::factory()
                 ->withOwnedAccount()
-                ->withOwnedLocation()
                 ->create()
         );
 
@@ -30,8 +29,7 @@ class DeleteLocationTest extends TestCase
             ['role' => 'test-role']
         );
 
-        $component = Livewire::test(
-            LocationManager::class, [
+        Livewire::test(LocationManager::class, [
             'account' => $user->ownedAccount,
             'employee' => $user
         ])->set([
