@@ -12,3 +12,5 @@ npm-debug.log
 yarn-error.log
 tinker.php
 .idea
+/public/js/app.js
+/public/css/app.css
