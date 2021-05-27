@@ -49,10 +49,10 @@ class Report extends Component
         $this->employeeSwitcher = $employee->currentLocation->allUsers()->pluck('name','id')->toArray();
         $this->dateFilter = [
             'fromDate' =>
-                $employee->date_of_employment->gt(Carbon::now()->startOfMonth()) ?
+                $employee->date_of_employment->gt(now()->startOfMonth()) ?
                 $dateFormatter->formatDateForView($employee->date_of_employment) :
-                $dateFormatter->formatDateForView(Carbon::now()->startOfMonth()),
-            'toDate' => $dateFormatter->formatDateForView(Carbon::now()->endOfMonth())
+                $dateFormatter->formatDateForView(now()->startOfMonth()),
+            'toDate' => $dateFormatter->formatDateForView(now()->endOfMonth())
         ];
 
         $this->filterReport(app(FiltersEvaluation::class));
@@ -69,7 +69,7 @@ class Report extends Component
 
     public function filterUntilToday(DateFormatter $dateFormatter)
     {
-        $this->dateFilter['toDate'] = $dateFormatter->formatDateForView(Carbon::now()->endOfDay());
+        $this->dateFilter['toDate'] = $dateFormatter->formatDateForView(now()->endOfDay());
 
         $this->emit('changedDateFilter');
     }

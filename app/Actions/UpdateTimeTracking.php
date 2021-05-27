@@ -26,10 +26,10 @@ class UpdateTimeTracking implements UpdatesTimeTracking
     {
         Validator::make(array_merge($data, [
             'time_tracking_id' => $timeTrackingId
-        ]),[
-            'starts_at' => ['required', $this->dateFormatter->dateTimeFormatRule() ],
-            'ends_at' => ['required', $this->dateFormatter->dateTimeFormatRule() , 'after_or_equal:starts_at'],
-            'description' => ['nullable', 'string'],
+        ]), [
+            'starts_at'        => ['required', $this->dateFormatter->dateTimeFormatRule()],
+            'ends_at'          => ['required', $this->dateFormatter->dateTimeFormatRule(), 'after_or_equal:starts_at'],
+            'description'      => ['nullable', 'string'],
             'time_tracking_id' => ['required', 'exists:time_trackings,id'],
         ])->validateWithBag('addTimeTracking');
 
@@ -52,8 +52,8 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         DB::transaction(function () use ($trackedTime, $startsAt, $endsAt, $data, $pauseTimes) {
             $trackedTime->update(array_merge([
                 'starts_at' => $startsAt,
-                'ends_at' => $endsAt,
-            ], Arr::except($data, ['starts_at','ends_at','time_tracking_id'])));
+                'ends_at'   => $endsAt,
+            ], Arr::except($data, ['starts_at', 'ends_at', 'time_tracking_id'])));
 
             $trackedTime->pauseTimes->each->delete();
 
@@ -78,9 +78,9 @@ class UpdateTimeTracking implements UpdatesTimeTracking
 
     protected function ensureDateIsNotTooFarInTheFuture($endsAt)
     {
-        if ($endsAt->isAfter(Carbon::now()->endOfDay())) {
+        if ($endsAt->isAfter(now()->endOfDay())) {
             throw ValidationException::withMessages([
-                'date' => [ __('Date should not be in the future.') ],
+                'date' => [__('Date should not be in the future.')],
             ])->errorBag('addTimeTracking');
         }
     }
@@ -90,24 +90,25 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         if ($employee->date_of_employment) {
             if ($startsAt->isBefore($employee->date_of_employment)) {
                 throw ValidationException::withMessages([
-                    'date' => [ __('Date should not before employment date.') ],
+                    'date' => [__('Date should not before employment date.')],
                 ])->errorBag('addTimeTracking');
             }
         }
     }
 
-    protected function ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt, $timeTrackingId) {
+    protected function ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt, $timeTrackingId)
+    {
         if ($employee->timeTrackings()->where(function ($query) use ($startsAt, $endsAt, $timeTrackingId) {
-            $query->whereBetween('starts_at', [$startsAt, $endsAt])
-                ->orWhereBetween('ends_at', [$startsAt, $endsAt])
-                ->orWhere(function ($query) use ($startsAt, $endsAt) {
-                    return $query->where('ends_at','>',$endsAt)
-                        ->where('starts_at','<', $startsAt);
-                });
-        })->where('id', '!=', [$timeTrackingId])->count() > 0
+                $query->whereBetween('starts_at', [$startsAt, $endsAt])
+                    ->orWhereBetween('ends_at', [$startsAt, $endsAt])
+                    ->orWhere(function ($query) use ($startsAt, $endsAt) {
+                        return $query->where('ends_at', '>', $endsAt)
+                            ->where('starts_at', '<', $startsAt);
+                    });
+            })->where('id', '!=', [$timeTrackingId])->count() > 0
         ) {
             throw ValidationException::withMessages([
-                'date' => [ __('The given time period overlapps with an existing entry.') ],
+                'date' => [__('The given time period overlapps with an existing entry.')],
             ])->errorBag('addTimeTracking');
         }
     }
@@ -116,7 +117,7 @@ class UpdateTimeTracking implements UpdatesTimeTracking
     {
         if ($period->count() <= 1) {
             throw ValidationException::withMessages([
-                'pause' => [ __('Given pause time is too small.') ],
+                'pause' => [__('Given pause time is too small.')],
             ])->errorBag('addTimeTracking');
         }
     }
@@ -125,7 +126,7 @@ class UpdateTimeTracking implements UpdatesTimeTracking
     {
         if (!$period->startsAfterOrAt($startsAt) || !$period->endsBeforeOrAt($endsAt)) {
             throw ValidationException::withMessages([
-                'pause' => [ __('Pause is not between working hours.') ],
+                'pause' => [__('Pause is not between working hours.')],
             ])->errorBag('addTimeTracking');
         }
     }
@@ -139,7 +140,7 @@ class UpdateTimeTracking implements UpdatesTimeTracking
              */
             if ($period->overlaps($needle)) {
                 throw ValidationException::withMessages([
-                    'pause' => [ __('Overlapping pause time detected.') ],
+                    'pause' => [__('Overlapping pause time detected.')],
                 ])->errorBag('addTimeTracking');
             }
         }

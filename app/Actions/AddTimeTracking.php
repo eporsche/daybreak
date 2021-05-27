@@ -70,7 +70,7 @@ class AddTimeTracking implements AddsTimeTrackings
 
     protected function ensureDateIsNotTooFarInTheFuture($endsAt)
     {
-        if ($endsAt->isAfter(Carbon::now()->endOfDay())) {
+        if ($endsAt->isAfter(now()->endOfDay())) {
             throw ValidationException::withMessages([
                 'date' => [ __('Date should not be in the future.') ],
             ])->errorBag('addTimeTracking');
