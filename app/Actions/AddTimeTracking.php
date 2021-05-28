@@ -2,15 +2,20 @@
 
 namespace App\Actions;
 
+use DB;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Location;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Arr;
+use App\Models\TimeTracking;
 use App\Formatter\DateFormatter;
+use Laravel\Jetstream\Jetstream;
 use App\Facades\PeriodCalculator;
 use App\Contracts\AddsTimeTrackings;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use DB;
 
 class AddTimeTracking implements AddsTimeTrackings
 {
@@ -21,8 +26,14 @@ class AddTimeTracking implements AddsTimeTrackings
         $this->dateFormatter = $dateFormatter;
     }
 
-    public function add($employee, array $data, array $pauseTimes)
+    public function add(User $user, Location $location, int $managingTimeTrackingForId, array $data, array $pauseTimes)
     {
+        Gate::forUser($user)->authorize('addTimeTracking', [
+            TimeTracking::class,
+            $managingTimeTrackingForId,
+            $location
+        ]);
+
         Validator::make($data,[
             'starts_at' => ['required', $this->dateFormatter->dateTimeFormatRule() ],
             'ends_at' => ['required', $this->dateFormatter->dateTimeFormatRule() , 'after_or_equal:starts_at'],
@@ -32,9 +43,11 @@ class AddTimeTracking implements AddsTimeTrackings
         $startsAt = $this->dateFormatter->timeStrToCarbon($data['starts_at']);
         $endsAt = $this->dateFormatter->timeStrToCarbon($data['ends_at']);
 
-        $this->ensureDateIsNotBeforeEmploymentDate($employee, $startsAt);
+        $addingTimeTrackingFor = Jetstream::findUserByIdOrFail($managingTimeTrackingForId);
+
+        $this->ensureDateIsNotBeforeEmploymentDate($addingTimeTrackingFor, $startsAt);
         $this->ensureDateIsNotTooFarInTheFuture($endsAt);
-        $this->ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt);
+        $this->ensureGivenTimeIsNotOverlappingWithExisting($addingTimeTrackingFor, $startsAt, $endsAt);
 
         $this->validatePauseTimes(
             PeriodCalculator::fromTimesArray($pauseTimes),
@@ -42,9 +55,9 @@ class AddTimeTracking implements AddsTimeTrackings
             $endsAt
         );
 
-        DB::transaction(function () use ($employee, $startsAt, $endsAt, $data, $pauseTimes) {
-            $trackedTime = $employee->timeTrackings()->create(array_merge([
-                'location_id' => $employee->currentLocation->id,
+        DB::transaction(function () use ($addingTimeTrackingFor, $startsAt, $endsAt, $data, $pauseTimes, $location) {
+            $trackedTime = $addingTimeTrackingFor->timeTrackings()->create(array_merge([
+                'location_id' => $location->id,
                 'starts_at' => $startsAt,
                 'ends_at' => $endsAt,
 

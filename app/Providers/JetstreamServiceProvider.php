@@ -43,6 +43,8 @@ class JetstreamServiceProvider extends ServiceProvider
             'updateLocationMember',
             'removeLocationMember',
             'addLocationAbsentType',
+            'manageTimeTracking',
+            'updateTimeTracking',
             'manageAbsence',
             'approveAbsence',
             'filterAbsences',

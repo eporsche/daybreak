@@ -1,8 +1,9 @@
 @props([
     'hours',
     'minutes',
-    'employee',
+    'user',
     'pauseTimeForm',
+    'employeeSimpleSelectOptions' => [],
     'timeTrackingIdBeingUpdated' => null,
     'title' => __('Time Tracking'),
     'button' => __('Confirm')
@@ -19,8 +20,14 @@
             <x-jet-input-error for="time_tracking_id" class="mt-2" />
             <x-jet-input-error for="duration_in_minutes" class="mt-2" />
         </div>
-
         <div class="flex flex-col space-y-3">
+            @can('manageTimeTracking', [App\Model\TimeTracking::class, $user->currentLocation])
+                <div>
+                    <x-jet-label for="type" value="{{ __('Choose Employee') }}" />
+                    <x-simple-select wire:model="managingTimeTrackingForId" id="managingTimeTrackingFor" :options="$employeeSimpleSelectOptions"/>
+                    <x-jet-input-error for="managing_time_tracking_for" class="mt-2" />
+                </div>
+            @endcan
             <div>
                 <x-jet-label for="date" value="{{ __('Date') }}" />
                 <x-date-picker id="date" wire:model="timeTrackingForm.date" />
@@ -48,7 +55,7 @@
             </div>
 
             @if(App\Daybreak::hasProjectBillingFeature())
-                <x-dynamic-component component="project-form" :employee="$employee"/>
+                <x-dynamic-component component="project-form" :user="$user"/>
             @endif
 
             <div class="flex flex-col">

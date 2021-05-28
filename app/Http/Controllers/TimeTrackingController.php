@@ -13,8 +13,6 @@ class TimeTrackingController extends Controller
      */
     public function index(Request $request)
     {
-        return view('time_trackings.index', [
-            'employee' => $request->user()
-        ]);
+        return view('time_trackings.index');
     }
 }

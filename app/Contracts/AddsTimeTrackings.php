@@ -2,7 +2,10 @@
 
 namespace App\Contracts;
 
+use App\Models\User;
+use App\Models\Location;
+
 interface AddsTimeTrackings
 {
-    public function add($employee, array $array, array $pauseTimes);
+    public function add(User $user, Location $location, int $managingTimeTrackingForId, array $array, array $pauseTimes);
 }

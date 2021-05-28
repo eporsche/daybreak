@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\TimeTracking;
 
 use App\Daybreak;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Traits\HasUser;
 use Livewire\Component;
 use Illuminate\Support\Arr;
 use Livewire\WithPagination;
@@ -12,12 +13,13 @@ use App\Formatter\DateFormatter;
 use App\Contracts\AddsTimeTrackings;
 use App\Contracts\RemovesTimeTracking;
 use App\Contracts\UpdatesTimeTracking;
+use App\Http\Livewire\TrimAndNullEmptyStrings;
 use Daybreak\Project\Contracts\AddsTimeTrackingWithProjectInfo;
 use Daybreak\Project\Contracts\UpdatesTimeTrackingWithProjectInfo;
 
 class TimeTrackingManager extends Component
 {
-    use WithPagination, TrimAndNullEmptyStrings;
+    use WithPagination, TrimAndNullEmptyStrings, HasUser;
 
     /**
      * Indicates if the application is currently adding or editin time trackings
@@ -42,8 +44,6 @@ class TimeTrackingManager extends Component
 
     public $timeTrackingIdBeingUpdated = null;
 
-    public $employee;
-
     protected $listeners = ['changedTime' => 'updatePause'];
 
     public $hours;
@@ -65,35 +65,32 @@ class TimeTrackingManager extends Component
 
     public $employeeFilter;
 
-    public $employeeOptions;
+    public $employeeSimpleSelectOptions;
 
-    public function mount(User $employee, DateFormatter $dateFormatter)
+    public $employeeMultipleSelectOptions;
+
+    public $managingTimeTrackingForId;
+
+    public function mount(DateFormatter $dateFormatter)
     {
-        $this->employee = $employee;
+        $employeeSelectCollection = $this->user->currentLocation->allUsers()->pluck('name', 'id');
 
-        $this->employeeOptions = $employee
-            ->currentLocation
-            ->allUsers()->pluck('name', 'id')
-            ->mapToMultipleSelect();
+        $this->employeeSimpleSelectOptions = $employeeSelectCollection->toArray();
+        $this->employeeMultipleSelectOptions = $employeeSelectCollection->mapToMultipleSelect();
 
-        $this->employeeFilter = collect($this->employeeOptions)
-            ->filterMultipleSelect(fn($item) => $item['id'] === $this->employee->id);
+        $this->employeeFilter = collect($this->employeeMultipleSelectOptions)
+            ->filterMultipleSelect(fn($item) => $item['id'] === $this->user->id);
 
         $this->timeTrackingForm = array_merge_when(array_merge($this->timeTrackingForm, [
             'date' => $dateFormatter->formatDateTimeForView(Carbon::today())
         ]), fn() => $this->projectFormFields(), Daybreak::hasProjectBillingFeature());
 
+        $this->managingTimeTrackingForId = (string)$this->user->id;
+
         $this->hours = range(0, 23);
         $this->minutes = range(0, 59);
 
-        $this->workingSession = $employee->currentWorkingSession();
-    }
-
-    public function switchEmployee()
-    {
-        $this->employee = $this->employee->currentLocation->allUsers()->first(function ($user) {
-            return $user->id === (int)$this->employeeIdToBeSwitched;
-        });
+        $this->workingSession = $this->user->currentWorkingSession();
     }
 
     protected function generatePauseTimeArray($date, array $pauseTimes, DateFormatter $dateFormatter)
@@ -126,7 +123,7 @@ class TimeTrackingManager extends Component
 
         if (Daybreak::hasProjectBillingFeature()) {
             app(AddsTimeTrackingWithProjectInfo::class)->add(
-                $this->employee, array_merge([
+                $this->user, array_merge([
                     'starts_at' => $dateFormatter->generateTimeStr(
                         $this->timeTrackingForm['date'],
                         $this->timeTrackingForm['start_hour'],
@@ -142,7 +139,7 @@ class TimeTrackingManager extends Component
             );
         } else {
             app(AddsTimeTrackings::class)->add(
-                $this->employee, array_merge([
+                $this->user, $this->user->currentLocation, $this->managingTimeTrackingForId, array_merge([
                     'starts_at' => $dateFormatter->generateTimeStr(
                         $this->timeTrackingForm['date'],
                         $this->timeTrackingForm['start_hour'],
@@ -158,23 +155,23 @@ class TimeTrackingManager extends Component
             );
         }
 
-        $this->employee = $this->employee->fresh();
+        $this->user = $this->user->fresh();
 
         $this->manageTimeTracking = false;
     }
 
     public function render()
     {
-        return view('livewire.time-tracking', [
-            'timing' => $this->employee->currentLocation
+        return view('time_trackings.time-tracking-manager', [
+            'timing' => $this->user->currentLocation
                 ->timeTrackings()
                 ->latest()
                 ->when(
-                    $this->employee->hasLocationPermission($this->employee->currentLocation, 'filterAbsences'),
+                    $this->user->hasLocationPermission($this->user->currentLocation, 'filterAbsences'),
                     fn($query) => $query->filterEmployees(
                         collect($this->employeeFilter)->pluck('id')->toArray()
                     ),
-                    fn($query) => $query->filterEmployees([$this->employee->id])
+                    fn($query) => $query->filterEmployees([$this->user->id])
                 )
                 ->paginate(10)
         ]);
@@ -216,7 +213,7 @@ class TimeTrackingManager extends Component
     public function removeTimeTracking(RemovesTimeTracking $remover)
     {
         $remover->remove(
-            $this->employee,
+            $this->user,
             $this->timeTrackingIdBeingRemoved
         );
 
@@ -224,7 +221,7 @@ class TimeTrackingManager extends Component
 
         $this->timeTrackingIdBeingRemoved = null;
 
-        $this->employee = $this->employee->fresh();
+        $this->user = $this->user->fresh();
     }
 
     public function manageTimeTracking()
@@ -254,7 +251,7 @@ class TimeTrackingManager extends Component
         $this->timeTrackingIdBeingUpdated = $index;
 
         $this->updateTimeTrackingForm(
-            $this->employee->currentLocation->timeTrackings()
+            $this->user->currentLocation->timeTrackings()
                 ->whereKey($index)
                 ->with('pauseTimes')
                 ->first()
@@ -298,7 +295,7 @@ class TimeTrackingManager extends Component
 
         if (Daybreak::hasProjectBillingFeature()) {
             app(UpdatesTimeTrackingWithProjectInfo::class)->update(
-                $this->employee,
+                $this->user,
                 $this->timeTrackingIdBeingUpdated,
                 array_merge([
                     'starts_at' => $dateFormatter->generateTimeStr(
@@ -316,7 +313,9 @@ class TimeTrackingManager extends Component
             );
         } else {
             app(UpdatesTimeTracking::class)->update(
-                $this->employee,
+                $this->user,
+                $this->user->currentLocation,
+                $this->managingTimeTrackingForId,
                 $this->timeTrackingIdBeingUpdated,
                 array_merge([
                     'starts_at' => $dateFormatter->generateTimeStr(

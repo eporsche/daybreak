@@ -1,22 +1,18 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Absence;
 
 use Carbon\Carbon;
-use App\Models\User;
 use Livewire\Component;
 use Carbon\CarbonPeriod;
 use App\Models\AbsenceType;
 use Livewire\WithPagination;
 use App\Contracts\AddsAbsences;
 use App\Formatter\DateFormatter;
-use Laravel\Jetstream\Jetstream;
 use App\Contracts\RemovesAbsence;
 use App\Contracts\ApprovesAbsence;
-use Illuminate\Support\Facades\Auth;
 use App\AbsenceCalendar\AbsenceCalculator;
 use App\AbsenceCalendar\EmployeeAbsenceCalendar;
-use App\Daybreak;
 use App\Traits\HasUser;
 
 class AbsenceManager extends Component
@@ -32,16 +28,12 @@ class AbsenceManager extends Component
     public $hours;
     public $minutes;
 
-    public $location;
-
     /**
      * The user that is currently having its absence managed.
      *
      * @var mixed
      */
     public $managingAbsenceForId;
-
-    public $locationMembers;
 
     public $startDate;
     public $startHours = 9;

@@ -24,7 +24,7 @@ class PauseTimes extends Component
 
     public function render()
     {
-        return view('livewire.time-tracking.pause-times');
+        return view('time_trackings.pause-times');
     }
 
     public function changedTime()

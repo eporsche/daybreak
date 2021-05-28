@@ -3,6 +3,7 @@
 namespace App\Contracts;
 
 use App\Models\User;
+use App\Models\Location;
 
 interface UpdatesTimeTracking
 {
@@ -15,5 +16,5 @@ interface UpdatesTimeTracking
      * @param array    $pauseTimes
      * @return void
      */
-    public function update(User $user, $timeTrackingId, array $input, array $pauseTimes);
+    public function update(User $user, Location $location, int $manageTimeTrackingForId, int $timeTrackingId, array $input, array $pauseTimes);
 }
