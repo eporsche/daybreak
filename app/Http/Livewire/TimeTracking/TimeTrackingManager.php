@@ -262,6 +262,8 @@ class TimeTrackingManager extends Component
 
     public function updateTimeTrackingForm($timeTracking)
     {
+        $this->managingTimeTrackingForId = $timeTracking->user_id;
+
         $this->timeTrackingForm = array_merge_when(array_merge($this->timeTrackingForm,[
             'date' => app(DateFormatter::class)->formatDateForView($timeTracking->starts_at),
             'start_hour' => $timeTracking->starts_at->hour,

@@ -17,7 +17,6 @@ class TimeTrackingPolicy
             $user->id === (int)$managingTimeTrackingForId;
     }
 
-
     public function addTimeTracking(User $user, $managingTimeTrackingForId, Location $location)
     {
         return $user->isLocationAdmin($location) ||
