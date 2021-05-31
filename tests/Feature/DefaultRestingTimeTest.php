@@ -9,48 +9,52 @@ use App\Models\Duration;
 use App\Models\Location;
 use App\Models\TimeTracking;
 use App\Actions\AddTimeTracking;
+use App\Formatter\DateFormatter;
+use App\Contracts\AddsTimeTrackings;
 use App\Contracts\AddsDefaultRestingTime;
 
 class DefaultRestingTimeTest extends TestCase
 {
     protected $user;
 
+    protected $location;
+
+    protected $dateFormatter;
+
     public function setUp(): void
     {
         parent::setUp();
 
+        $this->dateFormatter = app(DateFormatter::class);
+
         $this->user = User::factory([
-            "date_of_employment" => Carbon::make('2020-11-16')
-        ])->hasTargetHours([
-            "start_date" => Carbon::make('2020-11-16')
-        ])->create();
-
-        $location = Location::factory()->create();
-
-        $location->users()->attach(
-            $this->user,
-            ['role' => 'admin']
-        );
-
-        $this->user->switchLocation($location);
+            'date_of_employment' => Carbon::make('2020-11-01'),
+            'current_location_id' => $this->location = Location::factory()->create()
+        ])->withOwnedAccount()->hasTargetHours([
+            'start_date' => Carbon::make('2020-11-01')
+        ])->hasAttached(
+            $this->location, [
+                'role' => 'admin'
+            ]
+        )->create();
     }
 
     public function test_creates_default_resting_time()
     {
         $action = app(AddsDefaultRestingTime::class);
-        $action->add($this->user->currentLocation, [
+        $action->add($this->location, [
             'min_hours' => new Duration(21600), //6*60*60
             'duration' => new Duration(1800) //30*60
         ]);
 
-        $action->add($this->user->currentLocation, [
+        $action->add($this->location, [
             'min_hours' => new Duration(39600), //11*60*60
             'duration' => new Duration(2700) //45*60
         ]);
 
         $this->assertDatabaseHas('default_resting_times',[
             'min_hours' => '21600',
-            'location_id' => $this->user->currentLocation->id
+            'location_id' => $this->location->id
         ]);
 
         $this->assertDatabaseHas('default_resting_time_users',[
@@ -61,15 +65,15 @@ class DefaultRestingTimeTest extends TestCase
     public function test_adds_default_resting_time_to_time_tracking()
     {
         $action = app(AddsDefaultRestingTime::class);
-        $action->add($this->user->currentLocation, [
+        $action->add($this->location, [
             'min_hours' => new Duration(21600), //6*60*60
             'duration' => new Duration(1800) //30*60
         ]);
 
-        $action = app(AddTimeTracking::class);
-        $action->add($this->user, [
-            'starts_at' => '17.11.2020 09:00',
-            'ends_at' => '17.11.2020 17:00',
+        $action = app(AddsTimeTrackings::class);
+        $action->add($this->user, $this->location, $this->user->id, [
+            'starts_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 09:00')),
+            'ends_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 17:00')),
         ],[]);
 
         $timeTracking = TimeTracking::where('starts_at','2020-11-17 09:00:00')->first();
@@ -80,19 +84,19 @@ class DefaultRestingTimeTest extends TestCase
     public function test_do_not_add_default_resting_time_if_pause_time_has_been_given()
     {
         $action = app(AddsDefaultRestingTime::class);
-        $action->add($this->user->currentLocation, [
+        $action->add($this->location, [
             'min_hours' => new Duration(21600), //6*60*60
             'duration' => new Duration(1800) //30*60
         ]);
 
-        $action = app(AddTimeTracking::class);
-        $action->add($this->user, [
-            'starts_at' => '17.11.2020 09:00',
-            'ends_at' => '17.11.2020 17:00',
+        $action = app(AddsTimeTrackings::class);
+        $action->add($this->user, $this->location, $this->user->id,  [
+            'starts_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 09:00')),
+            'ends_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 17:00')),
         ],[
             [
-                'starts_at' => '17.11.2020 10:00',
-                'ends_at' => '17.11.2020 10:15',
+                'starts_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 10:00')),
+                'ends_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 10:15')),
             ]
         ]);
 

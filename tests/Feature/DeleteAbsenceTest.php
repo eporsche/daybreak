@@ -6,7 +6,7 @@ use Tests\TestCase;
 use App\Models\User;
 use Livewire\Livewire;
 use App\Models\Location;
-use App\Http\Livewire\AbsenceManager;
+use App\Http\Livewire\Absence\AbsenceManager;
 
 class DeleteAbsenceTest extends TestCase
 {

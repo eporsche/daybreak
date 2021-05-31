@@ -5,10 +5,13 @@ namespace App\Actions;
 use DB;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Location;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Arr;
 use App\Formatter\DateFormatter;
+use Laravel\Jetstream\Jetstream;
 use App\Facades\PeriodCalculator;
+use Illuminate\Support\Facades\Gate;
 use App\Contracts\UpdatesTimeTracking;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -22,8 +25,14 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         $this->dateFormatter = $dateFormatter;
     }
 
-    public function update(User $employee, $timeTrackingId, array $data, array $pauseTimes)
+    public function update(User $user, Location $location, int $managingTimeTrackingForId, int $timeTrackingId, array $data, array $pauseTimes)
     {
+        Gate::forUser($user)->authorize('updateTimeTracking', [
+            TimeTracking::class,
+            $managingTimeTrackingForId,
+            $location
+        ]);
+
         Validator::make(array_merge($data, [
             'time_tracking_id' => $timeTrackingId
         ]),[
@@ -37,9 +46,9 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         $startsAt = $this->dateFormatter->timeStrToCarbon($data['starts_at']);
         $endsAt = $this->dateFormatter->timeStrToCarbon($data['ends_at']);
 
-        $this->ensureDateIsNotBeforeEmploymentDate($employee, $startsAt);
+        $this->ensureDateIsNotBeforeEmploymentDate($user, $startsAt);
         $this->ensureDateIsNotTooFarInTheFuture($endsAt);
-        $this->ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt, $timeTrackingId);
+        $this->ensureGivenTimeIsNotOverlappingWithExisting($user, $startsAt, $endsAt, $timeTrackingId);
 
         $this->validatePauseTimes(
             PeriodCalculator::fromTimesArray($pauseTimes),
@@ -47,10 +56,11 @@ class UpdateTimeTracking implements UpdatesTimeTracking
             $endsAt
         );
 
-        $trackedTime = $employee->currentLocation->timeTrackings()->whereKey($timeTrackingId)->first();
+        $trackedTime = $location->timeTrackings()->whereKey($timeTrackingId)->first();
 
-        DB::transaction(function () use ($trackedTime, $startsAt, $endsAt, $data, $pauseTimes) {
+        DB::transaction(function () use ($trackedTime, $startsAt, $endsAt, $data, $pauseTimes, $managingTimeTrackingForId) {
             $trackedTime->update(array_merge([
+                'user_id' => $managingTimeTrackingForId,
                 'starts_at' => $startsAt,
                 'ends_at' => $endsAt,
             ], Arr::except($data, ['starts_at','ends_at','time_tracking_id'])));
@@ -85,10 +95,10 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         }
     }
 
-    protected function ensureDateIsNotBeforeEmploymentDate($employee, $startsAt)
+    protected function ensureDateIsNotBeforeEmploymentDate($user, $startsAt)
     {
-        if ($employee->date_of_employment) {
-            if ($startsAt->isBefore($employee->date_of_employment)) {
+        if ($user->date_of_employment) {
+            if ($startsAt->isBefore($user->date_of_employment)) {
                 throw ValidationException::withMessages([
                     'date' => [ __('Date should not before employment date.') ],
                 ])->errorBag('addTimeTracking');
@@ -96,8 +106,8 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         }
     }
 
-    protected function ensureGivenTimeIsNotOverlappingWithExisting($employee, $startsAt, $endsAt, $timeTrackingId) {
-        if ($employee->timeTrackings()->where(function ($query) use ($startsAt, $endsAt, $timeTrackingId) {
+    protected function ensureGivenTimeIsNotOverlappingWithExisting($user, $startsAt, $endsAt, $timeTrackingId) {
+        if ($user->timeTrackings()->where(function ($query) use ($startsAt, $endsAt, $timeTrackingId) {
             $query->whereBetween('starts_at', [$startsAt, $endsAt])
                 ->orWhereBetween('ends_at', [$startsAt, $endsAt])
                 ->orWhere(function ($query) use ($startsAt, $endsAt) {

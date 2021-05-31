@@ -63,13 +63,13 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @can('filterTimeTracking',  [App\Model\TimeTracking::class, $employee->currentLocation])
+                    @can('filterTimeTracking',  [App\Model\TimeTracking::class, $this->user->currentLocation])
                         <tr class="bg-white">
                             <td>
                                 <x-multiple-select
                                     wire:model="employeeFilter"
                                     trackBy="id"
-                                    :options="$employeeOptions"
+                                    :options="$employeeMultipleSelectOptions"
                                 />
                             </td>
                             <td colspan="7">
@@ -145,7 +145,8 @@
     <x-add-time-tracking-modal
         :hours="$hours"
         :minutes="$minutes"
-        :employee="$employee"
+        :user="$this->user"
+        :employeeSimpleSelectOptions="$employeeSimpleSelectOptions"
         :pauseTimeForm="$pauseTimeForm"
         :timeTrackingIdBeingUpdated="$timeTrackingIdBeingUpdated"
     />

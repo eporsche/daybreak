@@ -2,21 +2,20 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\Location;
-use App\Contracts\AddsAbsences;
-use App\Contracts\AddsVacationEntitlements;
-use App\Contracts\ApprovesAbsence;
-use App\Http\Livewire\AbsenceManager;
-use App\Models\AbsenceType;
 use Livewire\Livewire;
+use App\Models\Location;
+use App\Models\AbsenceType;
+use App\Contracts\AddsAbsences;
+use App\Contracts\ApprovesAbsence;
+use App\Contracts\AddsVacationEntitlements;
+use App\Http\Livewire\Absence\AbsenceManager;
 
 class AbsenceTest extends TestCase
 {
     protected $user;
-
-    protected $account;
 
     protected $location;
 
@@ -25,10 +24,10 @@ class AbsenceTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory([
-            'date_of_employment' => '2020-11-01 07:47:05',
+            'date_of_employment' => Carbon::make('2020-11-01'),
             'current_location_id' => $this->location = Location::factory()->create()
         ])->withOwnedAccount()->hasTargetHours([
-            "start_date" => '2020-11-01'
+            'start_date' => Carbon::make('2020-11-01')
         ])->hasAttached(
             $this->location, [
                 'role' => 'admin'

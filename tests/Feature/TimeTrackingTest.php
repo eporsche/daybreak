@@ -5,40 +5,43 @@ namespace Tests\Feature;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
+use Livewire\Livewire;
 use App\Models\Location;
 use App\Actions\AddTimeTracking;
-use App\Http\Livewire\TimeTrackingManager;
-use Livewire\Livewire;
+use App\Formatter\DateFormatter;
+use App\Http\Livewire\TimeTracking\TimeTrackingManager;
 
 class TimeTrackingTest extends TestCase
 {
     protected $user;
 
+    protected $location;
+
+    protected $dateFormatter;
+
     public function setUp(): void
     {
         parent::setUp();
 
+        $this->dateFormatter = app(DateFormatter::class);
+
         $this->user = User::factory([
-            "date_of_employment" => Carbon::make('2020-11-16')
-        ])->hasTargetHours([
-            "start_date" => Carbon::make('2020-11-16')
-        ])->create();
-
-        $location = Location::factory()->create();
-
-        $location->users()->attach(
-            $this->user,
-            ['role' => 'admin']
-        );
-
-        $this->user->switchLocation($location);
+            'date_of_employment' => Carbon::make('2020-11-01'),
+            'current_location_id' => $this->location = Location::factory()->create()
+        ])->withOwnedAccount()->hasTargetHours([
+            'start_date' => Carbon::make('2020-11-01')
+        ])->hasAttached(
+            $this->location, [
+                'role' => 'admin'
+            ]
+        )->create();
     }
 
     public function test_creates_time_in_correct_format()
     {
-        Livewire::test(TimeTrackingManager::class, [
-            'employee' => $this->user
-        ])->set([
+        $this->actingAs($this->user);
+
+        Livewire::test(TimeTrackingManager::class)->set([
             'timeTrackingForm' => [
                 'description' => 'testing',
                 'date' => '17.11.2020',
@@ -66,6 +69,8 @@ class TimeTrackingTest extends TestCase
 
     public function test_creates_correct_durations()
     {
+        $this->actingAs($this->user);
+
         $minutesDecimaArray = [
             '01' => '0.02',
             '02' => '0.03',
@@ -130,9 +135,9 @@ class TimeTrackingTest extends TestCase
 
         foreach ($minutesDecimaArray as $minutes => $decimal) {
             $action = app(AddTimeTracking::class);
-            $action->add($this->user, [
-                'starts_at' => '17.11.2020 09:00',
-                'ends_at' => '17.11.2020 09:'.$minutes
+            $action->add($this->user, $this->location, $this->user->id, [
+                'starts_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 09:00')),
+                'ends_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make("2020-11-17 09:{$minutes}"))
             ],[]);
 
             /**

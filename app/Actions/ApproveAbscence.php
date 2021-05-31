@@ -10,6 +10,7 @@ use App\Models\Location;
 use Carbon\CarbonPeriod;
 use App\Jobs\SendAbsenceApproved;
 use App\Contracts\ApprovesAbsence;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use App\AbsenceCalendar\AbsenceCalculator;
 use Daybreak\Caldav\Jobs\CreateCaldavEvent;
@@ -29,6 +30,8 @@ class ApproveAbscence implements ApprovesAbsence
      */
     public function approve(User $user, Location $location, $absenceId)
     {
+        Gate::check('approveAbsence',  [App\Model\Absence::class, $location]);
+
         Validator::make([
             'absence_id' => $absenceId
         ], [
@@ -57,7 +60,6 @@ class ApproveAbscence implements ApprovesAbsence
 
         //TODO: distribute absence days between available vacation entitlements
         $currentVacationEntitlement = $absence->employee->currentVacationEntitlement();
-
         if (!isset($currentVacationEntitlement) || !$currentVacationEntitlement->hasEnoughUnusedVacationDays($absence->vacation_days)) {
             throw ValidationException::withMessages([
                 'error' => [__('Sorry, there is no fitting vacation entitlement for this absence.')],

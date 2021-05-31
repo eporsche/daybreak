@@ -7,7 +7,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Location;
 use App\Models\TimeTracking;
-use App\Http\Livewire\TimeTrackingManager;
+use App\Http\Livewire\TimeTracking\TimeTrackingManager;
 use Livewire\Livewire;
 
 class UpdateTimeTrackingTest extends TestCase
@@ -36,14 +36,14 @@ class UpdateTimeTrackingTest extends TestCase
 
     public function test_creates_time_in_correct_format()
     {
+        $this->actingAs($this->user);
+
         $timeTracking = TimeTracking::factory([
             'user_id' => $this->user,
             'location_id' => $this->user->currentLocation
         ])->create();
 
-        Livewire::test(TimeTrackingManager::class, [
-            'employee' => $this->user
-        ])->set([
+        Livewire::test(TimeTrackingManager::class)->set([
             'timeTrackingIdBeingUpdated' => $timeTracking->id,
             'timeTrackingForm' => [
                 'description' => 'updated',
