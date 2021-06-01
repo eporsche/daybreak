@@ -123,7 +123,7 @@ class TimeTrackingManager extends Component
 
         if (Daybreak::hasProjectBillingFeature()) {
             app(AddsTimeTrackingWithProjectInfo::class)->add(
-                $this->user, array_merge([
+                $this->user, $this->user->currentLocation, $this->managingTimeTrackingForId, array_merge([
                     'starts_at' => $dateFormatter->generateTimeStr(
                         $this->timeTrackingForm['date'],
                         $this->timeTrackingForm['start_hour'],
@@ -239,6 +239,7 @@ class TimeTrackingManager extends Component
     public function cancelManagingTimeTracking()
     {
         $this->reset([
+            'managingTimeTrackingForId',
             'manageTimeTracking',
             'timeTrackingIdBeingUpdated',
             'timeTrackingForm',
@@ -298,6 +299,8 @@ class TimeTrackingManager extends Component
         if (Daybreak::hasProjectBillingFeature()) {
             app(UpdatesTimeTrackingWithProjectInfo::class)->update(
                 $this->user,
+                $this->user->currentLocation,
+                $this->managingTimeTrackingForId,
                 $this->timeTrackingIdBeingUpdated,
                 array_merge([
                     'starts_at' => $dateFormatter->generateTimeStr(
@@ -336,6 +339,7 @@ class TimeTrackingManager extends Component
         }
 
         $this->reset([
+            'managingTimeTrackingForId',
             'manageTimeTracking',
             'timeTrackingIdBeingUpdated',
             'timeTrackingForm',

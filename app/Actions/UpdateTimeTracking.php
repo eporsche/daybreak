@@ -46,9 +46,11 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         $startsAt = $this->dateFormatter->timeStrToCarbon($data['starts_at']);
         $endsAt = $this->dateFormatter->timeStrToCarbon($data['ends_at']);
 
-        $this->ensureDateIsNotBeforeEmploymentDate($user, $startsAt);
+        $updatingTimeTrackingFor = Jetstream::findUserByIdOrFail($managingTimeTrackingForId);
+
+        $this->ensureDateIsNotBeforeEmploymentDate($updatingTimeTrackingFor, $startsAt);
         $this->ensureDateIsNotTooFarInTheFuture($endsAt);
-        $this->ensureGivenTimeIsNotOverlappingWithExisting($user, $startsAt, $endsAt, $timeTrackingId);
+        $this->ensureGivenTimeIsNotOverlappingWithExisting($updatingTimeTrackingFor, $startsAt, $endsAt, $timeTrackingId);
 
         $this->validatePauseTimes(
             PeriodCalculator::fromTimesArray($pauseTimes),
@@ -58,9 +60,9 @@ class UpdateTimeTracking implements UpdatesTimeTracking
 
         $trackedTime = $location->timeTrackings()->whereKey($timeTrackingId)->first();
 
-        DB::transaction(function () use ($trackedTime, $startsAt, $endsAt, $data, $pauseTimes, $managingTimeTrackingForId) {
+        DB::transaction(function () use ($trackedTime, $startsAt, $endsAt, $data, $pauseTimes, $updatingTimeTrackingFor) {
             $trackedTime->update(array_merge([
-                'user_id' => $managingTimeTrackingForId,
+                'user_id' => $updatingTimeTrackingFor->id,
                 'starts_at' => $startsAt,
                 'ends_at' => $endsAt,
             ], Arr::except($data, ['starts_at','ends_at','time_tracking_id'])));
