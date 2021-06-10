@@ -5,6 +5,7 @@
     'pauseTimeForm',
     'employeeSimpleSelectOptions' => [],
     'timeTrackingIdBeingUpdated' => null,
+    'managingTimeTrackingForId' => null,
     'title' => __('Time Tracking'),
     'button' => __('Confirm')
     ])
@@ -55,7 +56,7 @@
             </div>
 
             @if(App\Daybreak::hasProjectBillingFeature())
-                <x-dynamic-component component="project-form" :user="$user"/>
+                <x-dynamic-component component="project-form" :managingTimeTrackingForId="$managingTimeTrackingForId" :user="$user"/>
             @endif
 
             <div class="flex flex-col">

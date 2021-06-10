@@ -128,4 +128,17 @@ class User extends Authenticatable
             ->where('location_id', $location->id)
             ->exists();
     }
+
+    public function currentTimezone()
+    {
+        if ($this->timezone) {
+            return $this->timezone;
+        }
+
+        if ($this->currentLocation && $this->currentLocation->timezone) {
+            return $this->currentLocation->timezone;
+        }
+
+        return 'UTC';
+    }
 }

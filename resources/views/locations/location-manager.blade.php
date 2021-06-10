@@ -25,7 +25,7 @@
                                 {{ $location->name }}
                             </td>
                             <td class="px-6 py-4 whitespace-no-wrap">
-                                {{ $location->time_zone }}
+                                {{ $location->timezone }}
                             </td>
                             <td class="px-6 py-4 whitespace-no-wrap">
                                 {{ $location->locale }}

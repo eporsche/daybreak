@@ -5,20 +5,22 @@ namespace App\Models;
 use App\Models\User;
 use App\Traits\HasPeriod;
 use Brick\Math\BigDecimal;
-use App\Casts\BigDecimalCast;
 use App\Casts\DurationCast;
+use App\Casts\BigDecimalCast;
+use App\Contracts\HasTimeZone;
 use App\Traits\FiltersEmployees;
 use App\Facades\PeriodCalculator;
+use App\Casts\LocalizedDateTimeCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class TimeTracking extends Model
+class TimeTracking extends Model implements HasTimeZone
 {
     use HasFactory, HasPeriod, FiltersEmployees;
 
     protected $casts = [
-        'starts_at' => 'datetime',
-        'ends_at' => 'datetime',
+        'starts_at' => LocalizedDateTimeCast::class,
+        'ends_at' => LocalizedDateTimeCast::class,
         'hourly_rate' => BigDecimalCast::class,
         'balance' => BigDecimalCast::class,
         'min_billing_increment' => BigDecimalCast::class,
@@ -31,7 +33,8 @@ class TimeTracking extends Model
         'location_id',
         'starts_at',
         'ends_at',
-        'pause_time'
+        'pause_time',
+        'timezone'
     ];
 
     public function user()

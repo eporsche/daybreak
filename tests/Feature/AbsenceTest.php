@@ -10,6 +10,7 @@ use App\Models\Location;
 use App\Models\AbsenceType;
 use App\Contracts\AddsAbsences;
 use App\Contracts\ApprovesAbsence;
+use Illuminate\Support\Facades\Bus;
 use App\Contracts\AddsVacationEntitlements;
 use App\Http\Livewire\Absence\AbsenceManager;
 
@@ -267,6 +268,8 @@ class AbsenceTest extends TestCase
             'vacation_days' => 6,
             'status' => 'pending'
         ]);
+
+        Bus::fake();
 
         $action = app(ApprovesAbsence::class);
 

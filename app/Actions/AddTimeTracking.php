@@ -60,7 +60,7 @@ class AddTimeTracking implements AddsTimeTrackings
                 'location_id' => $location->id,
                 'starts_at' => $startsAt,
                 'ends_at' => $endsAt,
-
+                'timezone' => $addingTimeTrackingFor->currentTimezone()
             ], Arr::except($data, ['starts_at','ends_at'])));
 
             $trackedTime->pauseTimes()->createMany($pauseTimes);

@@ -380,5 +380,11 @@
     "Add default resting time": "Automatische Pausenzeit hinzufügen",
     "Remove Default Pause Time": "Automatische Pausenzeit löschen",
     "Are you sure you would like to remove the default pause time from this location?": "Sind Sie sicher das Sie die automatische Pausen-Zeit von diesem Standort löschen möchten?",
-    "Choose Employee": "Mitarbeiter auswählen"
+    "Choose Employee": "Mitarbeiter auswählen",
+    "Illness": "Krankheit",
+    "Vacation": "Urlaub",
+    "Take time off for overtime worked": "Überstundenabbau",
+    "Free time": "Wunschfrei"
+
+
 }

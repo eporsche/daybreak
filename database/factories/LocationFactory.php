@@ -27,7 +27,7 @@ class LocationFactory extends Factory
             'name' => $this->faker->unique()->company,
             'owned_by' => User::factory(),
             'account_id' => Account::factory(),
-            'time_zone' => 'Europe/Berlin',
+            'timezone' => 'Europe/Berlin',
             'locale' => 'de',
             'active' => true
         ];

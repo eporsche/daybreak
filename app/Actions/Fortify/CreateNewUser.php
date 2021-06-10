@@ -37,7 +37,8 @@ class CreateNewUser implements CreatesNewUsers
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'password' => Hash::make($input['password']),
-                'date_of_employment' => Carbon::today()
+                'date_of_employment' => Carbon::today(),
+                'timezone' => config('app.timezone')
             ]), function (User $user) {
                 /*
                 |--------------------------------------------------------------------------
@@ -107,8 +108,7 @@ class CreateNewUser implements CreatesNewUsers
         $location = new Location([
             'owned_by' => $user->id,
             'name' => explode(' ', $user->name, 2)[0]."'s Location",
-            'locale' => config('app.locale'),
-            'time_zone' => config('app.timezone')
+            'timezone' => config('app.timezone')
         ]);
 
         //associate location to user account
@@ -124,24 +124,24 @@ class CreateNewUser implements CreatesNewUsers
     {
         $newAbsentTypes = $location->absentTypes()->createMany([
             [
-                'title' => 'Krankheit',
+                'title' => __('Illness'),
                 'affect_vacation_times' => false,
                 'affect_evaluations' => true,
                 'evaluation_calculation_setting' => 'absent_to_target'
             ],
             [
-                'title' => 'Urlaub',
+                'title' => __('Vacation'),
                 'affect_vacation_times' => true,
                 'affect_evaluations' => true,
                 'evaluation_calculation_setting' => 'absent_to_target'
             ],
             [
-                'title' => 'Überstundenabbau',
+                'title' => __('Take time off for overtime worked'),
                 'affect_evaluations' => false,
                 'affect_vacation_times' => false
             ],
             [
-                'title' => 'Wunschfrei',
+                'title' => __('Free time'),
                 'affect_evaluations' => false,
                 'affect_vacation_times' => false
             ]

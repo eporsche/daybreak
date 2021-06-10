@@ -214,6 +214,8 @@ class TimeTrackingManager extends Component
     {
         $remover->remove(
             $this->user,
+            $this->user->currentLocation,
+            $this->managingTimeTrackingForId,
             $this->timeTrackingIdBeingRemoved
         );
 

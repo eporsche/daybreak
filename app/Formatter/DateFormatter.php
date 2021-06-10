@@ -2,7 +2,7 @@
 
 namespace App\Formatter;
 
-use Carbon\CarbonImmutable;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Rule;
 
 interface DateFormatter
@@ -23,7 +23,7 @@ interface DateFormatter
 
     public function generateTimeStr(string $date = null, string $hours = null, string $minutes = null);
 
-    public function timeStrToCarbon(string $timeStr) : CarbonImmutable;
+    public function timeStrToCarbon(string $timeStr) : Carbon;
 
     public function dateFormatRule() : Rule;
 

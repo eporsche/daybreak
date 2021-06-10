@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use App\Rules\DateFormatterRule;
 use App\Rules\DateTimeFormatterRule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Contracts\Validation\Rule;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
@@ -52,9 +53,10 @@ class GermanDateFormatter implements DateFormatter
         return $date.' '.str_pad($hours,2,"0",STR_PAD_LEFT).':'.str_pad($minutes,2,"0",STR_PAD_LEFT);
     }
 
-    public function timeStrToCarbon(string $timeStr) : CarbonImmutable
+    public function timeStrToCarbon(string $timeStr) : Carbon
     {
-        return CarbonImmutable::createFromTimestamp(strtotime($timeStr));
+        return Carbon::createFromTimestamp(strtotime($timeStr))
+            ->shiftTimezone(Auth::user() ? Auth::user()->currentTimezone() : config('app.timezone'));
     }
 
     public function dateTimeFormatRule() : Rule
