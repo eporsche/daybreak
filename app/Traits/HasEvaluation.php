@@ -2,7 +2,8 @@
 
 namespace App\Traits;
 
-use App\Models\TargetHour;
+use Brick\Math\BigDecimal;
+use App\Models\TimeTracking;
 
 trait HasEvaluation
 {
@@ -10,9 +11,11 @@ trait HasEvaluation
     {
         $working_hours = $this->timeTrackings()
             ->whereDate('starts_at',$date)
-            ->first();
+            ->get();
 
-        return optional($working_hours)->balance;
+        return $working_hours->reduce(function (BigDecimal $total, TimeTracking $timeTracking) {
+            return $total->plus($timeTracking->balance);
+        }, BigDecimal::zero());
     }
 
     public function absentHoursForDate($date)

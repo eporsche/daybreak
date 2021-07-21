@@ -28,7 +28,6 @@ class LocationFactory extends Factory
             'owned_by' => User::factory(),
             'account_id' => Account::factory(),
             'timezone' => 'Europe/Berlin',
-            'locale' => 'de',
             'active' => true
         ];
     }

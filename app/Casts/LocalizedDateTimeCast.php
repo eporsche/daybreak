@@ -28,7 +28,9 @@ class LocalizedDateTimeCast implements CastsAttributes
 
         $date = Carbon::createFromFormat('Y-m-d H:i:s', $value, config('app.timezone'));
 
+
         if ($model instanceof HasTimeZone) {
+            // dd($date,$model->timezone);
             return $date->copy()->setTimezone($model->timezone);
         }
 
@@ -47,6 +49,12 @@ class LocalizedDateTimeCast implements CastsAttributes
     public function set($model, $key, $value, $attributes)
     {
         if ($value instanceof Carbon) {
+            if ($model instanceof HasTimeZone) {
+                // dd($date,$model->timezone);
+                if (is_null($model->attributes))
+                    dd($model);
+                return $value->copy()->setTimezone($model->timezone);
+            }
             return $value->copy()->setTimezone(config('app.timezone'));
         }
 
