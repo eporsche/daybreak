@@ -19,7 +19,7 @@ services:
             - sail
         depends_on:
             - mysql
-            # - redis
+            - redis
             # - selenium
     # selenium:
     #     image: 'selenium/standalone-chrome'
@@ -78,5 +78,5 @@ networks:
 volumes:
     sailmysql:
         driver: local
-    # sailredis:
-    #     driver: local
+    sailredis:
+         driver: local
