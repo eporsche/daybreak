@@ -241,7 +241,6 @@ class TimeTrackingManager extends Component
     public function cancelManagingTimeTracking()
     {
         $this->reset([
-            'managingTimeTrackingForId',
             'manageTimeTracking',
             'timeTrackingIdBeingUpdated',
             'timeTrackingForm',

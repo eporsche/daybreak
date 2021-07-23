@@ -12,6 +12,7 @@ use App\Models\TimeTracking;
 use App\Formatter\DateFormatter;
 use Laravel\Jetstream\Jetstream;
 use App\Facades\PeriodCalculator;
+use App\Facades\DateTimeConverter;
 use App\Contracts\AddsTimeTrackings;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
@@ -40,10 +41,18 @@ class AddTimeTracking implements AddsTimeTrackings
             'description' => ['nullable', 'string']
         ])->validateWithBag('addTimeTracking');
 
-        $startsAt = $this->dateFormatter->timeStrToCarbon($data['starts_at']);
-        $endsAt = $this->dateFormatter->timeStrToCarbon($data['ends_at']);
 
         $addingTimeTrackingFor = Jetstream::findUserByIdOrFail($managingTimeTrackingForId);
+
+        $startsAt = DateTimeConverter::fromLocalizedDateTime(
+            $data['starts_at'],
+            $addingTimeTrackingFor->currentTimezone()
+        )->toUTC();
+
+        $endsAt = DateTimeConverter::fromLocalizedDateTime(
+            $data['ends_at'],
+            $addingTimeTrackingFor->currentTimezone()
+        )->toUTC();
 
         $this->ensureDateIsNotBeforeEmploymentDate($addingTimeTrackingFor, $startsAt);
         $this->ensureDateIsNotTooFarInTheFuture($endsAt);

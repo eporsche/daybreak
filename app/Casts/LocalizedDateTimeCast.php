@@ -3,8 +3,8 @@
 namespace App\Casts;
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 use App\Contracts\HasTimeZone;
+use App\Exceptions\UnknownTimeZoneException;
 use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\MockObject\UnknownTypeException;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
@@ -23,21 +23,18 @@ class LocalizedDateTimeCast implements CastsAttributes
     public function get($model, $key, $value, $attributes)
     {
         if (!$value) {
-            return new Carbon();
+            return;
         }
-
-        $date = Carbon::createFromFormat('Y-m-d H:i:s', $value, config('app.timezone'));
-
 
         if ($model instanceof HasTimeZone) {
-            // dd($date,$model->timezone);
-            return $date->copy()->setTimezone($model->timezone);
+            return Carbon::createFromFormat('Y-m-d H:i:s', $value, config('app.timezone'))
+                ->setTimezone($model->timezone);
         }
 
-        return $date->copy()->setTimezone($this->user()->currentTimezone());
+        throw new UnknownTimeZoneException();
     }
 
-     /**
+    /**
      * Prepare the given value for storage.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
@@ -49,12 +46,12 @@ class LocalizedDateTimeCast implements CastsAttributes
     public function set($model, $key, $value, $attributes)
     {
         if ($value instanceof Carbon) {
-            if ($model instanceof HasTimeZone) {
-                // dd($date,$model->timezone);
-                if (is_null($model->attributes))
-                    dd($model);
-                return $value->copy()->setTimezone($model->timezone);
+            if ($value->isUtc()) {
+                return [$key => $value];
             }
+
+            // dd($model, $key, $value, $attributes);
+            //if the carbon instance has been localized we need to convert it
             return $value->copy()->setTimezone(config('app.timezone'));
         }
 

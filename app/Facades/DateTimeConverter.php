@@ -2,13 +2,13 @@
 
 namespace App\Facades;
 
-use App\Calculators\PeriodCalculator as Calculator;
+use App\Converter\DateTimeConverter as Converter;
 use Illuminate\Support\Facades\Facade;
 
-class PeriodCalculator extends Facade
+class DateTimeConverter extends Facade
 {
     public static function getFacadeAccessor()
     {
-        return Calculator::class;
+        return Converter::class;
     }
 }

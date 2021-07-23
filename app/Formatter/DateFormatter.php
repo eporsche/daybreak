@@ -17,15 +17,19 @@ interface DateFormatter
 
     public function strToDate($value, $endOfDay = false);
 
+    public function timeStrToCarbon(string $timeStr) : Carbon;
+
+    public function generateTimeStr(string $date = null, string $hours = null, string $minutes = null);
+
     public function formatDateForView($date);
 
     public function formatDateTimeForView($date);
 
-    public function generateTimeStr(string $date = null, string $hours = null, string $minutes = null);
-
-    public function timeStrToCarbon(string $timeStr) : Carbon;
-
     public function dateFormatRule() : Rule;
 
     public function dateTimeFormatRule() : Rule;
+
+    public function getLocalizedDateTimeString() : string;
+
+    public function getLocalizedDateString() : string;
 }

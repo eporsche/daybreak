@@ -65,6 +65,18 @@
             <x-jet-input id="email" type="email" class="mt-1 block w-full" wire:model.defer="state.email" />
             <x-jet-input-error for="email" class="mt-2" />
         </div>
+
+        <div class="col-span-6 sm:col-span-4">
+            <x-jet-label for="timezone" value="{{ __('Timezone') }}" />
+            <x-simple-select wire:model.defer="state.timezone" id="timezone"
+                placeholder="{{ trans('Please select') }}"
+                :options="array_combine(
+                    DateTimeZone::listIdentifiers(DateTimeZone::ALL),
+                    DateTimeZone::listIdentifiers(DateTimeZone::ALL)
+                )" />
+            <x-jet-input-error for="timezone" class="mt-2" />
+        </div>
+
     </x-slot>
 
     <x-slot name="actions">

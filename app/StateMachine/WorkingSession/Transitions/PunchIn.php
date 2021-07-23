@@ -21,6 +21,7 @@ class PunchIn extends Transition
         $this->workingSession->actions()->create([
             'action_type' => 'starts_at',
             'action_time' => now(),
+            'timezone' => $this->workingSession->user->currentTimezone()
         ]);
         $this->workingSession->save();
 

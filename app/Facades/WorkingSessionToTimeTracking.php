@@ -9,6 +9,6 @@ class WorkingSessionToTimeTracking extends Facade
 {
     public static function getFacadeAccessor()
     {
-        return new WorkingSessionConverter();
+        return WorkingSessionConverter::class;
     }
 }

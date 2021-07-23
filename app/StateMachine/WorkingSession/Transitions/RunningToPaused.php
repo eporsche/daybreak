@@ -21,6 +21,7 @@ class RunningToPaused extends Transition
         $this->workingSession->actions()->create([
             'action_type' => 'pause_starts_at',
             'action_time' => now(),
+            'timezone' => $this->workingSession->user->currentTimezone()
         ]);
         $this->workingSession->save();
 

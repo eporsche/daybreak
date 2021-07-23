@@ -26,11 +26,13 @@ class PausedToStopped extends Transition
         $this->workingSession->actions()->create([
             'action_type' => 'pause_ends_at',
             'action_time' => $now,
+            'timezone' => $this->workingSession->user->currentTimezone()
         ]);
 
         $this->workingSession->actions()->create([
             'action_type' => 'ends_at',
             'action_time' => $now,
+            'timezone' => $this->workingSession->user->currentTimezone()
         ]);
 
         $converter = WorkingSessionToTimeTracking::fromCollection($this->workingSession->actions);
@@ -42,7 +44,8 @@ class PausedToStopped extends Transition
                 ->create(array_merge([
                         'location_id' => $this->workingSession->location->id,
                         'starts_at' => $this->workingSession->starts_at,
-                        'ends_at' => $this->workingSession->ends_at
+                        'ends_at' => $this->workingSession->ends_at,
+                        'timezone' => $this->workingSession->user->currentTimezone()
                 ], $converter->timeTracking()));
             $trackedTime->pauseTimes()->createMany($converter->pauseTimes());
 
