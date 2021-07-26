@@ -78,7 +78,7 @@ class TimeTracking extends Model implements HasTimeZone
 
     public function updatePauseTime()
     {
-        $this->update([
+        return $this->update([
             'pause_time' => $this->calculatePauseTime(
                 PeriodCalculator::fromTimesArray(
                     $this->pauseTimes()->select('starts_at','ends_at')->get()

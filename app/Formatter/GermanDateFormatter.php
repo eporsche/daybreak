@@ -75,7 +75,7 @@ class GermanDateFormatter implements DateFormatter
 
     public function getLocalizedDateTimeString() : string
     {
-        return 'd.m.Y H:s';
+        return 'd.m.Y H:i';
     }
 
     public function getLocalizedDateString() : string

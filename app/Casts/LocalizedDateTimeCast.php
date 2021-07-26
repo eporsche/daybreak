@@ -27,6 +27,7 @@ class LocalizedDateTimeCast implements CastsAttributes
         }
 
         if ($model instanceof HasTimeZone) {
+            // dd($model);
             return Carbon::createFromFormat('Y-m-d H:i:s', $value, config('app.timezone'))
                 ->setTimezone($model->timezone);
         }
@@ -45,17 +46,22 @@ class LocalizedDateTimeCast implements CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if ($value instanceof Carbon) {
-            if ($value->isUtc()) {
-                return [$key => $value];
-            }
-
-            // dd($model, $key, $value, $attributes);
-            //if the carbon instance has been localized we need to convert it
-            return $value->copy()->setTimezone(config('app.timezone'));
+        //if a string is passed, we suppose the value is UTC
+        if (is_string($value)) {
+            return [ $key => $value ];
         }
 
-        throw new UnknownTypeException("Value should be of type Carbon");
+        //convert the date to UTC if it is not
+        if ($value instanceof Carbon) {
+            if ($value->isUtc()) {
+                return [ $key => $value ];
+            }
+            return [
+                $key => $value->copy()->setTimezone(config('app.timezone'))
+            ];
+        }
+
+        throw new UnknownTypeException("Unknown Type Excpetion");
     }
 
     protected function user()

@@ -48,7 +48,7 @@ class DeleteAbsenceTest extends TestCase
             'starts_at' => '2020-12-12',
             'ends_at' => '2020-12-12',
             'full_day' => false,
-            'absence_type_id' => 1,
+            'absence_type_id' => $absentType->id,
         ]);
 
         Livewire::test(AbsenceManager::class, ['employee' => $user])->set([

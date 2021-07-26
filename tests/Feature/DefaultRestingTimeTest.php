@@ -70,13 +70,16 @@ class DefaultRestingTimeTest extends TestCase
             'duration' => new Duration(1800) //30*60
         ]);
 
+        $startsAt = Carbon::make('2020-11-17 09:00');
+        $endsAt = Carbon::make('2020-11-17 17:00');
+
         $action = app(AddsTimeTrackings::class);
         $action->add($this->user, $this->location, $this->user->id, [
-            'starts_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 09:00')),
-            'ends_at' => $this->dateFormatter->formatDateTimeForView(Carbon::make('2020-11-17 17:00')),
+            'starts_at' => $this->dateFormatter->formatDateTimeForView($startsAt),
+            'ends_at' => $this->dateFormatter->formatDateTimeForView($endsAt),
         ],[]);
 
-        $timeTracking = TimeTracking::where('starts_at','2020-11-17 09:00:00')->first();
+        $timeTracking = TimeTracking::where('starts_at', $startsAt)->firstOrFail();
 
         $this->assertSame("1800", (string) $timeTracking->pause_time->inSeconds());
     }

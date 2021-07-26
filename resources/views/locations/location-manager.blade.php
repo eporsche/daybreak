@@ -12,9 +12,6 @@
                     <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                         {{ __('Time Zone') }}
                     </th>
-                    <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                        {{ __('Locale') }}
-                    </th>
                     <th class="px-6 py-3 bg-gray-50"></th>
                   </tr>
                 </thead>
@@ -26,9 +23,6 @@
                             </td>
                             <td class="px-6 py-4 whitespace-no-wrap">
                                 {{ $location->timezone }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-no-wrap">
-                                {{ $location->locale }}
                             </td>
                             <td class="px-6 py-4 whitespace-no-wrap">
                                 <x-jet-button wire:click="enterLocation({{ $location->id }})" wire:loading.attr="disabled">

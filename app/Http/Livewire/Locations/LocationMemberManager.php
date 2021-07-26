@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Locations;
 
+use App\Models\User;
 use Livewire\Component;
 use Laravel\Jetstream\Jetstream;
 use App\Models\LocationInvitation;
@@ -207,6 +208,11 @@ class LocationMemberManager extends Component
      */
     public function removeLocationMember(RemovesLocationMembers $remover)
     {
+        // dd(
+        //     User::all(),
+        //     $this->locationMemberIdBeingRemoved,
+        //     Jetstream::findUserByIdOrFail($this->locationMemberIdBeingRemoved)
+        // );
         $remover->remove(
             $this->user,
             $this->location,

@@ -42,6 +42,7 @@ class AddTimeTracking implements AddsTimeTrackings
         ])->validateWithBag('addTimeTracking');
 
 
+
         $addingTimeTrackingFor = Jetstream::findUserByIdOrFail($managingTimeTrackingForId);
 
         $startsAt = DateTimeConverter::fromLocalizedDateTime(
@@ -75,6 +76,7 @@ class AddTimeTracking implements AddsTimeTrackings
             $trackedTime->pauseTimes()->createMany($pauseTimes);
             $trackedTime->updatePauseTime();
         });
+
     }
 
     protected function validatePauseTimes($pauseTimePeriodCalculator, $startsAt, $endsAt)

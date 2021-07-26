@@ -26,8 +26,8 @@ class TimeTrackingFactory extends Factory
         return [
             'location_id' => Location::factory(),
             'user_id' => User::factory(),
-            'starts_at' => "2021-05-18 9:00.00",
-            'ends_at' => "2021-05-18 17:00.00",
+            'starts_at' => "2021-05-18 9:00:00",
+            'ends_at' => "2021-05-18 17:00:00",
             'description' => "nothing",
         ];
     }

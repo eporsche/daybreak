@@ -47,6 +47,7 @@ class User extends Authenticatable
         'password',
         'date_of_employment',
         'opening_overtime_balance',
+        'timezone'
     ];
 
     /**

@@ -19,7 +19,8 @@ class RemoveLocationMemberTest extends TestCase
             ->withOwnedAccount()
             ->create();
 
-        $location = $user->ownedLocations()->save($location = Location::factory()->make());
+        $location = $user->ownedLocations()
+            ->save(Location::factory()->make());
 
         $location->users()->attach(
             $otherUser = User::factory()->create(),
@@ -39,9 +40,10 @@ class RemoveLocationMemberTest extends TestCase
     {
         $user = User::factory()
             ->withOwnedAccount()
-            ->create()
-            ->ownedLocations()
-            ->save($location = Location::factory()->make());
+            ->create();
+
+        $location = $user->ownedLocations()
+            ->save(Location::factory()->make());
 
         $location->users()->attach(
             $otherUser = User::factory()->create(),

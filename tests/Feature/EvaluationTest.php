@@ -41,9 +41,7 @@ class EvaluationTest extends TestCase
         $this->location = Location::forceCreate([
             'account_id' => $this->account->id,
             'owned_by' => $this->user->id,
-            'name' => "A Location",
-            'locale' => 'de',
-            'time_zone' => 'Europe/Berlin'
+            'name' => "A Location"
         ]);
 
         $this->user->switchLocation($this->location);
