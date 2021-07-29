@@ -7,18 +7,20 @@ use App\Models\Location;
 use App\Models\AbsenceType;
 use App\Models\AbsenceIndex;
 use App\Casts\BigDecimalCast;
+use App\Casts\LocalizedDateTimeCast;
+use App\Contracts\HasTimeZone;
 use App\Formatter\DateFormatter;
 use App\Traits\FiltersEmployees;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Absence extends Model
+class Absence extends Model implements HasTimeZone
 {
     use HasFactory, FiltersEmployees;
 
     protected $casts = [
-        'starts_at' => 'datetime',
-        'ends_at' => 'datetime',
+        'starts_at' => LocalizedDateTimeCast::class,
+        'ends_at' => LocalizedDateTimeCast::class,
         'vacation_days' => BigDecimalCast::class
     ];
 
@@ -32,7 +34,8 @@ class Absence extends Model
         'force_calc_custom_hours',
         'paid_hours',
         'vacation_days',
-        'status'
+        'status',
+        'timezone'
     ];
 
     public function absenceType()

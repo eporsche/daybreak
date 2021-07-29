@@ -27,12 +27,13 @@ class LocalizedDateTimeCast implements CastsAttributes
         }
 
         if ($model instanceof HasTimeZone) {
-            // dd($model);
-            return Carbon::createFromFormat('Y-m-d H:i:s', $value, config('app.timezone'))
-                ->setTimezone($model->timezone);
+            if ($model->timezone) {
+                return Carbon::createFromFormat('Y-m-d H:i:s', $value, config('app.timezone'))
+                    ->setTimezone($model->timezone);
+            }
         }
 
-        throw new UnknownTimeZoneException();
+        throw new UnknownTimeZoneException("Did you already run the artisan command daybreak:convert-timezone?");
     }
 
     /**
@@ -51,7 +52,7 @@ class LocalizedDateTimeCast implements CastsAttributes
             return [ $key => $value ];
         }
 
-        //convert the date to UTC if it is not
+        //convert date to UTC
         if ($value instanceof Carbon) {
             if ($value->isUtc()) {
                 return [ $key => $value ];
