@@ -47,10 +47,12 @@ class AbsenceTest extends TestCase
         $absenceType->users()->sync($this->user);
 
         Livewire::test(AbsenceManager::class)
-            ->set(['addAbsenceForm' => [
-                'absence_type_id' => $absenceType->id,
-                'full_day' => false
-            ]])->set([
+            ->set([
+                'addAbsenceForm' => [
+                    'absence_type_id' => $absenceType->id,
+                    'full_day' => false
+                ]
+            ])->set([
                 'startDate' => "20.11.2020"
             ])->set([
                 'endDate' => "20.11.2020"

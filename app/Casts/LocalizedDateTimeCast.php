@@ -5,7 +5,6 @@ namespace App\Casts;
 use Carbon\Carbon;
 use App\Contracts\HasTimeZone;
 use App\Exceptions\UnknownTimeZoneException;
-use Illuminate\Support\Facades\Auth;
 use PHPUnit\Framework\MockObject\UnknownTypeException;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
@@ -63,10 +62,5 @@ class LocalizedDateTimeCast implements CastsAttributes
         }
 
         throw new UnknownTypeException("Unknown Type Excpetion");
-    }
-
-    protected function user()
-    {
-        return Auth::user();
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Absence;
 
 use Carbon\Carbon;
+use App\Casts\DateCast;
+use App\Traits\HasUser;
 use Livewire\Component;
 use Carbon\CarbonPeriod;
 use App\Models\AbsenceType;
@@ -13,7 +15,6 @@ use App\Contracts\RemovesAbsence;
 use App\Contracts\ApprovesAbsence;
 use App\AbsenceCalendar\AbsenceCalculator;
 use App\AbsenceCalendar\EmployeeAbsenceCalendar;
-use App\Traits\HasUser;
 
 class AbsenceManager extends Component
 {
@@ -36,12 +37,12 @@ class AbsenceManager extends Component
     public $managingAbsenceForId;
 
     public $startDate;
-    public $startHours = 9;
+    public $startHours = 0;
     public $startMinutes = 0;
 
     public $endDate;
-    public $endHours = 17;
-    public $endMinutes = 0;
+    public $endHours = 23;
+    public $endMinutes = 59;
 
     public $hideTime = true;
 
@@ -83,7 +84,10 @@ class AbsenceManager extends Component
 
     public function updated()
     {
-        //TODO set to start of day and end of day if full day is activated...
+        if ($this->addAbsenceForm['full_day']) {
+            $this->reset('startHours','startMinutes','endHours','endMinutes');
+        }
+
         $calendar = new EmployeeAbsenceCalendar(
             $this->user,
             $this->user->currentLocation,
@@ -98,25 +102,6 @@ class AbsenceManager extends Component
         $this->calculatedDays = $calculator->getDays();
         $this->vacationDays = (string) $calculator->sumVacationDays();
         $this->paidHours = (string) $calculator->sumPaidHours();
-    }
-
-    public function refreshAbsenceHours()
-    {
-        //TODO set to start of day and end of day if full day is activated...
-        $calendar = new EmployeeAbsenceCalendar(
-            $this->user,
-            $this->user->currentLocation,
-            new CarbonPeriod(
-                $this->startTimeStr(),
-                $this->endTimeStr()
-            )
-        );
-
-        $calculator = new AbsenceCalculator($calendar, AbsenceType::findOrFail($this->addAbsenceForm['absence_type_id']));
-
-        $this->calculatedDays = $calculator->getDays();
-        $this->vacationDays = $calculator->sumVacationDays();
-        $this->paidHours = $calculator->sumPaidHours();
     }
 
     public function mount(DateFormatter $dateFormatter)
@@ -191,10 +176,13 @@ class AbsenceManager extends Component
     {
         $this->clearValidation();
 
+        if ($this->addAbsenceForm['full_day']) {
+            $this->reset('startHours','startMinutes','endHours','endMinutes');
+        }
+
         $this->addAbsenceForm = array_merge($this->addAbsenceForm, [
             'starts_at' => $this->startTimeStr(),
-            'ends_at' => $this->endTimeStr(),
-            'full_day' => $this->hideTime
+            'ends_at' => $this->endTimeStr()
         ]);
 
         $adder->add(

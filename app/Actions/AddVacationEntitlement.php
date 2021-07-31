@@ -41,7 +41,7 @@ class AddVacationEntitlement implements AddsVacationEntitlements
             return 'does_not_expire';
         }
 
-        if ($this->dateFormatter->strToDate($data['ends_at'])->isPast()) {
+        if ($this->dateFormatter->dateStrToDate($data['ends_at'])->isPast()) {
             return 'expired';
         }
 

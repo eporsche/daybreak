@@ -10,6 +10,7 @@ use App\Models\AbsenceType;
 use App\Contracts\AddsAbsences;
 use App\Formatter\DateFormatter;
 use Laravel\Jetstream\Jetstream;
+use App\Facades\DateTimeConverter;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -51,22 +52,30 @@ class AddAbsence implements AddsAbsences
             'full_day' => ['required', 'boolean']
         ])->validateWithBag('addAbsence');
 
-        $startsAt = $this->dateFormatter->timeStrToCarbon($data['starts_at']);
-        $endsAt = $this->dateFormatter->timeStrToCarbon($data['ends_at']);
-
-        //ignore given time if calculation is based on full day
-        if (isset($data['full_day']) && $data['full_day']) {
-            $startsAt = $startsAt->copy()->startOfDay();
-            $endsAt = $endsAt->copy()->endOfDay();
-        }
-
         $addingAbsenceFor = Jetstream::findUserByIdOrFail($managingAbsenceForId);
+
+        $startsAtConverter = DateTimeConverter::fromLocalDateTime(
+            $this->dateFormatter->dateTimeStrToCarbon(
+                $data['starts_at'],
+                $addingAbsenceFor->currentTimezone()
+            )
+        );
+
+        $endsAtConverter = DateTimeConverter::fromLocalDateTime(
+            $this->dateFormatter->dateTimeStrToCarbon(
+                $data['ends_at'],
+                $addingAbsenceFor->currentTimezone()
+            )
+        );
 
         $calculator = new AbsenceCalculator(
             new EmployeeAbsenceCalendar(
                 $addingAbsenceFor,
                 $location,
-                new CarbonPeriod($startsAt, $endsAt)
+                new CarbonPeriod(
+                    $startsAtConverter->toLocalDateTime(),
+                    $endsAtConverter->toLocalDateTime()
+                )
             ),
             AbsenceType::findOrFail($data['absence_type_id'])
         );
@@ -76,8 +85,9 @@ class AddAbsence implements AddsAbsences
                 'location_id' => $location->id,
                 'vacation_days' => $calculator->sumVacationDays(),
                 'paid_hours' => $calculator->sumPaidHours(),
-                'starts_at' => $startsAt,
-                'ends_at' => $endsAt,
+                'starts_at' => $startsAtConverter->toUTC(),
+                'ends_at' => $endsAtConverter->toUTC(),
+                'timezone' => $addingAbsenceFor->currentTimezone()
             ] + $data
         );
 

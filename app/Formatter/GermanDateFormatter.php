@@ -11,10 +11,37 @@ use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 class GermanDateFormatter implements DateFormatter
 {
-    public function timeStrToCarbon(string $timeStr) : Carbon
+    public function dateTimeStrToCarbon(string $timeStr, string $tz = null) : Carbon
     {
-        return Carbon::createFromTimestamp(strtotime($timeStr));
-            // ->shiftTimezone(Auth::user() ? Auth::user()->currentTimezone() : config('app.timezone'));
+        if (!$this->isStandardDateTimeFormat($timeStr)) {
+            throw new InvalidParameterException($timeStr.' is not a standard date time format "d.m.Y H:i"');
+        }
+
+        return Carbon::createFromFormat(
+            $this->getLocalizedDateTimeString(),
+            $timeStr,
+            $tz
+        );
+    }
+
+    public function dateStrToDate($value, $endOfDay = false)
+    {
+        if (!$this->isStandardDateFormat($value)) {
+            throw new InvalidParameterException($value.' is not a standard date format "d.m.Y"');
+        }
+
+        $date = Date::instance(
+            Carbon::createFromFormat(
+                $this->getLocalizedDateString(),
+                $value
+            )
+        );
+
+        if ($endOfDay) {
+            return $date->endOfDay();
+        }
+
+        return $date->startOfDay();
     }
 
     /**
@@ -28,24 +55,15 @@ class GermanDateFormatter implements DateFormatter
         return preg_match('/^(\d{1,2}).(\d{1,2}).(\d{4})$/', $value);
     }
 
-    public function strToDate($value, $endOfDay = false)
+   /**
+     * Determine if the given value is a standard "DE" date format.
+     *
+     * @param  string  $value
+     * @return bool
+     */
+    public function isStandardDateTimeFormat($value)
     {
-        if ($this->isStandardDateFormat($value)) {
-            $date = Date::instance(
-                Carbon::createFromFormat(
-                    $this->getLocalizedDateString(),
-                    $value
-                )
-            );
-
-            if ($endOfDay) {
-                return $date->endOfDay();
-            } else {
-                return $date->startOfDay();
-            }
-        } else {
-            throw new InvalidParameterException($value.' is not a standard date format "d.m.Y"');
-        }
+        return preg_match('/^(\d{1,2}).(\d{1,2}).(\d{4}) (\d{2}):(\d{2})$/', $value);
     }
 
     public function formatDateForView($date)

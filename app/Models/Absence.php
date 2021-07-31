@@ -104,7 +104,6 @@ class Absence extends Model implements HasTimeZone
     {
 
         $dateFormatter = app(DateFormatter::class);
-
         if ($this->full_day) {
             return $dateFormatter->formatDateForView($this->starts_at);
         }

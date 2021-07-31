@@ -39,8 +39,8 @@ class FilterEvaluation implements FiltersEvaluation
             'toDate' => ['required', $this->dateFormatter->dateFormatRule()]
         ])->validateWithBag('filterEmployeeReport');
 
-        if ($this->dateFormatter->strToDate($filter['fromDate'])->diffInDays(
-            $this->dateFormatter->strToDate($filter['toDate'])
+        if ($this->dateFormatter->dateStrToDate($filter['fromDate'])->diffInDays(
+            $this->dateFormatter->dateStrToDate($filter['toDate'])
         ) > 50) {
                 throw ValidationException::withMessages([
                     'fromDate' => [ __('Chosen date interval is too big.') ],
@@ -48,7 +48,7 @@ class FilterEvaluation implements FiltersEvaluation
         }
 
         if ($employee->date_of_employment) {
-            if ($this->dateFormatter->strToDate($filter['fromDate'])->lt($employee->date_of_employment)) {
+            if ($this->dateFormatter->dateStrToDate($filter['fromDate'])->lt($employee->date_of_employment)) {
                 throw ValidationException::withMessages([
                     'fromDate' => [__('The start date should not be set before the employment date.')],
                 ])->errorBag('filterEmployeeReport');
@@ -58,8 +58,8 @@ class FilterEvaluation implements FiltersEvaluation
         return (new ReportBuilder(
             $employee,
             $location,
-            $this->dateFormatter->strToDate($filter['fromDate']),
-            $this->dateFormatter->strToDate($filter['toDate'])
+            $this->dateFormatter->dateStrToDate($filter['fromDate']),
+            $this->dateFormatter->dateStrToDate($filter['toDate'])
         ))->build();
     }
 }

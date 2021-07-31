@@ -41,18 +41,18 @@ class AddTimeTracking implements AddsTimeTrackings
             'description' => ['nullable', 'string']
         ])->validateWithBag('addTimeTracking');
 
-
-
         $addingTimeTrackingFor = Jetstream::findUserByIdOrFail($managingTimeTrackingForId);
 
-        $startsAt = DateTimeConverter::fromLocalizedDateTime(
-            $data['starts_at'],
-            $addingTimeTrackingFor->currentTimezone()
+        $startsAt = DateTimeConverter::fromLocalDateTime(
+            $this->dateFormatter
+                ->dateTimeStrToCarbon($data['starts_at'])
+                ->shiftTimezone($addingTimeTrackingFor->currentTimezone())
         )->toUTC();
 
-        $endsAt = DateTimeConverter::fromLocalizedDateTime(
-            $data['ends_at'],
-            $addingTimeTrackingFor->currentTimezone()
+        $endsAt = DateTimeConverter::fromLocalDateTime(
+            $this->dateFormatter
+                ->dateTimeStrToCarbon($data['ends_at'])
+                ->shiftTimezone($addingTimeTrackingFor->currentTimezone())
         )->toUTC();
 
         $this->ensureDateIsNotBeforeEmploymentDate($addingTimeTrackingFor, $startsAt);

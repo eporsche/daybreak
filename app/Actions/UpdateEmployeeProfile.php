@@ -33,7 +33,7 @@ class UpdateEmployeeProfile implements UpdatesEmployeeProfile
         $user->forceFill([
             'name' => $data['name'],
             'date_of_employment' =>
-                $this->dateFormatter->strToDate($data['date_of_employment']),
+                $this->dateFormatter->dateStrToDate($data['date_of_employment']),
             'opening_overtime_balance' =>
                 $data['opening_overtime_balance']
         ])->save();

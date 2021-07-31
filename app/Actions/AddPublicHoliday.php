@@ -26,7 +26,7 @@ class AddPublicHoliday implements AddsPublicHoliday
 
         $location->publicHolidays()->create([
             'title' => $data['name'],
-            'day' => $this->dateFormatter->strToDate($data['date']),
+            'day' => $this->dateFormatter->dateStrToDate($data['date']),
             'public_holiday_half_day' => $data['half_day']
         ]);
     }

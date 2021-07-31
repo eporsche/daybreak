@@ -1,9 +1,6 @@
 <?php
 namespace App\Converter;
 
-use Carbon\Carbon;
-use App\Formatter\DateFormatter;
-
 class DateTimeConverter
 {
 
@@ -11,30 +8,23 @@ class DateTimeConverter
 
     private $localTimezone;
 
-    public $dateFormatter;
-
-    public function __construct(DateFormatter $dateFormatter)
-    {
-        $this->dateFormatter = $dateFormatter;
-    }
-
-    public function fromUTCDateTime($utcDateTime)
+    public function setUtcDateTime($utcDateTime)
     {
         $this->utcDateTime = $utcDateTime;
         return $this;
     }
 
-    public function fromLocalizedDateTime($dateTime, $tz)
+    public function setLocalTimezone($localTimezone)
     {
-        $dt = Carbon::createFromFormat(
-            $this->dateFormatter->getLocalizedDateTimeString(),
-            $dateTime,
-            $tz
-        );
-
-        $this->utcDateTime = $dt->copy()->setTimezone(config('app.timezone'));
-        $this->localTimezone = $tz;
+        $this->localTimezone = $localTimezone;
         return $this;
+    }
+
+    public function fromLocalDateTime($dateTime)
+    {
+        return (new static())
+            ->setLocalTimezone($dateTime->getTimezone()->getName())
+            ->setUtcDateTime($dateTime->setTimezone(config('app.timezone')));
     }
 
     public function toUTC()
@@ -42,7 +32,7 @@ class DateTimeConverter
         return $this->utcDateTime;
     }
 
-    public function toLocalizedDateTime()
+    public function toLocalDateTime()
     {
         if (!$this->localTimezone) {
             throw new \Exception('Timezone not set.');

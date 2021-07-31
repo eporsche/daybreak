@@ -45,8 +45,9 @@ class DeleteAbsenceTest extends TestCase
             'location_id' => $user->allLocations()->first()->id,
             'vacation_days' => 2,
             'paid_hours' => 16,
-            'starts_at' => '2020-12-12',
-            'ends_at' => '2020-12-12',
+            'starts_at' => '2020-12-12 00:00:00',
+            'ends_at' => '2020-12-12 00:00:00',
+            'timezone' => 'UTC',
             'full_day' => false,
             'absence_type_id' => $absentType->id,
         ]);

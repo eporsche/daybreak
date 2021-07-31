@@ -35,7 +35,7 @@ class AddTargetHour implements AddsTargetHours
         ])->validateWithBag('addTargetHour');
 
         $targetHour['start_date'] = app(DateFormatter::class)
-            ->strToDate($targetHour['start_date']);
+            ->dateStrToDate($targetHour['start_date']);
         $user->targetHours()->create($targetHour);
     }
 }

@@ -15,9 +15,9 @@ interface DateFormatter
      */
     public function isStandardDateFormat($value);
 
-    public function strToDate($value, $endOfDay = false);
+    public function dateStrToDate($value, $endOfDay = false);
 
-    public function timeStrToCarbon(string $timeStr) : Carbon;
+    public function dateTimeStrToCarbon(string $timeStr, string $tz = null) : Carbon;
 
     public function generateTimeStr(string $date = null, string $hours = null, string $minutes = null);
 

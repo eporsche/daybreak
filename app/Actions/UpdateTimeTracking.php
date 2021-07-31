@@ -43,8 +43,8 @@ class UpdateTimeTracking implements UpdatesTimeTracking
         ])->validateWithBag('addTimeTracking');
 
 
-        $startsAt = $this->dateFormatter->timeStrToCarbon($data['starts_at']);
-        $endsAt = $this->dateFormatter->timeStrToCarbon($data['ends_at']);
+        $startsAt = $this->dateFormatter->dateTimeStrToCarbon($data['starts_at']);
+        $endsAt = $this->dateFormatter->dateTimeStrToCarbon($data['ends_at']);
 
         $updatingTimeTrackingFor = Jetstream::findUserByIdOrFail($managingTimeTrackingForId);
 
