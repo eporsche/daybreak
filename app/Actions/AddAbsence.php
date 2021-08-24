@@ -54,18 +54,22 @@ class AddAbsence implements AddsAbsences
 
         $addingAbsenceFor = Jetstream::findUserByIdOrFail($managingAbsenceForId);
 
+        $start = $this->dateFormatter->dateTimeStrToCarbon(
+            $data['starts_at'],
+            $addingAbsenceFor->currentTimezone()
+        );
+
+        $end = $this->dateFormatter->dateTimeStrToCarbon(
+            $data['ends_at'],
+            $addingAbsenceFor->currentTimezone()
+        );
+
         $startsAtConverter = DateTimeConverter::fromLocalDateTime(
-            $this->dateFormatter->dateTimeStrToCarbon(
-                $data['starts_at'],
-                $addingAbsenceFor->currentTimezone()
-            )
+            $data['full_day'] ? $start->copy()->startOfDay() : $start
         );
 
         $endsAtConverter = DateTimeConverter::fromLocalDateTime(
-            $this->dateFormatter->dateTimeStrToCarbon(
-                $data['ends_at'],
-                $addingAbsenceFor->currentTimezone()
-            )
+            $data['full_day'] ? $end->copy()->endOfDay() : $end
         );
 
         $calculator = new AbsenceCalculator(

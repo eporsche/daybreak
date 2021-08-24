@@ -40,8 +40,11 @@ class UpdateTimeTrackingTest extends TestCase
 
         $timeTracking = TimeTracking::factory([
             'user_id' => $this->user,
-            'location_id' => $this->user->currentLocation
+            'location_id' => $this->user->currentLocation,
+            'timezone' => 'UTC'
         ])->create();
+
+
 
         Livewire::test(TimeTrackingManager::class)->set([
             'timeTrackingIdBeingUpdated' => $timeTracking->id,

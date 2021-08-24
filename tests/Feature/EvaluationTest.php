@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
 use App\Report\Report;
+use Livewire\Livewire;
 use App\Models\Absence;
 use App\Models\Account;
 use App\Models\Location;
@@ -16,6 +17,7 @@ use App\Contracts\ApprovesAbsence;
 use Illuminate\Support\Facades\Bus;
 use App\Contracts\FiltersEvaluation;
 use Daybreak\Caldav\Jobs\CreateCaldavEvent;
+use App\Http\Livewire\Absence\AbsenceManager;
 
 class EvaluationTest extends TestCase
 {
@@ -64,15 +66,37 @@ class EvaluationTest extends TestCase
         /**
          * @var AddsAbsences
          */
-        $action = app(AddsAbsences::class);
 
-        $action->add($this->user, $this->location, $this->user->id, [
-            'absence_type_id' => $absenceType->id,
-            'starts_at' => '20.11.2020 00:00',
-            'ends_at' => '20.11.2020 00:00',
-            'full_day' => true,
-            'status' => 'confirmed'
-        ]);
+        // $user = User::factory([
+        //     'date_of_employment' => '2020-11-01 07:47:05',
+        //     'current_location_id' => $location = Location::factory()->create()
+        // ])->withOwnedAccount()->hasTargetHours([
+        //     'start_date' => '2020-11-01'
+        // ])->hasAttached($location, [
+        //     'role' => 'admin'
+        // ])->create()
+
+        $this->actingAs($this->user);
+
+        Livewire::test(AbsenceManager::class)
+            ->set([
+                'addAbsenceForm' => [
+                    'absence_type_id' => $absenceType->id,
+                    'full_day' => true
+                ]
+            ])->set([
+                'startDate' => "20.11.2020"
+            ])->set([
+                'endDate' => "20.11.2020"
+            ])->set([
+                'startHours' => 0
+            ])->set([
+                'startMinutes' => 0
+            ])->set([
+                'endHours' => 23
+            ])->set([
+                'endMinutes' => 59
+            ])->call('addAbsence');
 
         $this->assertDatabaseHas('absences', [
             'starts_at' => '2020-11-20 00:00:00',
