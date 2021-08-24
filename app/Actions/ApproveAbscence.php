@@ -28,7 +28,7 @@ class ApproveAbscence implements ApprovesAbsence
      * @param  int  $absenceId
      * @return void
      */
-    public function approve(User $user, Location $location, $absenceId)
+    public function approve(User $user, Location $location, int $absenceId)
     {
         Gate::check('approveAbsence',  [App\Model\Absence::class, $location]);
 

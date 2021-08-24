@@ -8,5 +8,5 @@ use App\Models\Location;
 
 interface ApprovesAbsence
 {
-    public function approve(User $user, Location $location, Absence $absence);
+    public function approve(User $user, Location $location, int  $absenceId);
 }

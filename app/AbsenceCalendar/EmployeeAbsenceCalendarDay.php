@@ -17,6 +17,7 @@ class EmployeeAbsenceCalendarDay implements AbsenceCalendarDay, Arrayable
     protected $targetHours;
     protected $vacation;
     protected $isPublicHoliday;
+    protected $paidHours;
 
     public function __construct(Carbon $date, Day $day, bool $isPublicHoliday, Closure $paidHours, Closure $vacation)
     {
