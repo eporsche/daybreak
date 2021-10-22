@@ -25,7 +25,10 @@ class CreateLocationTest extends TestCase
             'employee' => $user
         ])
             ->set([
-                'addLocationForm' => ['name' => 'Test Location']
+                'locationForm' => [
+                    'name' => 'Test Location',
+                    'timezone' => 'UTC'
+                ]
             ])
             ->call('confirmAddLocation');
 

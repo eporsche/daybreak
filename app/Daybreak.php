@@ -12,6 +12,7 @@ use App\Contracts\AddsTargetHours;
 use App\Contracts\ApprovesAbsence;
 use App\Contracts\DeletesAccounts;
 use App\Contracts\RemovesLocation;
+use App\Contracts\UpdatesLocation;
 use App\Contracts\DeletesLocations;
 use App\Contracts\AddsPublicHoliday;
 use App\Contracts\AddsTimeTrackings;
@@ -28,12 +29,12 @@ use App\Contracts\ImportsPublicHolidays;
 use App\Contracts\AddsDefaultRestingTime;
 use App\Contracts\InvitesLocationMembers;
 use App\Contracts\RemovesLocationMembers;
+use App\Contracts\UpdatesEmployeeProfile;
 use App\Contracts\AddsVacationEntitlements;
 use App\Contracts\RemovesDefaultRestingTime;
 use App\Contracts\UpdatesLocationMembersRole;
 use App\Contracts\RemovesVacationEntitlements;
 use App\Contracts\TransfersVacationEntitlements;
-use App\Contracts\UpdatesEmployeeProfile;
 
 class Daybreak
 {
@@ -210,6 +211,11 @@ class Daybreak
     public static function addsLocationsUsing(string $class)
     {
         return app()->singleton(AddsLocation::class, $class);
+    }
+
+    public static function updatesLocationUSing(string $class)
+    {
+        return app()->singleton(UpdatesLocation::class, $class);
     }
 
     public static function updatesTimeTrackingsUsing(string $class)

@@ -14,6 +14,7 @@ class AddLocation implements AddsLocation
         Validator::make($data, [
             'owned_by' => ['required', 'exists:users,id'],
             'name' => ['required', 'string', 'max:255'],
+            'timezone' => ['required', 'string', 'max:255']
         ])->validateWithBag('createLocation');
 
         $account->locations()->create($data);

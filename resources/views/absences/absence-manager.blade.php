@@ -213,7 +213,7 @@
             {{ __('Add absence') }}
         </x-slot>
         <x-slot name="content">
-            <div class="grid grid-cols-1" x-data="{ open: @entangle('hideTime'), details: @entangle('hideDetails') }">
+            <div class="grid grid-cols-1" x-data="{ open: @entangle('addAbsenceForm.full_day'), details: @entangle('hideDetails') }">
                 @can('manageAbsence', [App\Model\Absence::class, $this->user->currentLocation])
                     <div class="mt-2">
                         <x-jet-label for="type" value="{{ __('Choose Employee') }}" />
@@ -259,7 +259,7 @@
                 <div class="mt-2">
                     <div class="flex flex-col">
                         <div class="inline-flex">
-                            <input id="full_day" wire:model="hideTime" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <input id="full_day" wire:model="addAbsenceForm.full_day" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                             <x-jet-label for="full_day" class="ml-2 block text-sm text-gray-900" value="{{ __('Full day') }}" />
                         </div>
                         <x-jet-input-error for="full_day" class="mt-2" />

@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Actions\RemoveVacationEntitlement;
 use Carbon\Exceptions\InvalidTypeException;
 use App\Actions\TransferVacationEntitlement;
+use App\Actions\UpdateLocation;
 use Illuminate\View\Compilers\BladeCompiler;
 
 class AppServiceProvider extends ServiceProvider
@@ -104,6 +105,7 @@ class AppServiceProvider extends ServiceProvider
         Daybreak::removesPublicHolidayUsing(RemovePublicHoliday::class);
         Daybreak::addsDefaultRestingTimeUsing(AddDefaultRestingTime::class);
         Daybreak::removesDefaultRestingTimeUsing(RemoveDefaultRestingTime::class);
+        Daybreak::updatesLocationUSing(UpdateLocation::class);
 
         Collection::macro('mapToMultipleSelect', function () {
             /**

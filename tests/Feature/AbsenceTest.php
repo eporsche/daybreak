@@ -85,7 +85,7 @@ class AbsenceTest extends TestCase
             ->set(['addAbsenceForm' => [
                 'absence_type_id' => $absenceType->id,
                 'full_day' => false
-            ]])->set(['hideTime' => false])
+            ]])
             ->set([
                 'startDate' => "20.11.2020"
             ])->set([
@@ -125,7 +125,7 @@ class AbsenceTest extends TestCase
             ->set(['addAbsenceForm' => [
                 'absence_type_id' => $absenceType->id,
                 'full_day' => false
-            ]])->set(['hideTime' => false])
+            ]])
             ->set([
                 'startDate' => "19.11.2020"
             ])->set([
@@ -165,7 +165,7 @@ class AbsenceTest extends TestCase
             ->set(['addAbsenceForm' => [
                 'absence_type_id' => $absenceType->id,
                 'full_day' => false
-            ]])->set(['hideTime' => false])
+            ]])
             ->set([
                 'startDate' => "18.11.2020"
             ])->set([
@@ -205,7 +205,7 @@ class AbsenceTest extends TestCase
             ->set(['addAbsenceForm' => [
                 'absence_type_id' => $absenceType->id,
                 'full_day' => false
-            ]])->set(['hideTime' => false])
+            ]])
             ->set([
                 'startDate' => "20.11.2020"
             ])->set([

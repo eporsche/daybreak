@@ -28,6 +28,9 @@
                                 <x-jet-button wire:click="enterLocation({{ $location->id }})" wire:loading.attr="disabled">
                                     {{ __('Enter') }}
                                 </x-jet-button>
+                                <x-jet-button wire:click="updateLocation({{ $location->id }})" wire:loading.attr="disabled">
+                                    {{ __('Edit') }}
+                                </x-jet-button>
                                 <button class="cursor-pointer ml-6 text-sm text-red-500" wire:click="confirmLocationRemoval({{ $location->id }})" wire:loading.attr="disabled">
                                     {{ __('Remove') }}
                                 </button>
@@ -48,12 +51,14 @@
     </div>
 
     <div class="mt-5">
-        <x-jet-button wire:click="addLocation" wire:loading.attr="disabled">
+        <x-jet-button wire:click="manageLocation" wire:loading.attr="disabled">
             {{ __('Add location') }}
         </x-jet-button>
     </div>
 
-    <x-add-location-modal />
+    <x-add-location-modal
+        :locationIdBeingUpdated="$locationIdBeingUpdated"
+    />
 
 
     <x-jet-confirmation-modal wire:model="confirmingLocationRemoval">

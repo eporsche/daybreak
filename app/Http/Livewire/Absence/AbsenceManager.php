@@ -44,8 +44,6 @@ class AbsenceManager extends Component
     public $endHours = 23;
     public $endMinutes = 59;
 
-    public $hideTime = true;
-
     public $hideDetails = true;
 
     public $addAbsenceForm = [
@@ -84,6 +82,7 @@ class AbsenceManager extends Component
 
     public function updated()
     {
+        // dd($this->addAbsenceForm['full_day']);
         if ($this->addAbsenceForm['full_day']) {
             $this->reset('startHours','startMinutes','endHours','endMinutes');
         }

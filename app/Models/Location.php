@@ -20,7 +20,8 @@ class Location extends Model
     protected $fillable = [
         'account_id',
         'owned_by',
-        'name'
+        'name',
+        'timezone'
     ];
 
     use HasFactory;
