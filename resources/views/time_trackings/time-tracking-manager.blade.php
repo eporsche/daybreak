@@ -146,6 +146,7 @@
         :hours="$hours"
         :minutes="$minutes"
         :user="$this->user"
+        :managingTimeTrackingForId="$managingTimeTrackingForId"
         :employeeSimpleSelectOptions="$employeeSimpleSelectOptions"
         :pauseTimeForm="$pauseTimeForm"
         :timeTrackingIdBeingUpdated="$timeTrackingIdBeingUpdated"
