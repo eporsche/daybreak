@@ -89,6 +89,11 @@ class VacationEntitlement extends Model
         return $this->status === 'expired';
     }
 
+    public function notExpired()
+    {
+        return $this->status != 'expired';
+    }
+
     public function expire()
     {
         return $this->update([
@@ -151,15 +156,15 @@ class VacationEntitlement extends Model
             return;
         }
 
-        if ($this->isUsed()) {
+        if ($this->isUsed() || $this->isExpired()) {
             throw ValidationException::withMessages([
                 'error' => [__('Vacation entitlement has wrong status.')],
             ]);
         }
 
-        $this->usedVacationDays()->attach($absence->id, [
+        tap($this, fn($model) => $model->usedVacationDays()->attach($absence->id, [
             'used_days' => $absence->vacation_days
-        ]);
+        ]))->load('usedVacationDays');
 
         if ($this->used_days->isGreaterThanOrEqualTo($this->available_days)) {
             $this->markAsUsed();

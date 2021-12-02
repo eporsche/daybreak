@@ -12,6 +12,7 @@ use App\Models\Account;
 use App\Models\Location;
 use App\Models\AbsenceType;
 use App\Contracts\AddsAbsences;
+use App\Contracts\AddsVacationEntitlements;
 use App\Contracts\ApprovesAbsence;
 use Illuminate\Support\Facades\Bus;
 use App\Contracts\FiltersEvaluation;
@@ -135,6 +136,167 @@ class EvaluationTest extends TestCase
     //Überstunden
 
     //Urlaub
+    public function test_can_use_vacation_entitlement()
+    {
+        $absenceType = AbsenceType::forceCreate([
+            'location_id' => $this->location->id,
+            'title' => 'Urlaub',
+            'affect_vacation_times' => true,
+            'affect_evaluations' => true,
+            'evaluation_calculation_setting' => 'absent_to_target'
+        ]);
+
+        $this->user->absenceTypes()->sync($absenceType);
+
+        /**
+         * @var AddsVacationEntitlements
+         */
+        $action = app(AddsVacationEntitlements::class);
+        $action->add($this->user, [
+            'name' => "yearly allowance",
+            'starts_at' => "01.01.2021",
+            'ends_at' => "31.12.2021",
+            'days' => 2,
+            'expires' => false,
+            'transfer_remaining' => false
+        ]);
+
+        /**
+         * @var AddsAbsences
+         */
+        $action = app(AddsAbsences::class);
+        $action->add($this->user, $this->location, $this->user->id, [
+            'absence_type_id' => $absenceType->id,
+            'starts_at' => '29.11.2021 00:00',
+            'ends_at' => '30.11.2021 00:00',
+            'full_day' => true,
+            'status' => 'confirmed'
+        ]);
+
+        Bus::fake();
+
+        /**
+         * @var ApprovesAbsence
+         */
+        $approver = app(ApprovesAbsence::class);
+
+        $approver->approve(
+            $this->user,
+            $this->location,
+            Absence::first()->id
+        );
+
+        $this->assertDatabaseHas("absences",[
+            'id' =>  Absence::first()->id,
+            'status' => 'confirmed',
+            'vacation_days' => 2,
+            'paid_hours' => 16
+        ]);
+
+        $this->assertDatabaseHas("vacation_entitlements",[
+            'name' => 'yearly allowance',
+            'status' => 'used',
+        ]);
+    }
+
+    public function test_can_submit_vacation()
+    {
+        $absenceType = AbsenceType::forceCreate([
+            'location_id' => $this->location->id,
+            'title' => 'Urlaub',
+            'affect_vacation_times' => true,
+            'affect_evaluations' => true,
+            'evaluation_calculation_setting' => 'absent_to_target'
+        ]);
+
+        $this->user->absenceTypes()->sync($absenceType);
+
+        /**
+         * @var AddsVacationEntitlements
+         */
+        $action = app(AddsVacationEntitlements::class);
+        $action->add($this->user, [
+            'name' => "yearly allowance",
+            'starts_at' => "01.01.2021",
+            'ends_at' => "31.12.2021",
+            'days' => 2,
+            'expires' => false,
+            'transfer_remaining' => false
+        ]);
+
+        /**
+         * @var AddsAbsences
+         */
+        $action = app(AddsAbsences::class);
+
+        $action->add($this->user, $this->location, $this->user->id, [
+            'absence_type_id' => $absenceType->id,
+            'starts_at' => '29.11.2021 00:00',
+            'ends_at' => '30.11.2021 00:00',
+            'full_day' => true,
+            'status' => 'confirmed'
+        ]);
+
+        Bus::fake();
+
+        /**
+         * @var ApprovesAbsence
+         */
+        $approver = app(ApprovesAbsence::class);
+
+        $approver->approve(
+            $this->user,
+            $this->location,
+            Absence::first()->id
+        );
+
+        $this->assertDatabaseHas("absence_index",[
+            'date' => '2021-11-29 00:00:00',
+            'hours' => 8,
+        ]);
+
+        $this->assertDatabaseHas("absence_index",[
+            'date' => '2021-11-30 00:00:00',
+            'hours' => 8,
+        ]);
+
+        /**
+         * @var AddsVacationEntitlements
+         */
+        $action = app(AddsVacationEntitlements::class);
+        $action->add($this->user, [
+            'name' => "additional allowance",
+            'starts_at' => "01.01.2021",
+            'ends_at' => "31.12.2021",
+            'days' => 2,
+            'expires' => false,
+            'transfer_remaining' => false
+        ]);
+
+        /**
+         * @var AddsAbsences
+         */
+        $action = app(AddsAbsences::class);
+
+        $action->add($this->user, $this->location, $this->user->id, [
+            'absence_type_id' => $absenceType->id,
+            'starts_at' => '06.12.2021 00:00',
+            'ends_at' => '07.12.2021 00:00',
+            'full_day' => true,
+            'status' => 'confirmed'
+        ]);
+
+        /**
+         * @var ApprovesAbsence
+         */
+        $approver = app(ApprovesAbsence::class);
+
+        $approver->approve(
+            $this->user,
+            $this->location,
+            Absence::where('starts_at','2021-12-06 00:00:00')->first()->id
+        );
+    }
 
     //Wunschfrei
 }
