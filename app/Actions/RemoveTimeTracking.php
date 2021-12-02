@@ -13,7 +13,7 @@ class RemoveTimeTracking implements RemovesTimeTracking
     {
         tap($location->timeTrackings()->whereKey($timeTrackingId)->first(), function ($timeTracking) use ($user, $location) {
 
-            Gate::forUser($user)->authorize('removeAbsence', [
+            Gate::forUser($user)->authorize('removeTimeTracking', [
                 TimeTracking::class,
                 $timeTracking,
                 $location
