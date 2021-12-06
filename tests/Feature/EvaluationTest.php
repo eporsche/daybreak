@@ -199,6 +199,61 @@ class EvaluationTest extends TestCase
         ]);
     }
 
+    public function test_can_submit_future_vacation_entitlement()
+    {
+        $this->travelTo(Carbon::parse('2021-01-01'));
+
+        $absenceType = AbsenceType::forceCreate([
+            'location_id' => $this->location->id,
+            'title' => 'Urlaub',
+            'affect_vacation_times' => true,
+            'affect_evaluations' => true,
+            'evaluation_calculation_setting' => 'absent_to_target'
+        ]);
+
+        $this->user->absenceTypes()->sync($absenceType);
+
+        /**
+         * @var AddsVacationEntitlements
+         */
+        $action = app(AddsVacationEntitlements::class);
+        $action->add($this->user, [
+            'name' => "yearly allowance",
+            'starts_at' => "01.01.2022",
+            'ends_at' => "31.12.2022",
+            'days' => 10,
+            'expires' => false,
+            'transfer_remaining' => false
+        ]);
+
+        /**
+         * @var AddsAbsences
+         */
+        $action = app(AddsAbsences::class);
+
+        $action->add($this->user, $this->location, $this->user->id, [
+            'absence_type_id' => $absenceType->id,
+            'starts_at' => '29.11.2022 00:00',
+            'ends_at' => '30.11.2022 00:00',
+            'full_day' => true,
+            'status' => 'confirmed'
+        ]);
+
+        Bus::fake();
+
+        /**
+         * @var ApprovesAbsence
+         */
+        $approver = app(ApprovesAbsence::class);
+
+        $approver->approve(
+            $this->user,
+            $this->location,
+            Absence::first()->id
+        );
+
+    }
+
     public function test_can_submit_vacation()
     {
         $absenceType = AbsenceType::forceCreate([

@@ -188,6 +188,11 @@ class VacationEntitlement extends Model
         return $this->transferVacationDays()->exists();
     }
 
+    public function scopeNotExpired($query)
+    {
+        return $query->whereNotIn('status', ['expired']);
+    }
+
     public function scopeNotUsed($query)
     {
         return $query->whereNotIn('status', ['used']);

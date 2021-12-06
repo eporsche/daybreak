@@ -20,26 +20,19 @@ trait HasVacations
 
     public function availableVacationEntitlements()
     {
-        return $this->vacationEntitlements()->notUsed();
+        return $this->vacationEntitlements()
+            ->notUsed()
+            ->notExpired();
     }
 
     public function currentVacationEntitlement()
     {
         $today = now()->startOfDay();
-        $available = $this->availableVacationEntitlements()
-            ->where('starts_at','<=',$today)
+        return $this->availableVacationEntitlements()
             ->where('ends_at','>=',$today)
             ->orderBy('ends_at','ASC')
-            ->get();
-
-        $feasibleEntitlements = $available->filter(function (VacationEntitlement $entitlement) {
-            if(!$entitlement->isExpired() && !$entitlement->isUsed()) {
-                return $entitlement;
-            }
-        });
-
-        return $feasibleEntitlements->first();
-
+            ->get()
+            ->first();
     }
 
     public function latestVacationEntitlement()
