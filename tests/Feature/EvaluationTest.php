@@ -138,6 +138,8 @@ class EvaluationTest extends TestCase
     //Urlaub
     public function test_can_use_vacation_entitlement()
     {
+        $this->travelTo($this->user->date_of_employment);
+
         $absenceType = AbsenceType::forceCreate([
             'location_id' => $this->location->id,
             'title' => 'Urlaub',
@@ -256,6 +258,8 @@ class EvaluationTest extends TestCase
 
     public function test_can_submit_vacation()
     {
+        $this->travelTo($this->user->date_of_employment);
+
         $absenceType = AbsenceType::forceCreate([
             'location_id' => $this->location->id,
             'title' => 'Urlaub',
