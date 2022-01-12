@@ -85,6 +85,7 @@ class EmployeeAbsenceCalendar implements AbsenceCalendar
             if ($this->startAndEndDayAreSame()) {
                 $calcHours = BigDecimal::of($this->startDay->diffInMinutes($this->endDay))
                     ->dividedBy('60', 2, RoundingMode::HALF_EVEN);
+                    // dd($calcHours);
                 return $calcHours->isGreaterThanOrEqualTo($absenceDay->getTargetHours()) ?
                     $absenceDay->getTargetHours() : $calcHours;
             }
@@ -131,7 +132,7 @@ class EmployeeAbsenceCalendar implements AbsenceCalendar
             $diffInHours = $this->diffHoursToStartOrEndOfDay($date);
         }
 
-        return $diffInHours->isLessThan(
+        return $diffInHours->isLessThanOrEqualTo(
             $this->employee
                 ->targetHoursForDate($date)
                 ->dividedBy('2', 2, RoundingMode::HALF_EVEN)

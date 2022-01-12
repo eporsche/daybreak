@@ -93,6 +93,47 @@ class AbsenceTest extends TestCase
             ])->set([
                 'startMinutes' => 00
             ])->set([
+                'endHours' => 18
+            ])->set([
+                'endMinutes' => 00
+            ])->call('addAbsence');
+
+        $this->assertDatabaseHas('absences',[
+            'absence_type_id' => $absenceType->id,
+            'vacation_days' => 0.5,
+            'paid_hours' => 4
+        ]);
+    }
+
+
+    public function test_can_create_half_day_vacation_for_less_than_a_half_day()
+    {
+        $this->actingAs($this->user);
+
+        $absenceType = AbsenceType::factory([
+            'location_id' => $this->location->id,
+            'title' => 'Urlaub',
+            'affect_vacation_times' => true,
+            'affect_evaluations' => true,
+            'evaluation_calculation_setting' => 'absent_to_target'
+        ])->create();
+
+        $absenceType->users()->sync($this->user);
+
+        Livewire::test(AbsenceManager::class)
+            ->set(['addAbsenceForm' => [
+                'absence_type_id' => $absenceType->id,
+                'full_day' => false
+            ]])->set(['hideTime' => false])
+            ->set([
+                'startDate' => "20.11.2020"
+            ])->set([
+                'endDate' => "20.11.2020"
+            ])->set([
+                'startHours' => 14
+            ])->set([
+                'startMinutes' => 00
+            ])->set([
                 'endHours' => 16
             ])->set([
                 'endMinutes' => 30
