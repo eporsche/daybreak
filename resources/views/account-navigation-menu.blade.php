@@ -5,33 +5,33 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('accounts.show', Auth::user()->ownedAccount) }}">
+                    <a href="{{ route('accounts.show', Auth::user()->account) }}">
                        <img src="/logo.svg" class="block h-12 w-auto">
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-account-nav-link href="{{ route('locations', Auth::user()->ownedAccount) }}" :active="request()->routeIs('locations')">
+                    <x-account-nav-link href="{{ route('locations', Auth::user()->account) }}" :active="request()->routeIs('locations')">
                         {{ __('Locations') }}
                     </x-account-nav-link>
                 </div>
                 @if(App\Daybreak::hasProjectBillingFeature())
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-account-nav-link href="{{ route('projects', Auth::user()->ownedAccount) }}" :active="request()->routeIs('projects')">
+                        <x-account-nav-link href="{{ route('projects', Auth::user()->account) }}" :active="request()->routeIs('projects')">
                             {{ __('Projects') }}
                         </x-account-nav-link>
                     </div>
                 @endif
                 @if(App\Daybreak::hasEmployeePayrollFeature())
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-account-nav-link href="{{ route('payrolls', Auth::user()->ownedAccount) }}" :active="request()->routeIs('payrolls')">
+                        <x-account-nav-link href="{{ route('payrolls', Auth::user()->account) }}" :active="request()->routeIs('payrolls')">
                             {{ __('Payroll') }}
                         </x-account-nav-link>
                     </div>
                 @endif
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-account-nav-link href="{{ route('employees', Auth::user()->ownedAccount) }}" :active="request()->routeIs('employees')">
+                    <x-account-nav-link href="{{ route('employees', Auth::user()->account) }}" :active="request()->routeIs('employees')">
                         {{ __('Employees') }}
                     </x-account-nav-link>
                 </div>
@@ -77,12 +77,12 @@
                         <div class="border-t border-gray-100"></div>
 
                         <!-- Account Management -->
-                        @can('view', Auth::user()->ownedAccount)
+                        @can('view', Auth::user()->account)
                             <div class="block px-4 py-2 text-xs text-gray-400">
                                 {{ __('Manage Account') }}
                             </div>
 
-                            <x-jet-dropdown-link href="{{ route('accounts.show', Auth::user()->ownedAccount) }}">
+                            <x-jet-dropdown-link href="{{ route('accounts.show', Auth::user()->account) }}">
                                 {{ __('Account Settings') }}
                             </x-jet-dropdown-link>
                         @endcan
@@ -94,7 +94,7 @@
                             {{ __('Manage Location') }}
                         </div>
 
-                        {{-- <x-jet-dropdown-link href="{{ route('locations.index', Auth::user()->ownedAccount->id) }}">
+                        {{-- <x-jet-dropdown-link href="{{ route('locations.index', Auth::user()->account->id) }}">
                             {{ __('Account Settings') }}
                         </x-jet-dropdown-link> --}}
 
@@ -190,22 +190,22 @@
                     </x-jet-responsive-nav-link>
                 @endif
 
-                <x-jet-responsive-nav-link href="{{ route('locations', Auth::user()->ownedAccount) }}" :active="request()->routeIs('locations')">
+                <x-jet-responsive-nav-link href="{{ route('locations', Auth::user()->account) }}" :active="request()->routeIs('locations')">
                     {{ __('Locations') }}
                 </x-jet-responsive-nav-link>
                 @if(App\Daybreak::hasProjectBillingFeature())
 
-                    <x-jet-responsive-nav-link href="{{ route('projects', Auth::user()->ownedAccount) }}" :active="request()->routeIs('projects')">
+                    <x-jet-responsive-nav-link href="{{ route('projects', Auth::user()->account) }}" :active="request()->routeIs('projects')">
                         {{ __('Projects') }}
                     </x-jet-responsive-nav-link>
                 @endif
                 @if(App\Daybreak::hasEmployeePayrollFeature())
-                    <x-jet-responsive-nav-link href="{{ route('payrolls', Auth::user()->ownedAccount) }}" :active="request()->routeIs('payrolls')">
+                    <x-jet-responsive-nav-link href="{{ route('payrolls', Auth::user()->account) }}" :active="request()->routeIs('payrolls')">
                         {{ __('Payroll') }}
                     </x-jet-responsive-nav-link>
                 @endif
 
-                <x-jet-responsive-nav-link href="{{ route('employees', Auth::user()->ownedAccount) }}" :active="request()->routeIs('employees')">
+                <x-jet-responsive-nav-link href="{{ route('employees', Auth::user()->account) }}" :active="request()->routeIs('employees')">
                     {{ __('Employees') }}
                 </x-jet-responsive-nav-link>
 

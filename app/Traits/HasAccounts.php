@@ -21,6 +21,12 @@ trait HasAccounts
         return $this->id == $account->owned_by;
     }
 
+    public function isAccountAdmin(Account $account)
+    {
+        return $this->ownsAccount($account)
+         || ($this->belongsToAccount($account) && $this->is_account_admin);
+    }
+
     /**
      * Switch the user's context to the given account.
      *

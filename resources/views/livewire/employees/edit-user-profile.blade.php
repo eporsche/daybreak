@@ -215,6 +215,13 @@
                     @if(App\Daybreak::hasEmployeePayrollFeature())
                         <x-dynamic-component component="employee-payroll-form" />
                     @endif
+                    <div class="col-span-6 lg:col-span-4 mt-2">
+                        <div class="inline-flex">
+                            <input type="checkbox" id="is_account_admin" wire:model.defer="editUserProfileForm.is_account_admin" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <x-jet-label for="is_account_admin" class="ml-2 block text-sm text-gray-900" value="{{ __('Account Admin') }}" />
+                        </div>
+                        <x-jet-input-error for="is_account_admin" class="mt-2" />
+                    </div>
                 </div>
             </x-slot>
             <x-slot name="actions">

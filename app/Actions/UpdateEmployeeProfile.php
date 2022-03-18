@@ -27,7 +27,8 @@ class UpdateEmployeeProfile implements UpdatesEmployeeProfile
         Validator::make($data, [
             'name' => ['required','string','max:255'],
             'date_of_employment' => ['nullable', $this->dateFormatter->dateFormatRule()],
-            'opening_overtime_balance' => ['nullable','numeric']
+            'opening_overtime_balance' => ['nullable','numeric'],
+            'is_account_admin' => ['required','boolean'],
         ])->validateWithBag('saveEmployee');
 
         $user->forceFill([
@@ -35,7 +36,8 @@ class UpdateEmployeeProfile implements UpdatesEmployeeProfile
             'date_of_employment' =>
                 $this->dateFormatter->strToDate($data['date_of_employment']),
             'opening_overtime_balance' =>
-                $data['opening_overtime_balance']
+                $data['opening_overtime_balance'],
+            'is_account_admin' => $data['is_account_admin'],
         ])->save();
     }
 }

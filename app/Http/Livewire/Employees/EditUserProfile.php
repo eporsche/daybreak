@@ -63,7 +63,9 @@ class EditUserProfile extends Component
     public $editUserProfileForm = [
         'name' => null,
         'date_of_employment' => null,
-        'opening_overtime_balance' => null
+        'opening_overtime_balance' => null,
+        'is_account_admin' => false
+
     ];
 
     public $days = [
@@ -226,6 +228,7 @@ class EditUserProfile extends Component
                 $this->employee->date_of_employment_for_humans,
             'opening_overtime_balance' =>
                 $this->employee->opening_overtime_balance,
+            'is_account_admin' => $this->employee->is_account_admin
         ], fn() => $this->fillPayrollFormFields($employee), Daybreak::hasEmployeePayrollFeature());
     }
 

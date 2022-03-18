@@ -103,12 +103,12 @@
                         <div class="border-t border-gray-100"></div>
 
                         <!-- Account Management -->
-                        @can('view', Auth::user()->ownedAccount)
+                        @can('view', Auth::user()->account)
                             <div class="block px-4 py-2 text-xs text-gray-400">
                                 {{ __('Manage Account') }}
                             </div>
 
-                            <x-jet-dropdown-link href="{{ route('accounts.show', Auth::user()->ownedAccount->id) }}">
+                            <x-jet-dropdown-link href="{{ route('accounts.show', Auth::user()->account->id) }}">
                                 {{ __('Account Settings') }}
                             </x-jet-dropdown-link>
                         @endcan
@@ -180,8 +180,8 @@
                         {{ __('Location Settings') }}
                     </x-jet-responsive-nav-link>
                 @endcan
-                @can('view', Auth::user()->ownedAccount)
-                    <x-jet-responsive-nav-link href="{{ route('accounts.show', Auth::user()->ownedAccount->id) }}">
+                @can('view', Auth::user()->account)
+                    <x-jet-responsive-nav-link href="{{ route('accounts.show', Auth::user()->account->id) }}">
                         {{ __('Account Settings') }}
                     </x-jet-responsive-nav-link>
                 @endcan
