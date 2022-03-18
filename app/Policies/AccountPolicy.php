@@ -30,7 +30,7 @@ class AccountPolicy
      */
     public function view(User $user, Account $account)
     {
-        return $user->ownsAccount($account);
+        return $user->isAccountAdmin($account);
     }
 
     /**
@@ -53,7 +53,7 @@ class AccountPolicy
      */
     public function update(User $user, Account $account)
     {
-        return $user->ownsAccount($account);
+        return $user->isAccountAdmin($account);
     }
 
     /**
