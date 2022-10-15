@@ -29,6 +29,31 @@ This program is inspired by papershift. If you are looking for something more ro
 - [x] Add extended datatables and disable employee switcher
 - [ ] More Tests
 
+## Production ready deployment using Docker
+
+```bash
+# Clone repository using git & change into cloned directory
+git clone https://github.com/eporsche/daybreak.git && cd daybreak
+
+# Copy .env.prod.example to .env.prod and edit it to fit your needs
+cp .env.prod.example .env.prod
+
+# Build the app container
+docker compose -f docker-compose.prod.yaml build
+
+# Generate an application secret
+docker compose -f docker-compose.prod.yaml run --rm app php artisan key:generate
+
+# Apply database schema
+docker compose -f docker-compose.prod.yaml run --rm app php artisan migrate --force
+
+# Start the stack (web app will be available on port 8080 by default)
+docker compose -f docker-compose.prod.yaml up -d
+```
+If you plan to run Daybreak publicly, make sure you do so behind a reverse proxy. You can use the `X-Real-IP` and `X-Forwarded-Proto` headers to pass the actual client IP and encryption state to the app container.
+
+If you want to prevent new users from registering themselves, you can do so by disabling the feature after you created your own account. Simply comment out the line `Features::registration(),` at the end of the file `config/fortify.php`. After that, rebuild the app container image and recreate the container. The registration button should now be disabled.
+
 ## Installation instruction to setup a development environment
 
 ### Requirements

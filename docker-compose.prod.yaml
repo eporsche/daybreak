@@ -1,0 +1,58 @@
+version: '3'
+services:
+
+  # App container
+  app:
+    build:
+      context: .
+      dockerfile: contrib/docker/Dockerfile.apache
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    volumes:
+      - app-storage:/var/www/storage
+      - app-bootstrap:/var/www/bootstrap
+      - "./.env.prod:/var/www/.env"
+    networks:
+      - external
+      - internal
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+      - redis
+
+  # Database
+  db:
+    image: mysql:8-debian
+    restart: unless-stopped
+    networks:
+      - internal
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env.prod
+    volumes:
+      - "db-data:/var/lib/mysql"
+
+  # Cache
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    volumes:
+      - "redis-data:/data"
+    networks:
+      - internal
+
+volumes:
+  db-data:
+  redis-data:
+  app-storage:
+  app-bootstrap:
+
+networks:
+  internal:
+    internal: true
+  external:
+    driver: bridge
