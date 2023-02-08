@@ -2,10 +2,16 @@
 
 namespace App\Models;
 
+use App\Casts\BigDecimalCast;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class VacationEntitlementTransfer extends Pivot
 {
+
+    protected $casts = [
+        'days' => BigDecimalCast::class
+    ];
+
     /**
      * @var string
      */
