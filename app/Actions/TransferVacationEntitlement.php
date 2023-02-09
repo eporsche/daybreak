@@ -21,7 +21,7 @@ class TransferVacationEntitlement implements TransfersVacationEntitlements
         $vacationEntitlementToBeTransferred = VacationEntitlement::findOrFail($vacationEntitlementId);
 
         //fetch a possible vacation entitlement candiate
-        $useExistingVacationEntitlement = VacationEntitlement::where('ends_at', $vacationEntitlementToBeTransferred->end_of_transfer_period)->first();
+        $useExistingVacationEntitlement = $employee->vacationEntitlements()->where('ends_at', $vacationEntitlementToBeTransferred->end_of_transfer_period)->first();
         if (!empty($useExistingVacationEntitlement)) {
             $vacationEntitlementToBeTransferred->transferVacationDays($useExistingVacationEntitlement, [
                 'days' => $useExistingVacationEntitlement->days->plus($vacationEntitlementToBeTransferred->daysTransferrable())
